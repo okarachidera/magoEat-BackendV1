@@ -1,6 +1,5 @@
-import http from 'http'
+const http =  require('http')
 const app = require('./app');
-// function to normalize port
 const normalizePort = val => {
   const port = parseInt(val, 10);
 

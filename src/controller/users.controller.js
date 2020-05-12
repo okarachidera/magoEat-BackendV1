@@ -11,8 +11,8 @@ exports.signup = (req, res, next) => {
                 password : hash,
                 phone : req.body.phone,
                 adress : req.body.adress,
-                mail : req.body.email,
-                msgCode : req.body.msgCode
+                mail : req.body.mail,
+                msgCode : Math.floor(Math.random()*999)+1000
             })
             user.save()
                 .then(user => res.status(200).json({ user }))
@@ -22,12 +22,12 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    User.findOne({username : body.username})
+    User.findOne({username : req.body.username})
         .then(user => {
             if (!user) {
                 res.status(400).json({ errorMessage : 'Utilisateur non trouvE !'})
             }
-            bcrypt.compare(user.password, req.body.password)
+            bcrypt.compare(req.body.password, user.password)
                 .then(validUser => {
                     if (!validUser) {
                         res.status(401).json({ errorMessage : 'Mot de passe incorect' })
@@ -35,13 +35,13 @@ exports.login = (req, res, next) => {
                     res.status(200).json({
                         username : req.body.username,
                         token : jwt.sign(
-                            {username : body.username},
+                            {username : req.body.username},
                             'RANDOM_TOKEN_SECRET',
                             {expiresIn : '48h'}
                         )
                     })
                 })
-                .catch(error => res.status(505).json({ error }))
+                .catch(error => res.status(500).json({ error }))
         })
         .catch(error => res.status(500).json({ error }))
 }
@@ -59,4 +59,8 @@ exports.sendMsgConf = (req, res, next) => {
         console.log('body:', body1); 
         response.status(response1.statusCode).send({ "message": "Code envoye avec success"});
     });
+}
+
+exports.comparePassword = (req, res, next) => {
+
 }
