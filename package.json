@@ -1,0 +1,28 @@
+{
+  "name": "magoeat-backendv1",
+  "version": "1.0.0",
+  "description": "A javascript version of magoEat backend application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pacyL2K19/magoEat-BackendV1.git"
+  },
+  "author": "Pacifique linjanja",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pacyL2K19/magoEat-BackendV1/issues"
+  },
+  "homepage": "https://github.com/pacyL2K19/magoEat-BackendV1#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.13",
+    "mongoose-unique-validator": "^2.0.3",
+    "request": "^2.88.2"
+  }
+}
