@@ -47,13 +47,13 @@ exports.login = (req, res, next) => {
 }
 
 exports.sendMsgConf = (req, res, next) => {
-    var phone = req.body.phone.substring(1);
+    var phone = req.body.phone;
     var username = "pacyL20";
     var password = "zKssVK4u";
     var source = "MAGOEAT APP";
     var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
-    request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
+    request1('http://localhost:8080/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
         console.error('error:', error1); // Print the error if one occurred
         console.log('statusCode:', response1 && response1.statusCode);
         console.log('body:', body1); 

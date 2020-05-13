@@ -4,6 +4,6 @@ const userCtl = require('../controller/users.controller')
 
 router.post('/signup', userCtl.signup)
 router.post('/login', userCtl.login)
-router.get('/msgConf', userCtl.sendMsgConf)
+router.post('/msgConf', userCtl.sendMsgConf)
 
 module.exports = router
