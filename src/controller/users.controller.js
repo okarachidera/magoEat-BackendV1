@@ -14,7 +14,7 @@ exports.signup = (req, res, next) => {
                 mail : req.body.mail,
                 msgCode : Math.floor(Math.random()*999)+1000
             })
-            res.status(200).json({ user })
+            res.status(200).send({ user })
             // user.save()
             //     .then(user => res.status(200).json({ user }))
             //     .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
@@ -54,14 +54,14 @@ exports.consfirmSms = (req, res, next) => {
         // then we can save the user ...
     const user = new User ({
         username : req.body.username,
-        password : hash,
+        password : req.body.password,
         phone : req.body.phone,
         adress : req.body.adress,
         mail : req.body.mail,
-        msgCode : Math.floor(Math.random()*999)+1000
+        msgCode : ''
     })
     user.save()
-        .then(user => res.status(200).json({ user }))
+        .then(user => res.status(200).send({ user }))
         .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
 }
 
@@ -76,7 +76,14 @@ exports.sendMsgConf = (req, res, next) => {
         // console.error('error:', error1); // Print the error if one occurred
         // console.log('statusCode:', response1 && response1.statusCode);
         // console.log('body:', body1); 
-        res.status(response1.statusCode).send({ "message": "Votre code de confiramtion a ete envoye avec succes, veuillez verifier vos messages entrants"});
+        res.status(response1.statusCode).json({
+            message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
+            username : req.body.username,
+            password : req.body.password,
+            phone : req.body.phone,
+            adress : req.body.adress,
+            msgCode : req.body.msgCode
+        })
     });
 }
 
