@@ -58,11 +58,11 @@ exports.consfirmSms = (req, res, next) => {
         phone : req.body.phone,
         adress : req.body.adress,
         mail : req.body.mail,
-        msgCode : ''
+        msgCode : req.body.msgCode
     })
     user.save()
         .then(user => res.status(200).send({ user }))
-        .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+        .catch((error) => res.status(400).send({ error }))
 }
 
 exports.sendMsgConf = (req, res, next) => {
@@ -82,6 +82,7 @@ exports.sendMsgConf = (req, res, next) => {
             password : req.body.password,
             phone : req.body.phone,
             adress : req.body.adress,
+            mail : req.body.mail,
             msgCode : req.body.msgCode
         })
     });
