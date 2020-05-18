@@ -35,6 +35,8 @@ exports.login = (req, res, next) => {
                     }
                     res.status(200).json({
                         username : req.body.username,
+                        mail : req.body.mail,
+                        phone : req.body.phone,
                         token : jwt.sign(
                             {username : req.body.username},
                             'RANDOM_TOKEN_SECRET',
@@ -86,6 +88,12 @@ exports.sendMsgConf = (req, res, next) => {
             msgCode : req.body.msgCode
         })
     });
+}
+
+exports.getUserByUsername = (req, res, next) => {
+    User.findOne({username : req.params.username})
+        .then(user => res.status(200).json({ user }))
+        .catch(() => res.status(400).json({ errorMessage : 'utilisateur non trouvE'}))
 }
 
 // exports.comparePassword = (req, res, next) => {

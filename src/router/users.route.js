@@ -7,4 +7,8 @@ router.post('/login', userCtl.login)
 router.post('/msgConf', userCtl.sendMsgConf)
 router.post('/validateSms', userCtl.consfirmSms)
 
+// route to get connected user
+
+router.get('/login/:username', userCtl.getUserByUsername)
+
 module.exports = router
