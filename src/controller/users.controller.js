@@ -35,6 +35,8 @@ exports.login = (req, res, next) => {
                     }
                     res.status(200).json({
                         username : req.body.username,
+                        mail : user.mail,
+                        phone : user.phone,
                         token : jwt.sign(
                             {username : req.body.username},
                             'RANDOM_TOKEN_SECRET',
@@ -73,9 +75,6 @@ exports.sendMsgConf = (req, res, next) => {
     var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
     request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
-        // console.error('error:', error1); // Print the error if one occurred
-        // console.log('statusCode:', response1 && response1.statusCode);
-        // console.log('body:', body1); 
         res.status(response1.statusCode).json({
             message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
             username : req.body.username,
@@ -88,9 +87,26 @@ exports.sendMsgConf = (req, res, next) => {
     });
 }
 
+exports.sendMsgToAdmins = (req, res, next) => {
+    var username = "pacyL20";
+    var password = "zKssVK4u";
+    var source = "MAGOEAT APP ADMIN";
+    var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
+    request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772 243979060566 243991064464 243975731705&source='+source+'&message='+msg, function (error1, response1, body1) {
+        res.status(response1.statusCode).json({
+            message : 'Envoie de la commande reussi, le traitement est en cours',
+        })
+    });
+}
+
 exports.getUserByUsername = (req, res, next) => {
     User.findOne({username : req.params.username})
-        .then(user => res.status(200).json({ user }))
+        .then(user => {
+            if (user) {
+                res.status(200).json({ user })
+            }
+            res.status(401).json({ message : 'Uilisateur introuvable' })
+        })
         .catch(() => res.status(400).json({ errorMessage : 'utilisateur non trouvE'}))
 }
 

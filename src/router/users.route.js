@@ -6,6 +6,7 @@ router.post('/signup', userCtl.signup)
 router.post('/login', userCtl.login)
 router.post('/msgConf', userCtl.sendMsgConf)
 router.post('/validateSms', userCtl.consfirmSms)
+router.post('/sendToAdmins', userCtl.sendMsgToAdmins)
 
 // route to get connected user
 
