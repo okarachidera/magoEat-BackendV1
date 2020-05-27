@@ -109,7 +109,6 @@ exports.getUserByUsername = (req, res, next) => {
         })
         .catch(() => res.status(400).json({ errorMessage : 'utilisateur non trouvE'}))
 }
-
 // exports.comparePassword = (req, res, next) => {
 
 // }
