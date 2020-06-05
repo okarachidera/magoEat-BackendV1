@@ -21,6 +21,10 @@ const orderSchema = mongoose.Schema({
     rate : {
         type : Number,
         required : false
+    },
+    ratable : {
+        type : Boolean,
+        required : true
     }
 })
 
