@@ -25,6 +25,10 @@ const orderSchema = mongoose.Schema({
     ratable : {
         type : Boolean,
         required : true
+    },
+    feedBack : {
+        type : String,
+        required : false
     }
 })
 
