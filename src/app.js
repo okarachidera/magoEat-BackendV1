@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const userRoute = require('./router/users.route')
+const orderRoute = require('./router/rate.route')
 
 const app = express ()
 
@@ -21,5 +22,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/auth',userRoute)
+app.use('/api/order', orderRoute)
 
 module.exports = app
