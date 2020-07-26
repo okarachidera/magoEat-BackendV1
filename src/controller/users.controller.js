@@ -23,7 +23,7 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    User.findOne({username : req.body.username})
+    User.findOne({phoe : req.body.phone})
         .then(user => {
             if (!user) {
                 res.status(400).json({ errorMessage : 'Utilisateur non trouvE !'})
