@@ -70,7 +70,7 @@ exports.consfirmSms = (req, res, next) => {
 exports.sendMsgConf = (req, res, next) => {
     var phone = req.body.phone;
     var username = "pacyL20";
-    var password = "zKssVK4u";
+    var password = "zKssVK4uxxx";
     var source = "MAGOEAT APP";
     var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
