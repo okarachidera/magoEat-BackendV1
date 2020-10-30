@@ -100,6 +100,16 @@ exports.sendMsgToAdmins = (req, res, next) => {
     });
 }
 
+exports.getAllUsers = (req, res, next) => {
+    User.find({}, (err, users) => {
+        if(!err) {
+            res.status(201).json(users)
+        } else {
+            res.status(500).send(err)
+        }
+    })
+}
+
 // exports.getUserByUsername = (req, res, next) => {
 //     User.findOne({username : req.params.username})
 //         .then(user => {

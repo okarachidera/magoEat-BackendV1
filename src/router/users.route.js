@@ -11,5 +11,7 @@ router.post('/validateSms', userCtl.consfirmSms)
 // route to get connected user
 
 // router.get('/login/:username', userCtl.getUserByUsername)
+// to get all the users 
+router.get('/users', userCtl.getAllUsers);
 
 module.exports = router
