@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 
 const restaurantSchema = mongoose.Schema({
     // a restaurant has to have a label, description, logo (an image url) 
@@ -26,3 +27,6 @@ const restaurantSchema = mongoose.Schema({
         unique : false
     }
 })
+
+restaurantSchema.plugin(uniqueValidator);
+module.exports = mongoose.model('Restau', restaurantSchema);

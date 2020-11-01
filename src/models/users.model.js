@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
+// to set an enum for the roles
+
 const userSchema = mongoose.Schema({
     username : {
         type : String, 
@@ -25,6 +27,11 @@ const userSchema = mongoose.Schema({
     },
     msgCode : {
         type : String
+    },
+    role : {
+        type : String,
+        required : false,
+        unique : false
     }
 })
 
