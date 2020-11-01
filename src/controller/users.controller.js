@@ -71,7 +71,7 @@ exports.sendMsgConf = (req, res, next) => {
     var phone = req.body.phone;
     var username = "pacyL20";
     var password = "zKssVK4u";
-   var source = "MAGOEAT APP";
+    var source = "MAGOEAT APP";
     var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
     request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
@@ -110,16 +110,20 @@ exports.getAllUsers = (req, res, next) => {
     })
 }
 
-// exports.getUserByUsername = (req, res, next) => {
-//     User.findOne({username : req.params.username})
-//         .then(user => {
-//             if (user) {
-//                 res.status(200).json({ user })
-//             }
-//             res.status(401).json({ message : 'Uilisateur introuvable' })
-//         })
-//         .catch(() => res.status(400).json({ errorMessage : 'utilisateur non trouvE'}))
-// }
+exports.getUserByUsername = (req, res, next) => {
+    // console.log(req.params.username)
+    User.findOne({username : req.params.username}, (err, user) => {
+        if (!err) {
+            if (user) {
+                res.status(200).json({user})
+            } else {
+                res.status(401).json({ message : 'Uilisateur introuvable' })
+            }
+        } else {
+            res.send(err)
+        }
+    })
+}
 // exports.comparePassword = (req, res, next) => {
 
 // }
