@@ -92,7 +92,7 @@ exports.sendMsgConf = (req, res, next) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
         from: '+12283356156',
-        to: "req.body.phone"
+        to: req.body.phone
     })
         .then(message => {
             res.status(201).json({
@@ -115,16 +115,16 @@ exports.sendMsgConf = (req, res, next) => {
 }
 
 exports.sendMsgToAdmins = (req, res, next) => {
-    var username = "pacyL20";
-    var password = "zKssVK4u";
-    var source = "MAGOEAT APP ADMIN";
-    var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
-    request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
-        res.status(response1.statusCode).json({
-            message : 'Envoie de la commande reussi, le traitement est en cours',
-            date : Date()
-        })
-    });
+    // var username = "pacyL20";
+    // var password = "zKssVK4u";
+    // var source = "MAGOEAT APP ADMIN";
+    // var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
+    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
+    //     res.status(response1.statusCode).json({
+    //         message : 'Envoie de la commande reussi, le traitement est en cours',
+    //         date : Date()
+    //     })
+    // });
 }
 
 exports.getAllUsers = (req, res, next) => {
