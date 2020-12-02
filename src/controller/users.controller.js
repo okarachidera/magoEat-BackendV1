@@ -91,7 +91,7 @@ exports.sendMsgConf = (req, res, next) => {
     // });
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
-        from: '+12283356156',
+        from: process.env.NUMBER,
         to: req.body.phone
     })
         .then(message => {
@@ -125,6 +125,24 @@ exports.sendMsgToAdmins = (req, res, next) => {
     //         date : Date()
     //     })
     // });
+    client.messages.create({
+        from: process.env.NUMBER,
+        to: '+243990831772',
+        body: "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau
+    })
+        .then(message => {
+            res.status(201).json({
+                message,
+                alert: 'Votre commande a ete effectuee avec succes',
+                date: Date(Date.now())
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                alert: 'Echec de confirmation du code, veuillez reessayer',
+                err
+            })
+        })
 }
 
 exports.getAllUsers = (req, res, next) => {
