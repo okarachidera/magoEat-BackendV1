@@ -1,7 +1,12 @@
-const User = require('../models/users.model')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const request1 = require('request')
+require('dotenv').config();
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const auth_token = process.env.TWILIO_AUTH_TOKEN;
+const User = require('../models/users.model');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const request1 = require('request');
+const client = require('twilio')(accountSid, auth_token);
+// +12283356156
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
