@@ -92,7 +92,7 @@ exports.sendMsgConf = (req, res, next) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
         from: '+12283356156',
-        to: req.body.phone
+        to: "req.body.phone"
     })
         .then(message => {
             res.status(201).json({
