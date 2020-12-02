@@ -6,7 +6,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const request1 = require('request');
 const client = require('twilio')(accountSid, auth_token);
-// +12283356156
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -73,23 +72,46 @@ exports.consfirmSms = (req, res, next) => {
 }
 
 exports.sendMsgConf = (req, res, next) => {
-    var phone = req.body.phone;
-    var username = "pacyL20";
-    var password = "zKssVK4u";
-    var source = "MAGOEAT APP";
-    var msg = req.body.msgDetail +" "+ req.body.msgCode;
+    // var phone = req.body.phone;
+    // var username = "pacyL20";
+    // var password = "zKssVK4u";
+    // var source = "MAGOEAT APP";
+    // var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
-    request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
-        res.status(response1.statusCode).json({
-            message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
-            username : req.body.username,
-            password : req.body.password,
-            phone : req.body.phone,
-            adress : req.body.adress,
-            mail : req.body.mail,
-            msgCode : req.body.msgCode
+    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
+    //     res.status(response1.statusCode).json({
+    //         message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
+    //         username : req.body.username,
+    //         password : req.body.password,
+    //         phone : req.body.phone,
+    //         adress : req.body.adress,
+    //         mail : req.body.mail,
+    //         msgCode : req.body.msgCode
+    //     })
+    // });
+    client.messages.create({
+        body: req.body.msgDetail +" "+ req.body.msgCode,
+        from: '+12283356156',
+        to: req.body.phone
+    })
+        .then(message => {
+            res.status(201).json({
+                message,
+                alert: 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
+                username : req.body.username,
+                password : req.body.password,
+                phone : req.body.phone,
+                adress : req.body.adress,
+                mail : req.body.mail,
+                msgCode : req.body.msgCode
+            })
         })
-    });
+        .catch(err => {
+            res.status(500).json({
+                alert: 'Echec de confirmation du code, veuillez reessayer',
+                err
+            })
+        })
 }
 
 exports.sendMsgToAdmins = (req, res, next) => {
