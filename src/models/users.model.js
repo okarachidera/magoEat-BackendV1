@@ -18,9 +18,9 @@ const userSchema = mongoose.Schema({
         required : true, 
         unique : true
     },
-    adress : {
-        type : String,
-    }, 
+    // adress : {
+    //     type : String,
+    // }, 
     phone : {
         type : Number,
         unique : true

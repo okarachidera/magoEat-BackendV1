@@ -4,26 +4,39 @@ const auth_token = process.env.TWILIO_AUTH_TOKEN;
 const User = require('../models/users.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const request1 = require('request');
+const userValidation = require('../validators/users.validators');
+// const request1 = require('request');
 const client = require('twilio')(accountSid, auth_token);
 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            const user = new User ({
-                username : req.body.username,
-                password : hash,
-                phone : req.body.phone,
-                adress : req.body.adress,
-                mail : req.body.mail,
-                msgCode : Math.floor(Math.random()*999)+1000
+    // Fisrt validation 
+    const {error, value} = userValidation.signupValidator.validate(req.body);
+    if (!error) {
+        // All the data put inside fit the requirements
+        bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = new User ({
+                    username : req.body.username,
+                    password : hash,
+                    phone : req.body.phone,
+                    // adress : req.body.adress,
+                    mail : req.body.mail,
+                    msgCode : Math.floor(Math.random()*999)+1000,
+                    role: req.body.role
+                })
+                res.status(201).send({ user })
+                // user.save()
+                //     .then(user => res.status(200).json({ user }))
+                //     .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
             })
-            res.status(200).send({ user })
-            // user.save()
-            //     .then(user => res.status(200).json({ user }))
-            //     .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+            .catch(error => res.status(500).json({ error }))
+    } else {
+        res.status(400).json({
+            success: false,
+            message: 'Vous avez entré des données invalides',
+            error
         })
-        .catch(error => res.status(500).json({ error }))
+    }
 }
 
 exports.login = (req, res, next) => {
@@ -62,9 +75,11 @@ exports.consfirmSms = (req, res, next) => {
         username : req.body.username,
         password : req.body.password,
         phone : req.body.phone,
-        adress : req.body.adress,
+        // adress : req.body.adress,
         mail : req.body.mail,
-        msgCode : req.body.msgCode
+        msgCode : req.body.msgCode,
+        role: req.body.role,
+        avatar: ''
     })
     user.save()
         .then((user) => res.status(200).send({ user }))
@@ -72,23 +87,6 @@ exports.consfirmSms = (req, res, next) => {
 }
 
 exports.sendMsgConf = (req, res, next) => {
-    // var phone = req.body.phone;
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP";
-    // var msg = req.body.msgDetail +" "+ req.body.msgCode;
-        
-    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
-    //     res.status(response1.statusCode).json({
-    //         message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
-    //         username : req.body.username,
-    //         password : req.body.password,
-    //         phone : req.body.phone,
-    //         adress : req.body.adress,
-    //         mail : req.body.mail,
-    //         msgCode : req.body.msgCode
-    //     })
-    // });
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
         from: process.env.NUMBER,
@@ -112,19 +110,26 @@ exports.sendMsgConf = (req, res, next) => {
                 err
             })
         })
+    // var phone = req.body.phone;
+    // var username = "pacyL20";
+    // var password = "zKssVK4u";
+    // var source = "MAGOEAT APP";
+    // var msg = req.body.msgDetail +" "+ req.body.msgCode;
+        
+    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
+    //     res.status(response1.statusCode).json({
+    //         message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
+    //         username : req.body.username,
+    //         password : req.body.password,
+    //         phone : req.body.phone,
+    //         adress : req.body.adress,
+    //         mail : req.body.mail,
+    //         msgCode : req.body.msgCode
+    //     })
+    // });
 }
 
 exports.sendMsgToAdmins = (req, res, next) => {
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP ADMIN";
-    // var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
-    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
-    //     res.status(response1.statusCode).json({
-    //         message : 'Envoie de la commande reussi, le traitement est en cours',
-    //         date : Date()
-    //     })
-    // });
     client.messages.create({
         from: process.env.NUMBER,
         to: '+243990831772',
@@ -143,6 +148,16 @@ exports.sendMsgToAdmins = (req, res, next) => {
                 err
             })
         })
+    // var username = "pacyL20";
+    // var password = "zKssVK4u";
+    // var source = "MAGOEAT APP ADMIN";
+    // var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
+    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
+    //     res.status(response1.statusCode).json({
+    //         message : 'Envoie de la commande reussi, le traitement est en cours',
+    //         date : Date()
+    //     })
+    // });
 }
 
 exports.getAllUsers = (req, res, next) => {
