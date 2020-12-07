@@ -7,7 +7,6 @@ const stringField = Joi.string().min(3).max(120);
 const mail = Joi.string().email({minDomainSegments: 2, tlds: {allow: ['com', 'org']}});
 const role = Joi.string().valid("ADMIN", "USER", "OWNER", "DELIVERY_GUY").uppercase().optional()
 
-
 exports.loginValidator = Joi.object().keys({
     emailOrPhone = Joi.alternatives().try(
         mail,
