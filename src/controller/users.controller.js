@@ -22,12 +22,13 @@ exports.signup = (req, res, next) => {
                     // adress : req.body.adress,
                     mail : req.body.mail,
                     msgCode : Math.floor(Math.random()*999)+1000,
-                    role: req.body.role
+                    role: req.body.role,
+                    verified: false
                 })
-                res.status(201).send({ user })
-                // user.save()
-                //     .then(user => res.status(200).json({ user }))
-                //     .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+                // res.status(201).send({ user })
+                user.save()
+                    .then(user => res.status(200).json({ user }))
+                    .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
             })
             .catch(error => res.status(500).json({ error }))
     } else {

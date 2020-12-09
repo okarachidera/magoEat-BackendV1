@@ -20,5 +20,6 @@ exports.signupValidator = Joi.object().keys({
     mail: mail.optional(),
     role,
     avatar: stringField.optional(),
-    msgCode: Joi.number().optional()
+    msgCode: Joi.number().optional(),
+    verified: Joi.boolean().required()
 })
