@@ -49,10 +49,14 @@ exports.login = (req, res, next) => {
             bcrypt.compare(req.body.password, user.password)
                 .then(validUser => {
                     if (!validUser) {
-                        res.status(401).json({ errorMessage : 'Mot de passe incorect' })
+                        res.status(401).json({ 
+                            success: false,
+                            errorMessage : 'Mot de passe incorect' 
+                        })
                     }
                     res.status(200).json({
                         username : req.body.username,
+                        success: true,
                         mail : user.mail,
                         phone : user.phone,
                         token : jwt.sign(
@@ -62,7 +66,11 @@ exports.login = (req, res, next) => {
                         )
                     })
                 })
-                .catch(error => res.status(500).json({ error }))
+                .catch(error => res.status(500).json({ 
+                    success: false,
+                    message: 'Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard',
+                    error 
+                }))
         })
         .catch(error => res.status(500).json({ error }))
 }
