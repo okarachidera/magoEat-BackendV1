@@ -40,7 +40,7 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    User.findOne({phoe : req.body.phone})
+    User.findOne({phone : req.body.phone})
         .then(user => {
             if (!user) {
                 res.status(400).json({ errorMessage : 'Utilisateur non trouvE !'})
@@ -79,7 +79,7 @@ exports.consfirmSms = (req, res, next) => {
         mail : req.body.mail,
         msgCode : req.body.msgCode,
         role: req.body.role,
-        avatar: ''
+        avatar: req.body.avatar
     })
     user.save()
         .then((user) => res.status(200).send({ user }))
@@ -95,7 +95,7 @@ exports.sendMsgConf = (req, res, next) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
+                alert: 'Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants',
                 username : req.body.username,
                 password : req.body.password,
                 phone : req.body.phone,
