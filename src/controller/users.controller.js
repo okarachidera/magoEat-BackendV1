@@ -13,7 +13,7 @@ exports.signup = (req, res, next) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
     if (!error) {
         // All the data put inside fit the requirements
-        bcrypt.hash(req.body.password, 10)
+        bcrypt.hash(req.body.password, process.env.GEN_SALT)
             .then(hash => {
                 const user = new User ({
                     username : req.body.username,
