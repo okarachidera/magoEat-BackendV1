@@ -41,6 +41,10 @@ const orderSchema = mongoose.Schema({
     cancelReason: {
         type: String,
         required: false
+    },
+    closedAt: {
+        type: Date,
+        required: false
     }
 })
 
