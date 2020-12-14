@@ -12,11 +12,12 @@ const rate = Joi.number()
                 .optional()
 const amount = Joi.number()
                     .required()
-const devise = Joi.valid(
-                    "USD",
-                    "CDF"
-                )
-                .required()
+const devise = Joi.string()
+                    .valid(
+                        "USD",
+                        "CDF"
+                    )
+                    .required()
 const ratable = Joi.boolean()
                     .default(true)
 const status = Joi.string()
@@ -38,12 +39,8 @@ const date = Joi.date()
 exports.placeOrder = Joi.object().keys({
     idUser: validId.required(),
     platId: validId.required(),
-    date,
-    restauName: stringField.required(),
-    ratable,
     amount,
     devise,
-    status,
 })
 
 exports.cancelOrder = Joi.object().keys({

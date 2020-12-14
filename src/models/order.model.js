@@ -14,10 +14,6 @@ const orderSchema = mongoose.Schema({
         type : String,
         required : true
     },
-    restauName : {
-        type : String,
-        required : true
-    },
     rate : {
         type : Number,
         required : false
@@ -35,7 +31,7 @@ const orderSchema = mongoose.Schema({
         required: true
     },
     devise: {
-        type: Boolean,
+        type: String,
         required: true
     },
     status: {
