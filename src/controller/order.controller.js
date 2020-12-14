@@ -15,6 +15,24 @@ exports.getOrdersHistory = (req, res, next) => {
         })
 }
 
+exports.getAllOrders = (req, res) => {
+    const filter = {}
+    Order.find(filter)
+        .then(orders => {
+            res.status(201).json({
+                success: true,
+                orders
+            })
+        })
+        .catch(error => {
+            res.status(500).json({
+                success: false,
+                message: 'Une erreur s\'est produite',
+                error
+            })
+        })
+}
+
 // For post routes
 
 // exports.rateOrder = (req, res, next) => {
