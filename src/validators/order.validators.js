@@ -18,8 +18,8 @@ const devise = Joi.string()
                         "CDF"
                     )
                     .required()
-const ratable = Joi.boolean()
-                    .default(true)
+// const ratable = Joi.boolean()
+//                     .default(true)
 const status = Joi.string()
                     .valid(
                         "PLACED",
@@ -33,8 +33,8 @@ const cancelReason = Joi.string()
                         .min(2)
                         .max(100)
                         .optional()
-const date = Joi.date()
-                    .required()
+// const date = Joi.date()
+//                     .required()
 
 exports.placeOrder = Joi.object().keys({
     idUser: validId.required(),
