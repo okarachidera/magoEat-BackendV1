@@ -1,6 +1,6 @@
 const Order = require('../models/order.model')
 exports.getOrdersHistory = (req, res, next) => {
-    Order.find({ useranme : req.body.username })
+    Order.find({ idUser : req.body.idUser })
         .then(orders => {
             if (!orders) {
                 res.status(400).json({ message : 'Aucun article dans votre historique' })
