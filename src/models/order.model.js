@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 // const uniqueValidator = require('mongoose-unique-validator')
 
 const orderSchema = mongoose.Schema({
-    username : {
+    idUser : {
         type : String,
         required : true
     },
@@ -10,7 +10,7 @@ const orderSchema = mongoose.Schema({
         type : Date,
         required : true
     },
-    orderName : {
+    platId: {
         type : String,
         required : true
     },
@@ -29,8 +29,23 @@ const orderSchema = mongoose.Schema({
     feedBack : {
         type : String,
         required : false
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    devise: {
+        type: Boolean,
+        required: true
+    },
+    status: {
+        type: String,
+        required: true
+    },
+    cancelReason: {
+        type: String,
+        required: false
     }
 })
 
 module.exports = mongoose.model('Order', orderSchema)
-// end line 

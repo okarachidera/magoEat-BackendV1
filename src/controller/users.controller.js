@@ -44,7 +44,10 @@ exports.login = (req, res, next) => {
     User.findOne({phone : req.body.phone})
         .then(user => {
             if (!user) {
-                res.status(400).json({ errorMessage : 'Utilisateur non trouvE !'})
+                res.status(400).json({ 
+                    errorMessage : 'Utilisateur non trouvE !',
+                    success: false
+                })
             }
             bcrypt.compare(req.body.password, user.password)
                 .then(validUser => {
