@@ -45,3 +45,21 @@ exports.proceedOrder = Joi.object().keys({
     devise,
     status,
 })
+
+exports.cancelOrder = Joi.object().keys({
+    orderId: validId.required(),
+    cancelReason,
+    status
+})
+
+exports.closeOrder = Joi.object().keys({
+    orderId: validId.required(),
+    status,
+    feedback: stringField.optional(),
+    rate
+})
+
+exports.updateStatus = Joi.object().keys({
+    orderId: validId.required(),
+    status
+})
