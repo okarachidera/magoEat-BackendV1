@@ -35,7 +35,7 @@ const cancelReason = Joi.string()
 const date = Joi.date()
                     .required()
 
-exports.proceedOrder = Joi.object().keys({
+exports.placeOrder = Joi.object().keys({
     idUser: validId.required(),
     platId: validId.required(),
     date,
