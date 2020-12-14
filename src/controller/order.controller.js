@@ -1,5 +1,5 @@
-const Order = require('../models/order.model')
-
+const Order = require('../models/order.model');
+const orderValidator = require('../validators/order.validators');
 // For get routes
 
 exports.getOrdersHistory = (req, res, next) => {
@@ -12,6 +12,24 @@ exports.getOrdersHistory = (req, res, next) => {
         })
         .catch(error => {
             console.log(error)
+        })
+}
+
+exports.getAllOrders = (req, res) => {
+    const filter = {}
+    Order.find(filter)
+        .then(orders => {
+            res.status(201).json({
+                success: true,
+                orders
+            })
+        })
+        .catch(error => {
+            res.status(500).json({
+                success: false,
+                message: 'Une erreur s\'est produite',
+                error
+            })
         })
 }
 
@@ -55,7 +73,42 @@ exports.getOrdersHistory = (req, res, next) => {
 // }
 
 exports.placeOrder = (req, res) => {
-
+    // First, let's validate the request
+    const data = req.body
+    const {error, value} = orderValidator.placeOrder.validate(data);
+    if (!error) {
+        // Next, create a new order with entered data
+        const order = new Order ({
+            idUser: data.idUser,
+            date: Date(Date.now()),
+            platId: data.platId,
+            ratable: true,
+            amount: data.amount,
+            devise: data.devise,
+            status: "PLACED"
+        })
+        order.save()
+            .then(odr => {
+                res.status(200).json({
+                    success: true,
+                    message: 'Votre commande a ete effectué avec succes, en cours de traitement',
+                    odr
+                })
+            })
+            .catch(error => {
+                res.status(400).json({
+                    success: false,
+                    message: 'Quelque chose ne va pas dans votre requete, veuillez ressayer plustard',
+                    error
+                })
+            })
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Données invalides',
+            error
+        })
+    }
 }
 
 exports.cancelOrder = (req,res) => {
@@ -67,5 +120,5 @@ exports.closeOrder = (req, res) => {
 }
 
 exports.updateStatus = (req, res) => {
-    
+
 }

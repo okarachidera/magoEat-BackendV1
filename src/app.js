@@ -1,8 +1,8 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const userRoute = require('./router/users.route')
-const orderRoute = require('./router/rate.route')
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const userRoute = require('./router/users.route');
+const orderRoute = require('./router/order.routes');
 
 const app = express ()
 
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/auth',userRoute)
-app.use('/api/order', orderRoute)
+app.use('/api/auth',userRoute);
+app.use('/api/order', orderRoute);
 
 module.exports = app
