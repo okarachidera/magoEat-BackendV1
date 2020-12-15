@@ -2,11 +2,14 @@ import mongoose from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
 const restaurantSchema = mongoose.Schema({
-    // a restaurant has to have a label, description, logo (an image url) 
     label : {
         type : String,
         required : true,
         unique : true
+    },
+    adress: {
+        type: String,
+        required: false
     },
     description : {
         type : String,
@@ -16,7 +19,7 @@ const restaurantSchema = mongoose.Schema({
         type : String,
         required : false
     },
-    owner : {
+    ownerId : {
         type : String,
         required : true,
         unique : false
@@ -25,6 +28,14 @@ const restaurantSchema = mongoose.Schema({
         type : Number,
         required : false,
         unique : false
+    },
+    opensAt: {
+        type: String,
+        required: false
+    },
+    closeAt: {
+        type: String,
+        required: false
     }
 })
 
