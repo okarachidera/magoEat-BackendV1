@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+const Joi = require('@hapi/joi');
 
 const textField = Joi.string()
                     .max(120)
@@ -20,6 +20,5 @@ exports.createRestau = Joi.object().keys({
     closeAt: textField.optional(),
     imgUrl: textField.optional(),
     adress: textField.optional(),
-    description: Joi.string().min(3).max(255).required(),
-    averageRate: rate.optional()
+    description: Joi.string().min(3).max(255).required()
 })
