@@ -6,4 +6,8 @@ const restauCtl = require('../controller/restau.controller');
 
 router.post('/create', restauCtl.createRestau);
 
+// GET routes
+
+router.get('/', restauCtl.getAllRestau);
+
 module.exports = router;
