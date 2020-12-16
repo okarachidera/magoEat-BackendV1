@@ -4,7 +4,21 @@ const restauValidator = require('../validators/restau.validators');
 // The GET logics
 
 exports.getAllRestau = (req, res) => {
-
+    const query = {}
+    Restau.find(query)
+        .then(restaus => {
+            res.status(201).json({
+                success: true,
+                restaus
+            })
+        })
+        .catch(error => {
+            res.status(500).json({
+                success: false,
+                message: 'Une erreur s\'est produite',
+                error
+            })
+        })
 }
 
 exports.getOwnerRestau = (req, res) => {
