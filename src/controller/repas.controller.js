@@ -1,10 +1,10 @@
 const Repas = require('../models/repas.model');
-const restauValidator = require('../validators/repas.validators');
+const repasValidator = require('../validators/repas.validators');
 
 exports.createRepas = (req, res) => {
     // First validation 
     const data = req.body;
-    const {error, value} = restauValidator.createRepas.validate(data);
+    const {error, value} = repasValidator.createRepas.validate(data);
     if (!error) {
         const repas = new Repas({
             label: data.label,
@@ -22,7 +22,8 @@ exports.createRepas = (req, res) => {
             .then(rep => {
                 res.status(200).json({
                     success: true,
-                    message: 'Repas ajoutE avec success'
+                    message: 'Repas ajoutE avec success',
+                    rep
                 })
             })
             .catch(err => {

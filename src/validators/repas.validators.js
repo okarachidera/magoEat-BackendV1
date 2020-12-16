@@ -24,7 +24,7 @@ exports.createRepas = Joi.object().keys({
     label: textField.required(),
     idRestau: validId.required(),
     description: textField.required(),
-    imgUrl: url.required(),
+    imgUrl: textField.required(),
     category: validCategory,
     subCategory: Joi.string().optional(),
     timeForCook: Joi.number(),
