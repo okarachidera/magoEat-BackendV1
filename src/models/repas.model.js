@@ -18,5 +18,31 @@ const repasSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    
+    category: {
+        type: String,
+        required: true
+    },
+    subCategory: {
+        type: String,
+        required: false
+    },
+    timeForCook: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    charge: {
+        type: Number,
+        required: true
+    },
+    averageRate: {
+        type: Number,
+        required: false
+    }
 })
+
+repasSchema.plugin(uniqueValidator);
+module.exports = mongoose.model('Repas', repasSchema);
