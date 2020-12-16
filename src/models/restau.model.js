@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const restaurantSchema = mongoose.Schema({
