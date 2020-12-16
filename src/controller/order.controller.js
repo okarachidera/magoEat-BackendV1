@@ -3,15 +3,23 @@ const orderValidator = require('../validators/order.validators');
 // For get routes
 
 exports.getOrdersHistory = (req, res, next) => {
-    Order.find({ idUser : req.body.idUser })
+    Order.find({ idUser : req.params.idUser })
         .then(orders => {
             if (!orders) {
-                res.status(400).json({ message : 'Aucun article dans votre historique' })
+                res.status(400).json({ message : 'Quelque chose ne va pas, rassurez-vous d\'etre connecte' })
             }
-            res.status(200).json({ orders })
+            if (orders.length == 0) {
+                res.status(400).json({ message : 'Il y a aucune commancde dans votre historique' })
+            } else {
+                res.status(200).json({ 
+                    orders,
+                })
+            }
         })
         .catch(error => {
-            console.log(error)
+            res.status(500).json({
+                error
+            })
         })
 }
 

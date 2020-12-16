@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const restaurantSchema = mongoose.Schema({
-    label : {
+    label: {
         type : String,
         required : true,
         unique : true
@@ -11,20 +11,20 @@ const restaurantSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    description : {
+    description: {
         type : String,
         required : true
     },
-    imgUrl : {
+    imgUrl: {
         type : String,
         required : false
     },
-    ownerId : {
+    ownerId: {
         type : String,
         required : true,
         unique : false
     },
-    averageRating : {
+    averageRating: {
         type : Number,
         required : false,
         unique : false

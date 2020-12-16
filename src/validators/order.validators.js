@@ -1,34 +1,34 @@
 const { valid } = require('@hapi/joi')
 const Joi = require('@hapi/joi')
 
-const validId = Joi.string()
-                    .alphanum()
-const stringField = Joi.string()
-                        .min(2)
-                        .max(255)
 const rate = Joi.number()
                 .min(1)
                 .max(5)
                 .optional()
+const status = Joi.string()
+                .valid(
+                    "PLACED",
+                    "ACCEPTED",
+                    "ON_THE_ROAD",
+                    "CLOSED",
+                    "CANCELED"
+                )
+                .required()
+const validId = Joi.string()
+                    .alphanum()
 const amount = Joi.number()
                     .required()
 const devise = Joi.string()
-                    .valid(
-                        "USD",
-                        "CDF"
-                    )
-                    .required()
+                        .valid(
+                            "USD",
+                            "CDF"
+                        )
+                        .required()
+const stringField = Joi.string()
+                        .min(2)
+                        .max(255)
 // const ratable = Joi.boolean()
 //                     .default(true)
-const status = Joi.string()
-                    .valid(
-                        "PLACED",
-                        "ACCEPTED",
-                        "ON_THE_ROAD",
-                        "CLOSED",
-                        "CANCELED"
-                    )
-                    .required()
 const cancelReason = Joi.string()
                         .min(2)
                         .max(100)
@@ -59,4 +59,8 @@ exports.closeOrder = Joi.object().keys({
 exports.updateStatus = Joi.object().keys({
     orderId: validId.required(),
     status
+})
+
+exports.getHisto = Joi.object().keys({
+    idUser: validId.required()
 })
