@@ -41,3 +41,26 @@ exports.createRepas = (req, res) => {
         })
     }
 }
+
+exports.getAllRepas = (req, res) => {
+    const filter = {};
+    Repas.find(filter)
+        .then(rep => {
+            if (rep.length == 0) {
+                res.status(201).json({
+                    message: 'Aucun repas dans enreigistE '
+                })
+            } else {
+                res.status(200).json({
+                    rep
+                })
+            }
+        })
+        .catch(err => {
+            res.status(505).json({
+                success: false,
+                message: 'Quelque chose ne va pas dans le formulaire envoyE',
+                err
+            })
+        })
+}
