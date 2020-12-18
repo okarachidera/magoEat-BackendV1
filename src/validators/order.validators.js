@@ -64,3 +64,4 @@ exports.updateStatus = Joi.object().keys({
 exports.getHisto = Joi.object().keys({
     idUser: validId.required()
 })
+
