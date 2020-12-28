@@ -21,4 +21,19 @@ exports.createRestau = Joi.object().keys({
     imgUrl: url.optional(),
     adress: textField.optional(),
     description: Joi.string().min(3).max(255).required()
-})
+});
+
+exports.holdRestau = Joi.object({
+    isActive: Joi.boolean
+});
+
+exports.updateRestInfo = Joi.object({
+    label: textField.optional(),
+    ownerId: validId.optional(),
+    opensAt: textField.optional(),
+    closeAt: textField.optional(),
+    imgUrl: url.optional(),
+    adress: textField.optional(),
+    description: Joi.string().min(3).max(255).optional()
+});
+

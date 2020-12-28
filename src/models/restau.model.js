@@ -11,6 +11,10 @@ const restaurantSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    isActive: {
+        type: Boolean,
+        required: false
+    },
     description: {
         type : String,
         required : true

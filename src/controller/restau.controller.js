@@ -1,4 +1,5 @@
 const Restau = require('../models/restau.model');
+const Order = require('../models/order.model');
 const restauValidator = require('../validators/restau.validators');
 
 // The GET logics
@@ -22,11 +23,33 @@ exports.getAllRestau = (req, res) => {
 }
 
 exports.getOwnerRestau = (req, res) => {
-
+    const ownerId = req.params.restauId;
+    Restau.find({ownerId})
+        .then(rest => {
+            if (!rest) {
+                res.status(404).json({
+                    success: true,
+                    message: `Aucun restaurant trouvE pour cet utilisateur`
+                })
+            }
+            res.status(201).json({
+                success: true,
+                message: `La liste des restaurants`,
+                rest
+            })
+        })
+        .catch(err => {
+            res.status(505).json({
+                success: false,
+                message: `Une erreur inattendue a ete rencontree, veuillez reesayer`,
+                err
+            })
+        })
 }
 
 exports.getOrderList = (req, res) => {
-
+    // Here we have to create list of orders which belongs on a specific restaurant
+    
 }
 
 // The POST logics 
@@ -71,5 +94,5 @@ exports.createRestau = (req, res) => {
 }
 
 exports.updateRestau = (req, res) => {
-
+    
 }

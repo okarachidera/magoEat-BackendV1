@@ -120,7 +120,17 @@ exports.placeOrder = (req, res) => {
 }
 
 exports.cancelOrder = (req,res) => {
+    // First we validate date 
+    const data = req.body;
+    const {error, value} = orderValidator.cancelOrder.validate(data);
+    if (!error) {
 
+    } else {
+        res.status(500).json({
+           message: 'Une erreur s\'est produite lors de l\'analyse de vos donnees',
+           success: false
+        })
+    }
 }
 
 exports.closeOrder = (req, res) => {
