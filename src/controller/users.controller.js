@@ -141,6 +141,13 @@ exports.sendMsgConf = (req, res, next) => {
     // });
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+
 exports.sendMsgToAdmins = (req, res, next) => {
     client.messages.create({
         from: process.env.NUMBER,
@@ -182,6 +189,13 @@ exports.getAllUsers = (req, res, next) => {
     })
 }
 
+/**
+ * 
+ * @param {username} req 
+ * @param {message, success, err?} res 
+ * @param {N/A} next 
+ */
+
 exports.getUserByUsername = (req, res, next) => {
     // console.log(req.params.username)
     User.findOne({username : req.params.username}, (err, user) => {
@@ -196,6 +210,11 @@ exports.getUserByUsername = (req, res, next) => {
         }
     })
 }
-// exports.comparePassword = (req, res, next) => {
+exports.updateUserInfo = (req, res) => {
 
-// }
+}
+
+exports.updateUserPassword = (req, res) => {
+    // Validation
+
+}
