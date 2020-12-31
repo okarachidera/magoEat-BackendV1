@@ -13,5 +13,7 @@ router.post('/validateSms', userCtl.consfirmSms)
 router.get('/user/:username', userCtl.getUserByUsername)
 // to get all the users 
 router.get('/users', userCtl.getAllUsers);
+// to get all owners 
+router.get('/owners', userCtl.getOwners);
 
 module.exports = router

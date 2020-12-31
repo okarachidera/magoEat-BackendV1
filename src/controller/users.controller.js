@@ -13,24 +13,39 @@ exports.signup = (req, res, next) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
     if (!error) {
         // All the data put inside fit the requirements
-        bcrypt.hash(req.body.password, process.env.GEN_SALT)
-            .then(hash => {
-                const user = new User ({
-                    username : req.body.username,
-                    password : hash,
-                    phone : req.body.phone,
-                    // adress : req.body.adress,
-                    mail : req.body.mail,
-                    msgCode : Math.floor(Math.random()*999)+1000,
-                    role: req.body.role,
-                    verified: false
+        // console.log('Before hash');
+        bcrypt.genSalt(10, (err, salt) => {
+            
+            if (!err) {
+                
+                bcrypt.hash(req.body.password, salt, null, (error, hash) => {
+                    if (error) {
+                        res.status(500).json({
+                            success: false,
+                            error
+                        })
+                    } else {
+                        // console.log('Hashed', hash);
+                        const user = new User ({
+                            username : req.body.username,
+                            password : hash,
+                            phone : req.body.phone,
+                            avatar: req.body.avatar,
+                            // adress : req.body.adress,
+                            mail : req.body.mail,
+                            msgCode : Math.floor(Math.random()*999)+1000,
+                            role: req.body.role,
+                            verified: req.body,verified
+                        })
+                        user.save()
+                            .then(user => res.status(200).json({ user }))
+                            .catch(() => res.status(400).json({ success: false, errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?'}))
+                    }
                 })
-                // res.status(201).send({ user })
-                user.save()
-                    .then(user => res.status(200).json({ user }))
-                    .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
-            })
-            .catch(error => res.status(500).json({ error }))
+            } else {
+                res.status(500).json({err, success: false, here: 'one'})
+            }
+        })
     } else {
         res.status(400).json({
             success: false,
@@ -179,6 +194,20 @@ exports.sendMsgToAdmins = (req, res, next) => {
     // });
 }
 
+// GET logic
+
+exports.getOwners = (req, res) => {
+    User.find(  {role: "OWNER"}, 
+                // {verified: true}, 
+                (err, owners) => {
+        if (!err) {
+            res.status(201).json({owners})
+        } else {
+            res.status(500).send(err)
+        }
+    })
+}
+
 exports.getAllUsers = (req, res, next) => {
     User.find({}, (err, users) => {
         if(!err) {
@@ -210,6 +239,9 @@ exports.getUserByUsername = (req, res, next) => {
         }
     })
 }
+
+// PUT logic  
+
 exports.updateUserInfo = (req, res) => {
 
 }
