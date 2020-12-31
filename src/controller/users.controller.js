@@ -11,41 +11,28 @@ const client = require('twilio')(accountSid, auth_token);
 exports.signup = (req, res, next) => {
     // Fisrt validation 
     const {error, value} = userValidation.signupValidator.validate(req.body);
+    // console.log(value)
     if (!error) {
         // All the data put inside fit the requirements
-        // console.log('Before hash');
-        bcrypt.genSalt(10, (err, salt) => {
-            
-            if (!err) {
-                
-                bcrypt.hash(req.body.password, salt, null, (error, hash) => {
-                    if (error) {
-                        res.status(500).json({
-                            success: false,
-                            error
-                        })
-                    } else {
-                        // console.log('Hashed', hash);
-                        const user = new User ({
-                            username : req.body.username,
-                            password : hash,
-                            phone : req.body.phone,
-                            avatar: req.body.avatar,
-                            // adress : req.body.adress,
-                            mail : req.body.mail,
-                            msgCode : Math.floor(Math.random()*999)+1000,
-                            role: req.body.role,
-                            verified: req.body,verified
-                        })
-                        user.save()
-                            .then(user => res.status(200).json({ user }))
-                            .catch(() => res.status(400).json({ success: false, errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?'}))
-                    }
+        bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = new User ({
+                    username : req.body.username,
+                    password : hash,
+                    phone : req.body.phone,
+                    avatar: req.body.avatar,
+                    // adress : req.body.adress,
+                    mail : req.body.mail,
+                    msgCode : Math.floor(Math.random()*999)+1000,
+                    role: req.body.role,
+                    verified: false
                 })
-            } else {
-                res.status(500).json({err, success: false, here: 'one'})
-            }
-        })
+                // res.status(201).send({ user })
+                user.save()
+                    .then(user => res.status(200).json({ user }))
+                    .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+            })
+            .catch(error => res.status(500).json({ error }))
     } else {
         res.status(400).json({
             success: false,
