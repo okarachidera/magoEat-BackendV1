@@ -25,7 +25,7 @@ exports.signup = (req, res, next) => {
                     mail : req.body.mail,
                     msgCode : Math.floor(Math.random()*999)+1000,
                     role: req.body.role,
-                    verified: false
+                    verified: req.body.verified
                 })
                 // res.status(201).send({ user })
                 user.save()
@@ -169,23 +169,12 @@ exports.sendMsgToAdmins = (req, res, next) => {
                 err
             })
         })
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP ADMIN";
-    // var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
-    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
-    //     res.status(response1.statusCode).json({
-    //         message : 'Envoie de la commande reussi, le traitement est en cours',
-    //         date : Date()
-    //     })
-    // });
 }
 
 // GET logic
 
 exports.getOwners = (req, res) => {
-    User.find(  {role: "OWNER"}, 
-                // {verified: true}, 
+    User.find(  {role: "OWNER", verified: true}, 
                 (err, owners) => {
         if (!err) {
             res.status(201).json({owners})

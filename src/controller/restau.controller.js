@@ -56,6 +56,7 @@ exports.getOrderList = (req, res) => {
 
 exports.createRestau = (req, res) => {
     // validation
+    // console.log(req.body)
     const data = req.body;
     const {error, value} = restauValidator.createRestau.validate(data);
     if (!error) {
