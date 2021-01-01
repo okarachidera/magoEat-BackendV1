@@ -11,19 +11,21 @@ const client = require('twilio')(accountSid, auth_token);
 exports.signup = (req, res, next) => {
     // Fisrt validation 
     const {error, value} = userValidation.signupValidator.validate(req.body);
+    // console.log(value)
     if (!error) {
         // All the data put inside fit the requirements
-        bcrypt.hash(req.body.password, process.env.GEN_SALT)
+        bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = new User ({
                     username : req.body.username,
                     password : hash,
                     phone : req.body.phone,
+                    avatar: req.body.avatar,
                     // adress : req.body.adress,
                     mail : req.body.mail,
                     msgCode : Math.floor(Math.random()*999)+1000,
                     role: req.body.role,
-                    verified: false
+                    verified: req.body.verified
                 })
                 // res.status(201).send({ user })
                 user.save()
@@ -167,16 +169,19 @@ exports.sendMsgToAdmins = (req, res, next) => {
                 err
             })
         })
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP ADMIN";
-    // var msg = "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau; 
-    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination=243990831772&source='+source+'&message='+msg, function (error1, response1, body1) {
-    //     res.status(response1.statusCode).json({
-    //         message : 'Envoie de la commande reussi, le traitement est en cours',
-    //         date : Date()
-    //     })
-    // });
+}
+
+// GET logic
+
+exports.getOwners = (req, res) => {
+    User.find(  {role: "OWNER", verified: true}, 
+                (err, owners) => {
+        if (!err) {
+            res.status(201).json({owners})
+        } else {
+            res.status(500).send(err)
+        }
+    })
 }
 
 exports.getAllUsers = (req, res, next) => {
@@ -210,6 +215,9 @@ exports.getUserByUsername = (req, res, next) => {
         }
     })
 }
+
+// PUT logic  
+
 exports.updateUserInfo = (req, res) => {
 
 }

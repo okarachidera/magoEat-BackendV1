@@ -1,13 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const userRoute = require('./router/users.route');
+const userRoute = require('./router/users.routes');
 const orderRoute = require('./router/order.routes');
 const restauRoutes = require('./router/restau.routes');
 const repasRoutes = require('./router/repas.routes');
 
 const app = express ()
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb+srv://pacyL:newUser1@cluster0-ujmqc.mongodb.net/test?retryWrites=true&w=majority',
     { useNewUrlParser: true,
       useUnifiedTopology: true })
