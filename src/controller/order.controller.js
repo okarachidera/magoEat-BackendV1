@@ -12,7 +12,7 @@ exports.getOrdersHistory = (req, res, next) => {
                 res.status(400).json({ message : 'Il y a aucune commancde dans votre historique' })
             } else {
                 res.status(200).json({ 
-                    orders,
+                    orders
                 })
             }
         })

@@ -50,7 +50,6 @@ exports.cancelOrder = Joi.object().keys({
 })
 
 exports.closeOrder = Joi.object().keys({
-    orderId: validId.required(),
     status,
     feedback: stringField.optional(),
     rate
