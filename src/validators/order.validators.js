@@ -57,11 +57,10 @@ exports.closeOrder = Joi.object().keys({
 })
 
 exports.updateStatus = Joi.object().keys({
-    orderId: validId.required(),
     status
 })
 
-exports.getHisto = Joi.object().keys({
-    idUser: validId.required()
-})
+// exports.getHisto = Joi.object().keys({
+//     idUser: validId.required()
+// })
 

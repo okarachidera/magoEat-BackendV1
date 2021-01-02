@@ -138,5 +138,30 @@ exports.closeOrder = (req, res) => {
 }
 
 exports.updateStatus = (req, res) => {
-
+    const {error, value} = orderValidator.updateStatus.validate(req.body);
+    if (!error) {
+        Order.update(
+            {_id: req.params.id},
+            {status: value.status}
+        )
+            .then(updatedOrder => {
+                res.status(200).json({
+                    success: true,
+                    updatedOrder,
+                    message: 'Status updated successfully'
+                })
+            })
+            .catch(error => {
+                res.status(505).json({
+                    success: false,
+                    error,
+                    message: 'Une erreur sest produite'
+                })
+            })
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Echec de mise a jour de la commande'
+        })
+    }
 }
