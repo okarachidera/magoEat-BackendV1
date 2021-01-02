@@ -134,7 +134,36 @@ exports.cancelOrder = (req,res) => {
 }
 
 exports.closeOrder = (req, res) => {
-
+    const {error, value} = orderValidator.closeOrder.validate(req.body);
+    if (!error) {
+        Order.update(
+            {_id: req.params.id},
+            {
+                feedback: value.feedback,
+                rate: value.rate
+            }
+        )
+            .then(updatedOrder => {
+                res.status(201).json({
+                    success: true,
+                    message: 'Merci de votre confiance, votre commande a ete cloturee',
+                    updatedOrder
+                })
+            })
+            .catch(error => {
+                res.status(505).json({
+                    success: false,
+                    error,
+                    message: 'Echec de confirmation'
+                })
+            })
+    } else {
+        res.status(500).json({
+            error,
+            success: false,
+            message: 'Vous avez entrE des donnEes incorrectes'
+        })
+    }
 }
 
 exports.updateStatus = (req, res) => {
