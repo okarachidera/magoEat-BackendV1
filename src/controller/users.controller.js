@@ -1,6 +1,6 @@
 require('dotenv').config();
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const auth_token = process.env.TWILIO_AUTH_TOKEN;
+const accountSid = "AC2524bf387f930f6561f2160b7b5eecde";
+const auth_token = "4603618583a826e359550e84c77ae78a";
 const User = require('../models/users.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -103,7 +103,7 @@ exports.consfirmSms = (req, res, next) => {
 exports.sendMsgConf = (req, res, next) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
-        from: process.env.NUMBER,
+        from: "+12283356156",
         to: req.body.phone
     })
         .then(message => {
