@@ -12,7 +12,7 @@ exports.getOrdersHistory = (req, res, next) => {
                 res.status(400).json({ message : 'Il y a aucune commancde dans votre historique' })
             } else {
                 res.status(200).json({ 
-                    orders,
+                    orders
                 })
             }
         })
@@ -134,9 +134,63 @@ exports.cancelOrder = (req,res) => {
 }
 
 exports.closeOrder = (req, res) => {
-
+    const {error, value} = orderValidator.closeOrder.validate(req.body);
+    if (!error) {
+        Order.update(
+            {_id: req.params.id},
+            {
+                feedback: value.feedback,
+                rate: value.rate
+            }
+        )
+            .then(updatedOrder => {
+                res.status(201).json({
+                    success: true,
+                    message: 'Merci de votre confiance, votre commande a ete cloturee',
+                    updatedOrder
+                })
+            })
+            .catch(error => {
+                res.status(505).json({
+                    success: false,
+                    error,
+                    message: 'Echec de confirmation'
+                })
+            })
+    } else {
+        res.status(500).json({
+            error,
+            success: false,
+            message: 'Vous avez entrE des donnEes incorrectes'
+        })
+    }
 }
 
 exports.updateStatus = (req, res) => {
-
+    const {error, value} = orderValidator.updateStatus.validate(req.body);
+    if (!error) {
+        Order.update(
+            {_id: req.params.id},
+            {status: value.status}
+        )
+            .then(updatedOrder => {
+                res.status(200).json({
+                    success: true,
+                    updatedOrder,
+                    message: 'Status updated successfully'
+                })
+            })
+            .catch(error => {
+                res.status(505).json({
+                    success: false,
+                    error,
+                    message: 'Une erreur sest produite'
+                })
+            })
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Echec de mise a jour de la commande'
+        })
+    }
 }

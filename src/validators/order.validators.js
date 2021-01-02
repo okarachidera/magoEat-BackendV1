@@ -50,18 +50,16 @@ exports.cancelOrder = Joi.object().keys({
 })
 
 exports.closeOrder = Joi.object().keys({
-    orderId: validId.required(),
     status,
     feedback: stringField.optional(),
     rate
 })
 
 exports.updateStatus = Joi.object().keys({
-    orderId: validId.required(),
     status
 })
 
-exports.getHisto = Joi.object().keys({
-    idUser: validId.required()
-})
+// exports.getHisto = Joi.object().keys({
+//     idUser: validId.required()
+// })
 
