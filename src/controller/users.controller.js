@@ -32,10 +32,20 @@ exports.signup = (req, res, next) => {
                             })
                             // res.status(201).send({ user })
                             user.save()
-                                .then(user => res.status(200).json({ user }))
-                                .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+                                .then(user => res.status(200).json({ 
+                                    success: true,
+                                    user 
+                                }))
+                                .catch((error) => res.status(400).json({ 
+                                    success: false,
+                                    error,
+                                    message : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' 
+                                }))
                         })
-                        .catch(error => res.status(500).json({ error }))
+                        .catch(error => res.status(500).json({ 
+                            success: false,
+                            error 
+                        }))
                 } else {
                     res.status(401).json({
                         success: false,
