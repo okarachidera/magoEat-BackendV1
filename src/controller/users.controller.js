@@ -14,25 +14,42 @@ exports.signup = (req, res, next) => {
     // console.log(value)
     if (!error) {
         // All the data put inside fit the requirements
-        bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                const user = new User ({
-                    username : req.body.username,
-                    password : hash,
-                    phone : req.body.phone,
-                    avatar: req.body.avatar,
-                    // adress : req.body.adress,
-                    mail : req.body.mail,
-                    msgCode : Math.floor(Math.random()*999)+1000,
-                    role: req.body.role,
-                    verified: req.body.verified
-                })
-                // res.status(201).send({ user })
-                user.save()
-                    .then(user => res.status(200).json({ user }))
-                    .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+        User.findOne({phone: value.phone})
+            .then(user => {
+                if (!user) {
+                    bcrypt.hash(req.body.password, 10)
+                        .then(hash => {
+                            const user = new User ({
+                                username : req.body.username,
+                                password : hash,
+                                phone : req.body.phone,
+                                avatar: req.body.avatar,
+                                // adress : req.body.adress,
+                                mail : req.body.mail,
+                                msgCode : Math.floor(Math.random()*999)+1000,
+                                role: req.body.role,
+                                verified: req.body.verified
+                            })
+                            // res.status(201).send({ user })
+                            user.save()
+                                .then(user => res.status(200).json({ user }))
+                                .catch(() => res.status(400).json({ errorMessage : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' }))
+                        })
+                        .catch(error => res.status(500).json({ error }))
+                } else {
+                    res.status(401).json({
+                        success: false,
+                        message: 'Vous avez déja un compte MagoEat ? Veuillez vous connecter'
+                    })
+                }
             })
-            .catch(error => res.status(500).json({ error }))
+            .catch(error => {
+                res.status(500).json({
+                    success: false,
+                    error,
+                    message: `Une erreur s'est produite, veuillez réessayer`
+                })
+            })
     } else {
         res.status(400).json({
             success: false,
