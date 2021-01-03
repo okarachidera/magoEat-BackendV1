@@ -149,13 +149,16 @@ exports.sendMsgConf = (req, res, next) => {
                 username : req.body.username,
                 password : req.body.password,
                 phone : req.body.phone,
-                adress : req.body.adress,
-                mail : req.body.mail,
-                msgCode : req.body.msgCode
+                role: req.body.role,
+                verified: false,
+                msgCode : req.body.msgCode,
+                success: true,
+                avatar: req.body.avatar
             })
         })
         .catch(err => {
             res.status(500).json({
+                success: false,
                 alert: 'Echec de confirmation du code, veuillez reessayer',
                 err
             })
