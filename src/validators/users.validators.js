@@ -2,7 +2,7 @@ const Joi = require('@hapi/joi');
 
 const username = Joi.string().min(3).max(50);
 const password = Joi.string().required().min(6).max(50);
-const phone = Joi.string().regex(/^0?[0-9]{9}$/);
+const phone = Joi.string().regex(/^\+243[0-9]{9}$/);
 const stringField = Joi.string().min(3).max(120);
 const mail = Joi.string().email({minDomainSegments: 2, tlds: {allow: ['com', 'org']}});
 const role = Joi.string().valid("ADMIN", "USER", "OWNER", "DELIVERY_GUY").uppercase().optional()
