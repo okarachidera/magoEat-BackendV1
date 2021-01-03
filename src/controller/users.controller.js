@@ -43,41 +43,50 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    User.findOne({phone : req.body.phone})
-        .then(user => {
-            if (!user) {
-                res.status(400).json({ 
-                    errorMessage : 'Utilisateur non trouvE !',
-                    success: false
-                })
-            }
-            bcrypt.compare(req.body.password, user.password)
-                .then(validUser => {
-                    if (!validUser) {
-                        res.status(401).json({ 
-                            success: false,
-                            errorMessage : 'Mot de passe incorect' 
-                        })
-                    }
-                    res.status(200).json({
-                        username : req.body.username,
-                        success: true,
-                        mail : user.mail,
-                        phone : user.phone,
-                        token : jwt.sign(
-                            {username : req.body.username},
-                            'RANDOM_TOKEN_SECRET',
-                            {expiresIn : '48h'}
-                        )
+    const {error, value} = userValidation.loginValidator.validate(req.body);
+    if (!error) {
+        User.findOne({phone : req.body.phone})
+            .then(user => {
+                if (!user) {
+                    res.status(400).json({ 
+                        errorMessage : 'Utilisateur non trouvE !',
+                        success: false
                     })
-                })
-                .catch(error => res.status(500).json({ 
-                    success: false,
-                    message: 'Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard',
-                    error 
-                }))
+                }
+                bcrypt.compare(req.body.password, user.password)
+                    .then(validUser => {
+                        if (!validUser) {
+                            res.status(401).json({ 
+                                success: false,
+                                errorMessage : 'Mot de passe incorect' 
+                            })
+                        }
+                        res.status(200).json({
+                            username : req.body.username,
+                            success: true,
+                            mail : user.mail,
+                            phone : user.phone,
+                            token : jwt.sign(
+                                {username : req.body.username},
+                                'RANDOM_TOKEN_SECRET',
+                                {expiresIn : '48h'}
+                            )
+                        })
+                    })
+                    .catch(error => res.status(500).json({ 
+                        success: false,
+                        message: 'Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard',
+                        error 
+                    }))
+            })
+            .catch(error => res.status(500).json({ error }))
+    } else {
+        res.status(500).json({
+            success: false,
+            message: 'Veuillez remplir les bonnes informations',
+            error
         })
-        .catch(error => res.status(500).json({ error }))
+    }
 }
 
 exports.consfirmSms = (req, res, next) => {
