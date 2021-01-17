@@ -48,9 +48,31 @@ exports.getOwnerRestau = (req, res) => {
         })
 }
 
-// exports.getFeaturedRepas = (req, res) => {
-
-// }
+exports.getFeaturedRepas = (req, res) => {
+    Order.find({restauId: req.params.restauId})
+        .sort()
+        .limit(5)
+        .then(orders => {
+            if (orders) {
+                res.status(201).json({
+                    success: true,
+                    orders
+                })
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: `Les commandes sont inaccessibles`
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).json({
+                success: false,
+                message: `Une erreur inattendue s'est produite`,
+                err
+            })
+        })
+}
 
 exports.getOrderList = (req, res) => {
     // Here we have to create list of orders which belongs on a specific restaurant
