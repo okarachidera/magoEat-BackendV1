@@ -42,6 +42,10 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    idRestau: {
+        type: String,
+        require: false
+    },
     closedAt: {
         type: Date,
         required: false

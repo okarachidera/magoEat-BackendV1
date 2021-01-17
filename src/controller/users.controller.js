@@ -8,7 +8,7 @@ const userValidation = require('../validators/users.validators');
 // const request1 = require('request');
 const client = require('twilio')(accountSid, auth_token);
 
-exports.signup = (req, res, next) => {
+exports.signup = (req, res) => {
     // Fisrt validation 
     const {error, value} = userValidation.signupValidator.validate(req.body);
     // console.log(value)
@@ -69,7 +69,7 @@ exports.signup = (req, res, next) => {
     }
 }
 
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
     if (!error) {
         User.findOne({phone : req.body.phone})
@@ -116,7 +116,7 @@ exports.login = (req, res, next) => {
     }
 }
 
-exports.consfirmSms = (req, res, next) => {
+exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
         res.status(400).json({ errorMessage : 'Aucune session est ouverte'})
     }
@@ -136,7 +136,7 @@ exports.consfirmSms = (req, res, next) => {
         .catch((error) => res.status(400).send({ error }))
 }
 
-exports.sendMsgConf = (req, res, next) => {
+exports.sendMsgConf = (req, res) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
         from: "+12283356156",
@@ -189,7 +189,7 @@ exports.sendMsgConf = (req, res, next) => {
  * @param {*} next 
  */
 
-exports.sendMsgToAdmins = (req, res, next) => {
+exports.sendMsgToAdmins = (req, res) => {
     client.messages.create({
         from: process.env.NUMBER,
         to: '+243990831772',
@@ -223,7 +223,7 @@ exports.getOwners = (req, res) => {
     })
 }
 
-exports.getAllUsers = (req, res, next) => {
+exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
         if(!err) {
             res.status(201).json({users})
@@ -240,7 +240,7 @@ exports.getAllUsers = (req, res, next) => {
  * @param {N/A} next 
  */
 
-exports.getUserByUsername = (req, res, next) => {
+exports.getUserByUsername = (req, res) => {
     // console.log(req.params.username)
     User.findOne({username : req.params.username}, (err, user) => {
         if (!err) {

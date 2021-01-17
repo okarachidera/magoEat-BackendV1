@@ -1,5 +1,6 @@
 const Restau = require('../models/restau.model');
 const Order = require('../models/order.model');
+const Repas = require('../models/repas.model');
 const restauValidator = require('../validators/restau.validators');
 
 // The GET logics
@@ -47,9 +48,33 @@ exports.getOwnerRestau = (req, res) => {
         })
 }
 
+// exports.getFeaturedRepas = (req, res) => {
+
+// }
+
 exports.getOrderList = (req, res) => {
     // Here we have to create list of orders which belongs on a specific restaurant
-    
+    Order.find({restauId: req.params.restauId})
+        .then(orders => {
+            if (orders) {
+                res.status(201).json({
+                    success: true,
+                    orders
+                })
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: `Les commandes sont inaccessibles`
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).json({
+                success: false,
+                message: `Une erreur inattendue s'est produite`,
+                err
+            })
+        })
 }
 
 // The POST logics 

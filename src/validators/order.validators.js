@@ -39,6 +39,7 @@ const cancelReason = Joi.string()
 exports.placeOrder = Joi.object().keys({
     idUser: validId.required(),
     platId: validId.required(),
+    restauId: validId.required(),
     amount,
     devise,
 })

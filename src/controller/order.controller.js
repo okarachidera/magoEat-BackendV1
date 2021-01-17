@@ -3,7 +3,7 @@ const Repas = require('../models/repas.model');
 const orderValidator = require('../validators/order.validators');
 // For get routes
 
-exports.getOrdersHistory = (req, res, next) => {
+exports.getOrdersHistory = (req, res) => {
     Order.find({ idUser : req.params.idUser })
         .then(orders => {
             if (!orders) {
@@ -44,7 +44,7 @@ exports.getAllOrders = (req, res) => {
 
 // For post routes
 
-exports.rateOrder = (req, res, next) => {
+exports.rateOrder = (req, res) => {
     /**
      * First check if request is valid 
      */
@@ -156,6 +156,7 @@ exports.placeOrder = (req, res) => {
             idUser: data.idUser,
             date: Date(Date.now()),
             platId: data.platId,
+            idRestaurant: data.idRestau,
             ratable: true,
             amount: data.amount,
             devise: data.devise,
