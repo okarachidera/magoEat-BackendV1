@@ -39,7 +39,7 @@ const repasSchema = mongoose.Schema({
         required: true
     },
     averageRate: {
-        type: Number,
+        type: [Number],
         required: false
     }
 })

@@ -45,23 +45,24 @@ exports.getAllOrders = (req, res) => {
 
 exports.rateOrder = (req, res, next) => {
     /**
-     * First we check if the order exists.Finding it in the model
+     * First we check if the order exists. Finding it in the model
      */
     Order.findOne({ id_ : req.params.id })
         .then(order => {
             if (!order) {
-                res.status(400).json({ errorMessage : 'Erreur, cet article n\'existe pas '})
+                res.status(400).json({ errorMessage : 'Erreur, cette commande n\'existe pas '})
             }
             /**
              * Then we check if its ratable field is true
              */
             if (!order.ratable) {
-                res.status(400).json({ errorMessage : 'Cette commande ne peut etre cotee maintenant'})
+                res.status(400).json({ errorMessage : 'Cette commande ne peut être cotée pour l\'instant'})
             }
             /**
              * Then we can update its rate and its ratable fields
              */
-            Order.updateOne({ id_ : req.body.id }, { ratable : false , rate : req.body.rate })
+            
+            Order.updateOne({ id_ : req.body.id }, { ratable: false , rate: req.body.rate })
                 .then(orderUpdated => {
                     /**
                      * Let's check if the response is not empty
