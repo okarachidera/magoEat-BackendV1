@@ -59,7 +59,9 @@ exports.updateStatus = Joi.object().keys({
     status
 })
 
-// exports.getHisto = Joi.object().keys({
-//     idUser: validId.required()
-// })
+exports.rateOrder = Joi.object().keys({
+    orderId: validId.required(),
+    platId: validId.required(),
+    rate
+})
 

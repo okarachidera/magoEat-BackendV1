@@ -1,4 +1,5 @@
 const Order = require('../models/order.model');
+const Repas = require('../models/repas.model');
 const orderValidator = require('../validators/order.validators');
 // For get routes
 
@@ -45,40 +46,104 @@ exports.getAllOrders = (req, res) => {
 
 exports.rateOrder = (req, res, next) => {
     /**
-     * First we check if the order exists. Finding it in the model
+     * First check if request is valid 
      */
-    Order.findOne({ id_ : req.params.id })
-        .then(order => {
-            if (!order) {
-                res.status(400).json({ errorMessage : 'Erreur, cette commande n\'existe pas '})
-            }
-            /**
-             * Then we check if its ratable field is true
-             */
-            if (!order.ratable) {
-                res.status(400).json({ errorMessage : 'Cette commande ne peut être cotée pour l\'instant'})
-            }
-            /**
-             * Then we can update its rate and its ratable fields
-             */
-            
-            Order.updateOne({ id_ : req.body.id }, { ratable: false , rate: req.body.rate })
-                .then(orderUpdated => {
-                    /**
-                     * Let's check if the response is not empty
-                     */
-                    if (!orderUpdated) {
-                        res.status(400).json({ errorMessage : 'Erreur de mise a jour de votre cotaton'})
-                    }
-                    res.status(200).json({ orderUpdated })
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+    const {error, value} = orderValidator.rateOrder.validate(req.body)
+
+    if (!error) {
+        /**
+     * Then we check if the order exists. Finding it in the model
+     */
+        Order.findOne({ _id : req.params.id })
+            .then(order => {
+                if (!order) {
+                    res.status(400).json({ errorMessage : 'Erreur, cette commande n\'existe pas '})
+                }
+                /**
+                 * Then we check if its ratable field is true
+                 */
+                if (!order.ratable) {
+                    res.status(400).json({ errorMessage : 'Cette commande ne peut être cotée pour l\'instant'})
+                }
+                /**
+                 * Then we can update its rate and its ratable fields
+                 */
+                Order.updateOne({ id_ : req.body.id }, { ratable: false , rate: req.body.rate })
+                    .then(orderUpdated => {
+                        /**
+                         * Let's check if the response is not empty
+                         */
+                        if (!orderUpdated) {
+                            /**
+                             * Need to update the specific average rate of the repas before sending a response
+                             */
+                            let newAvgRates  = [req.body.rate];
+                            Repas.findOne({_id: req.body.idPlat})
+                                .then(repas => {
+                                    if (repas) {
+                                        newAvgRates.concat(repas.averageRate);
+                                        Repas.updateOne({_id: req.body.idPlat}, {averageRate: newAvgRates})
+                                            .then(repasUp => {
+                                                if (repasUp) {
+                                                    res.status(201).json({
+                                                        success: true,
+                                                        message: 'Merci de votre cotation',
+                                                        repasUp,
+                                                        orderUpdated
+                                                    })
+                                                } else {
+                                                    res.status(400).json({
+                                                        success: false,
+                                                        message: 'Cotation en souffrance'
+                                                    })
+                                                }
+                                            })
+                                            .catch(err => {
+                                                res.status(400).json({
+                                                    success: false,
+                                                    message: 'Une erreur inatendue',
+                                                    err
+                                                })
+                                            })
+                                    } else {
+                                        res.status(400).json({
+                                            success: false,
+                                            message: 'Une erreur constatée',
+                                            repas // for debugging
+                                        })
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(500).json({
+                                        success: false,
+                                        message: 'Une erreur s\'est produite, veuilleez réessayer plus tard',
+                                        err // for debugging
+                                    })
+                                })
+                            res.status(400).json({ 
+                                success: false,
+                                errorMessage : 'Erreur de mise a jour de votre cotaton'
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        res.status(400).json({
+                            success: false,
+                            message: 'Echec',
+                            error
+                        })
+                    })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Veuillez entrer des données valides',
+            error
         })
-        .catch(error => {
-            console.log(error)
-        })
+    }
 }
 
 exports.placeOrder = (req, res) => {
