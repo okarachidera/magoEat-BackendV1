@@ -10,5 +10,6 @@ router.post('/create', restauCtl.createRestau);
 
 router.get('/', restauCtl.getAllRestau);
 router.get('/list/:restauId', restauCtl.getOrderList);
+router.get('/repas/:restauId', restauCtl.getRepasByRestau);
 
 module.exports = router;
