@@ -18,6 +18,7 @@ exports.createRestau = Joi.object().keys({
     opensAt: textField.optional(),
     closeAt: textField.optional(),
     imgUrl: url.optional(),
+    imgBrushed: url.optional(),
     adress: textField.optional(),
     description: Joi.string().min(3).max(255).required()
 });

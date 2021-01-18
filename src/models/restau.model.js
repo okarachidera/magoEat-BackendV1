@@ -23,6 +23,10 @@ const restaurantSchema = mongoose.Schema({
         type : String,
         required : false
     },
+    imgBrushed: {
+        type: String,
+        required: false
+    },
     ownerId: {
         type : String,
         required : true,
