@@ -99,6 +99,29 @@ exports.getOrderList = (req, res) => {
         })
 }
 
+exports.getRepasByRestau = (req, res) => {
+    Repas.find({idRestau: req.params.idRestau})
+        .then(repas => {
+            if (repas) {
+                res.status(200).json({
+                    success: true,
+                    repas
+                })
+            } else {
+                res.status(400).json({
+                    success: false,
+                    message: `Une erreur inattendue s'est produite`
+                })
+            }
+        })
+        .catch(error => {
+            res.status(500).json({
+                success: false,
+                message: `Une erreur serveur s'est produite, rassurez-vous qu vous avez la connection internet allumée`
+            })
+        })
+}
+
 // The POST logics 
 
 exports.createRestau = (req, res) => {
