@@ -1,11 +1,10 @@
 require('dotenv').config();
-const accountSid = "AC2524bf387f930f6561f2160b7b5eecde";
-const auth_token = "4603618583a826e359550e84c77ae78a";
+const accountSid = Process.env.ACCOUNT_SID;
+const auth_token = Process.env.AUTH_TOKEN;
 const User = require('../models/users.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userValidation = require('../validators/users.validators');
-// const request1 = require('request');
 const client = require('twilio')(accountSid, auth_token);
 
 exports.signup = (req, res) => {
