@@ -95,7 +95,7 @@ exports.login = (req, res) => {
                             token : jwt.sign(
                                 {username : req.body.username},
                                 'RANDOM_TOKEN_SECRET',
-                                {expiresIn : '48h'}
+                                {expiresIn : process.env.EXPIRES_IN}
                             )
                         })
                     })
@@ -163,9 +163,9 @@ exports.sendMsgConf = (req, res) => {
             })
         })
     // var phone = req.body.phone;
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP";
+    // var username = "";
+    // var password = "";
+    // var source = "";
     // var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
     // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
@@ -185,7 +185,7 @@ exports.sendMsgConf = (req, res) => {
  * 
  * @param {*} req 
  * @param {*} res 
- * @param {*} next 
+ * @param {*} next [optional: not a middleware]
  */
 
 exports.sendMsgToAdmins = (req, res) => {
