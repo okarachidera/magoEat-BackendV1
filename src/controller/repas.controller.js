@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const Repas = require('../models/repas.model');
-const repasValidator = require('../validators/repas.validators');
+const Repas = require("../models/repas.model");
+const repasValidator = require("../validators/repas.validators");
 
 exports.createRepas = (req, res) => {
     // First validation 
@@ -18,30 +18,30 @@ exports.createRepas = (req, res) => {
             price: data.price,
             charge: data.charge,
             averageRate: 5
-        })
+        });
         repas.save()
             .then(rep => {
                 res.status(200).json({
                     success: true,
-                    message: 'Repas ajoutE avec success',
+                    message: "Repas ajoutE avec success",
                     rep
-                })
+                });
             })
             .catch(err => {
                 res.status(505).json({
                     success: false,
-                    message: 'Quelque chose ne va pas dans le formulaire envoyE',
+                    message: "Quelque chose ne va pas dans le formulaire envoyE",
                     err
-                })
-            })
+                });
+            });
     } else {
         res.status(400).json({
-            message: 'Veuillez remplir les champs par des donnees valides',
+            message: "Veuillez remplir les champs par des donnees valides",
             success: false,
             error
-        })
+        });
     }
-}
+};
 
 exports.getAllRepas = (req, res) => {
     const filter = {};
@@ -49,19 +49,19 @@ exports.getAllRepas = (req, res) => {
         .then(rep => {
             if (rep.length == 0) {
                 res.status(201).json({
-                    message: 'Aucun repas dans enreigistE '
-                })
+                    message: "Aucun repas dans enreigistE "
+                });
             } else {
                 res.status(200).json({
                     rep
-                })
+                });
             }
         })
         .catch(err => {
             res.status(505).json({
                 success: false,
-                message: 'Quelque chose ne va pas dans le formulaire envoyE',
+                message: "Quelque chose ne va pas dans le formulaire envoyE",
                 err
-            })
-        })
-}
+            });
+        });
+};
