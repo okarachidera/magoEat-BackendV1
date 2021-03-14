@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-require('dotenv').config();
+require("dotenv").config();
 const accountSid = process.env.ACCCOUNT_SID;
 const auth_token = process.env.AUTH_TOKEN;
-const User = require('../models/users.model');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const userValidation = require('../validators/users.validators');
+const User = require("../models/users.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const userValidation = require("../validators/users.validators");
 // const request1 = require('request');
-const client = require('twilio')(accountSid, auth_token);
+const client = require("twilio")(accountSid, auth_token);
 
 exports.signup = (req, res) => {
     // Fisrt validation 
@@ -31,7 +31,7 @@ exports.signup = (req, res) => {
                                 msgCode : Math.floor(Math.random()*999)+1000,
                                 role: req.body.role,
                                 verified: req.body.verified
-                            })
+                            });
                             // res.status(201).send({ user })
                             user.save()
                                 .then(user => res.status(200).json({ 
@@ -41,35 +41,35 @@ exports.signup = (req, res) => {
                                 .catch((error) => res.status(400).json({ 
                                     success: false,
                                     error,
-                                    message : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' 
-                                }))
+                                    message : "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?" 
+                                }));
                         })
                         .catch(error => res.status(500).json({ 
                             success: false,
                             error 
-                        }))
+                        }));
                 } else {
                     res.status(401).json({
                         success: false,
-                        message: 'Vous avez déja un compte MagoEat ? Veuillez vous connecter'
-                    })
+                        message: "Vous avez déja un compte MagoEat ? Veuillez vous connecter"
+                    });
                 }
             })
             .catch(error => {
                 res.status(500).json({
                     success: false,
                     error,
-                    message: `Une erreur s'est produite, veuillez réessayer`
-                })
-            })
+                    message: "Une erreur s'est produite, veuillez réessayer"
+                });
+            });
     } else {
         res.status(400).json({
             success: false,
-            message: 'Vous avez entré des données invalides',
+            message: "Vous avez entré des données invalides",
             error
-        })
+        });
     }
-}
+};
 
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
@@ -78,17 +78,17 @@ exports.login = (req, res) => {
             .then(user => {
                 if (!user) {
                     res.status(400).json({ 
-                        errorMessage : 'Utilisateur non trouvE !',
+                        errorMessage : "Utilisateur non trouvE !",
                         success: false
-                    })
+                    });
                 }
                 bcrypt.compare(req.body.password, user.password)
                     .then(validUser => {
                         if (!validUser) {
                             res.status(401).json({ 
                                 success: false,
-                                errorMessage : 'Mot de passe incorect' 
-                            })
+                                errorMessage : "Mot de passe incorect" 
+                            });
                         }
                         res.status(200).json({
                             username : user.username,
@@ -97,32 +97,32 @@ exports.login = (req, res) => {
                             phone : user.phone,
                             token : jwt.sign(
                                 {username : req.body.username},
-                                'RANDOM_TOKEN_SECRET',
-                                {expiresIn : '48h'}
+                                "RANDOM_TOKEN_SECRET",
+                                {expiresIn : "48h"}
                             )
-                        })
+                        });
                     })
                     .catch(error => res.status(500).json({ 
                         success: false,
-                        message: 'Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard',
+                        message: "Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard",
                         error 
-                    }))
+                    }));
             })
-            .catch(error => res.status(500).json({ error }))
+            .catch(error => res.status(500).json({ error }));
     } else {
         res.status(500).json({
             success: false,
-            message: 'Veuillez remplir les bonnes informations',
+            message: "Veuillez remplir les bonnes informations",
             error
-        })
+        });
     }
-}
+};
 
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
-        res.status(400).json({ errorMessage : 'Aucune session est ouverte'})
+        res.status(400).json({ errorMessage : "Aucune session est ouverte"});
     }
-        // then we can save the user ...
+    // then we can save the user ...
     const user = new User ({
         username : req.body.username,
         password : req.body.password,
@@ -132,11 +132,11 @@ exports.consfirmSms = (req, res) => {
         msgCode : req.body.msgCode,
         role: req.body.role,
         avatar: req.body.avatar
-    })
+    });
     user.save()
         .then((user) => res.status(200).send({ user }))
-        .catch((error) => res.status(400).send({ error }))
-}
+        .catch((error) => res.status(400).send({ error }));
+};
 
 exports.sendMsgConf = (req, res) => {
     client.messages.create({
@@ -147,7 +147,7 @@ exports.sendMsgConf = (req, res) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: 'Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants',
+                alert: "Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants",
                 username : req.body.username,
                 password : req.body.password,
                 phone : req.body.phone,
@@ -156,15 +156,15 @@ exports.sendMsgConf = (req, res) => {
                 msgCode : req.body.msgCode,
                 success: true,
                 avatar: req.body.avatar
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
                 success: false,
-                alert: 'Echec de confirmation du code, veuillez reessayer',
+                alert: "Echec de confirmation du code, veuillez reessayer",
                 err
-            })
-        })
+            });
+        });
     // var phone = req.body.phone;
     // var username = "pacyL20";
     // var password = "zKssVK4u";
@@ -182,7 +182,7 @@ exports.sendMsgConf = (req, res) => {
     //         msgCode : req.body.msgCode
     //     })
     // });
-}
+};
 
 /**
  * 
@@ -194,46 +194,46 @@ exports.sendMsgConf = (req, res) => {
 exports.sendMsgToAdmins = (req, res) => {
     client.messages.create({
         from: process.env.NUMBER,
-        to: '+243990831772',
+        to: "+243990831772",
         body: "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau
     })
         .then(message => {
             res.status(201).json({
                 message,
-                alert: 'Votre commande a ete effectuee avec succes',
+                alert: "Votre commande a ete effectuee avec succes",
                 date: Date(Date.now())
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
-                alert: 'Echec de confirmation du code, veuillez reessayer',
+                alert: "Echec de confirmation du code, veuillez reessayer",
                 err
-            })
-        })
-}
+            });
+        });
+};
 
 // GET logic
 
 exports.getOwners = (req, res) => {
     User.find(  {role: "OWNER", verified: true}, 
-                (err, owners) => {
-        if (!err) {
-            res.status(201).json({owners})
-        } else {
-            res.status(500).send(err)
-        }
-    })
-}
+        (err, owners) => {
+            if (!err) {
+                res.status(201).json({owners});
+            } else {
+                res.status(500).send(err);
+            }
+        });
+};
 
 exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
         if(!err) {
-            res.status(201).json({users})
+            res.status(201).json({users});
         } else {
-            res.status(500).send(err)
+            res.status(500).send(err);
         }
-    })
-}
+    });
+};
 
 /**
  * 
@@ -247,23 +247,23 @@ exports.getUserByUsername = (req, res) => {
     User.findOne({username : req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
-                res.status(200).json({user})
+                res.status(200).json({user});
             } else {
-                res.status(401).json({ message : 'Uilisateur introuvable' })
+                res.status(401).json({ message : "Uilisateur introuvable" });
             }
         } else {
-            res.send(err)
+            res.send(err);
         }
-    })
-}
+    });
+};
 
 // PUT logic  
 
 exports.updateUserInfo = (req, res) => {
 
-}
+};
 
 exports.updateUserPassword = (req, res) => {
     // Validation
 
-}
+};
