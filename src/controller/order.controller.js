@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Order = require('../models/order.model');
 const Repas = require('../models/repas.model');
 const orderValidator = require('../validators/order.validators');
@@ -48,6 +49,7 @@ exports.rateOrder = (req, res) => {
     /**
      * First check if request is valid 
      */
+    // eslint-disable-next-line no-unused-vars
     const {error, value} = orderValidator.rateOrder.validate(req.body)
 
     if (!error) {
@@ -191,7 +193,7 @@ exports.cancelOrder = (req,res) => {
     const data = req.body;
     const {error, value} = orderValidator.cancelOrder.validate(data);
     if (!error) {
-
+        console.log(error);
     } else {
         res.status(500).json({
            message: 'Une erreur s\'est produite lors de l\'analyse de vos donnees',

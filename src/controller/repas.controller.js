@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Repas = require('../models/repas.model');
 const repasValidator = require('../validators/repas.validators');
 
