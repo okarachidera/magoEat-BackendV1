@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 require('dotenv').config();
-const accountSid = "AC2524bf387f930f6561f2160b7b5eecde";
-const auth_token = "4603618583a826e359550e84c77ae78a";
+const accountSid = process.env.ACCCOUNT_SID;
+const auth_token = process.env.AUTH_TOKEN;
 const User = require('../models/users.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
