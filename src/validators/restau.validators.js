@@ -1,16 +1,17 @@
-const Joi = require('@hapi/joi');
+/* eslint-disable no-unused-vars */
+const Joi = require("@hapi/joi");
 
 const textField = Joi.string()
-                        .max(120)
-                        .min(3)
+    .max(120)
+    .min(3);
 const rate = Joi.number()
-                    .min(1)
-                    .max(5)
-                    .optional()
+    .min(1)
+    .max(5)
+    .optional();
 const url = Joi.string()
-                    .optional()
+    .optional();
 const validId = Joi.string()
-                        .alphanum()
+    .alphanum();
 
 exports.createRestau = Joi.object().keys({
     label: textField.required(),

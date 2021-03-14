@@ -1,24 +1,25 @@
-const Joi = require('@hapi/joi');
+/* eslint-disable no-unused-vars */
+const Joi = require("@hapi/joi");
 
 const textField = Joi.string()
-                        .min(3)
-                        .max(255)
+    .min(3)
+    .max(255);
 const validId = Joi.string()
-                        .alphanum()
-                        .required()
+    .alphanum()
+    .required();
 const rate = Joi.number()
-                    .min(1)
-                    .max(5)
-                    .optional()
+    .min(1)
+    .max(5)
+    .optional();
 const url = Joi.string()
-                    .alphanum()
-                    .optional()
+    .alphanum()
+    .optional();
 const validCategory = Joi.string()
-                            .valid("CONGOLESE", "CHINEESE", "FRENCH", "ITALIAN", "VEGETARIAN", "TAKE_AWAY")
-                            .required()
+    .valid("CONGOLESE", "CHINEESE", "FRENCH", "ITALIAN", "VEGETARIAN", "TAKE_AWAY")
+    .required();
 const charge = Joi.number()
-                        .max(1)
-                        .min(0)
+    .max(1)
+    .min(0);
 
 exports.createRepas = Joi.object().keys({
     label: textField.required(),
@@ -30,4 +31,4 @@ exports.createRepas = Joi.object().keys({
     timeForCook: Joi.number(),
     price: Joi.number().required(),
     charge
-})
+});

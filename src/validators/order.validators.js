@@ -1,38 +1,39 @@
-const { valid } = require('@hapi/joi')
-const Joi = require('@hapi/joi')
+/* eslint-disable no-unused-vars */
+const { valid } = require("@hapi/joi");
+const Joi = require("@hapi/joi");
 
 const rate = Joi.number()
-                .min(1)
-                .max(5)
-                .optional()
+    .min(1)
+    .max(5)
+    .optional();
 const status = Joi.string()
-                .valid(
-                    "PLACED",
-                    "ACCEPTED",
-                    "ON_THE_ROAD",
-                    "CLOSED",
-                    "CANCELED"
-                )
-                .required()
+    .valid(
+        "PLACED",
+        "ACCEPTED",
+        "ON_THE_ROAD",
+        "CLOSED",
+        "CANCELED"
+    )
+    .required();
 const validId = Joi.string()
-                    .alphanum()
+    .alphanum();
 const amount = Joi.number()
-                    .required()
+    .required();
 const devise = Joi.string()
-                        .valid(
-                            "USD",
-                            "CDF"
-                        )
-                        .required()
+    .valid(
+        "USD",
+        "CDF"
+    )
+    .required();
 const stringField = Joi.string()
-                        .min(2)
-                        .max(255)
+    .min(2)
+    .max(255);
 // const ratable = Joi.boolean()
 //                     .default(true)
 const cancelReason = Joi.string()
-                        .min(2)
-                        .max(100)
-                        .optional()
+    .min(2)
+    .max(100)
+    .optional();
 // const date = Joi.date()
 //                     .required()
 
@@ -42,27 +43,27 @@ exports.placeOrder = Joi.object().keys({
     restauId: validId.required(),
     amount,
     devise,
-})
+});
 
 exports.cancelOrder = Joi.object().keys({
     orderId: validId.required(),
     cancelReason,
     status
-})
+});
 
 exports.closeOrder = Joi.object().keys({
     status,
     feedback: stringField.optional(),
     rate
-})
+});
 
 exports.updateStatus = Joi.object().keys({
     status
-})
+});
 
 exports.rateOrder = Joi.object().keys({
     orderId: validId.required(),
     platId: validId.required(),
     rate
-})
+});
 
