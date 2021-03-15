@@ -14,13 +14,9 @@ const categorySchema = mongoose.Schema({
         type : String,
         required : true
     },
-    amount: {
-        type: Number,
-        required: true
-    },
     status: {
         type: String,
-        required: true
+        required: false
     }
 });
 
