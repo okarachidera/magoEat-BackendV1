@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
+const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
 
 // to set an enum for the roles
 
@@ -40,9 +40,13 @@ const userSchema = mongoose.Schema({
     verified: {
         type: Boolean,
         required: true
+    },
+    updated: {
+        type: Date,
+        default: Date.now
     }
-})
+});
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model("User", userSchema);
