@@ -14,10 +14,12 @@ const categorySchema = mongoose.Schema({
         type : String,
         required : true
     },
-    restaurants: {
-        type: [String],
-        required: false,
-        default: []
+    restaurants: [
+        {idRestau: String, label: String, img: String}
+    ],
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
 

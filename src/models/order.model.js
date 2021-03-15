@@ -22,10 +22,9 @@ const orderSchema = mongoose.Schema({
         type : Boolean,
         required : true
     },
-    feedBack : {
-        type : String,
-        required : false
-    },
+    feedBack : [
+        {body: String, date: Date.now}
+    ],
     amount: {
         type: Number,
         required: true
