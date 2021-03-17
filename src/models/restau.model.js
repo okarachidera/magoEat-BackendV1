@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
 
 const restaurantSchema = mongoose.Schema({
     label: {
@@ -45,7 +45,7 @@ const restaurantSchema = mongoose.Schema({
         type: String,
         required: false
     }
-})
+});
 
 restaurantSchema.plugin(uniqueValidator);
-module.exports = mongoose.model('Restau', restaurantSchema);
+module.exports = mongoose.model("Restau", restaurantSchema);
