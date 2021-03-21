@@ -14,6 +14,10 @@ const categorySchema = mongoose.Schema({
         type : String,
         required : true
     },
+    imgBrushed: {
+        type: String,
+        required: true
+    },
     restaurants: [
         {idRestau: String, label: String, img: String}
     ],
