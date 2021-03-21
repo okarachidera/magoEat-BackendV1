@@ -2,20 +2,21 @@ const Category = require("../models/category.model");
 const categoryValidator = require("../validators/category.validators");
 
 exports.index = (req, res) => {
-    Category.find({}, (err, categories) => {
-        if (!err) {
+    Category.find({})
+        .then(categories => {
             res.status(200)
                 .json({
                     success: true,
                     categories
                 });
-        }
-        res.status(500)
-            .json({
-                success: false,
-                err
-            });
-    });
+        })
+        .catch(err => {
+            res.status(500)
+                .json({
+                    success: false,
+                    err
+                });
+        });
 };
 
 exports.createCategory = (req, res) => {
