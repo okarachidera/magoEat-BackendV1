@@ -8,6 +8,6 @@ const validUrl = Joi.string()
 
 exports.createUpdateCategory = Joi.object().keys({
     label: validLabel.required(),
-    imgCroped: validUrl.required(),
-    imgBrushed: validUrl.required()  
+    imgWhite: validUrl.required(),
+    imgRed: validUrl.required()  
 });
