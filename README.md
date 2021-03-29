@@ -55,16 +55,17 @@ At this point the project should run at
 > - path: `api/auth/login`
 > - Authorization: No
 > - body: 
-> ```
+```
 {
     username: String[Required]
     password: String[Required]
 }
+```
 - *[POST]* **Signup**: To create a user account
 > - path: `api/auth/signup`
 > - Authorization: No
 > - body: 
-> ```
+```
 {
     username: String[Required]
     password: String[Required]
@@ -75,6 +76,7 @@ At this point the project should run at
     verified: Boolean[Default]
     role: String[Default]
 }
+```
 - *[PUT]* **Update**: Updates users infor 
 - *[GET]* **Get list of users**:
 - *[GET]* **Get list of owners**:
