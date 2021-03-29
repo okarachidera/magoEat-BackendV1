@@ -71,6 +71,14 @@ exports.signup = (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Response.json}
+ * @res.status: Boolean 
+ */
+
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
     if (!error) {
@@ -116,6 +124,12 @@ exports.login = (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
         res.status(400).json({ errorMessage : "Aucune session est ouverte"});
@@ -135,6 +149,12 @@ exports.consfirmSms = (req, res) => {
         .then((user) => res.status(200).send({ user }))
         .catch((error) => res.status(400).send({ error }));
 };
+
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 
 exports.sendMsgConf = (req, res) => {
     client.messages.create({
@@ -192,7 +212,7 @@ exports.sendMsgConf = (req, res) => {
 exports.sendMsgToAdmins = (req, res) => {
     client.messages.create({
         from: process.env.NUMBER,
-        to: "+243990831772",
+        to: req.body.phone,
         body: "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau
     })
         .then(message => {

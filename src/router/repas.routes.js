@@ -4,15 +4,15 @@ const repasCtl = require("../controller/repas.controller");
 const authMiddleware = require("../Middlewares/auth.middleware");
 const categoryController = require("../controller/category.controller");
 
-router.post("/creation", repasCtl.createRepas);
+router.post("/creation", authMiddleware, repasCtl.createRepas);
 
 router.get("/", repasCtl.getAllRepas);
 
 // Categories
 
 router.post("/category", authMiddleware, categoryController.createCategory);
-router.put("/category", categoryController.updateCategory);
-router.get("/categories", categoryController.index);
+router.put("/category", authMiddleware, categoryController.updateCategory);
+router.get("/categories", authMiddleware, categoryController.index);
 
 // --- End ---
 
