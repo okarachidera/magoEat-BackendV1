@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 const http =  require("http");
 const app = require("./app");
+const dotenv = require("dotenv");
+dotenv.config();
 const normalizePort = val => {
     const port = parseInt(val, 10);
 
@@ -42,7 +44,6 @@ server.on("listening", () => {
     const address = server.address();
     const bind = typeof address === "string" ? "pipe " + address : "port " + port;
     console.log("Listening on " + bind);
-    console.log(process.env.ACCOUNT_SID);
 });
 
 server.listen(port);

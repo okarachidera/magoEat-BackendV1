@@ -1,18 +1,23 @@
 const mongoose = require("mongoose");
-// const uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require("mongoose-unique-validator");
 
 const categorySchema = mongoose.Schema({
     label : {
         type : String,
+        required : true,
+        unique: true
+    },
+    imgWhite : {
+        type : String,
         required : true
     },
-    imgCroped : {
+    imgRed: {
         type : String,
         required : true
     },
     imgBrushed: {
-        type : String,
-        required : true
+        type: String,
+        required: true
     },
     restaurants: [
         {idRestau: String, label: String, img: String}
@@ -23,4 +28,6 @@ const categorySchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Order", categorySchema);
+categorySchema.plugin(uniqueValidator);
+
+module.exports = mongoose.model("Category", categorySchema);

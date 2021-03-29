@@ -7,7 +7,7 @@ exports.createRepas = (req, res) => {
     const data = req.body;
     const {error, value} = repasValidator.createRepas.validate(data);
     if (!error) {
-        const repas = new Repas({
+        const rep = new Repas({
             label: data.label,
             idRestau: data.idRestau,
             description: data.description,
@@ -19,12 +19,12 @@ exports.createRepas = (req, res) => {
             charge: data.charge,
             averageRate: 5
         });
-        repas.save()
-            .then(rep => {
+        rep.save()
+            .then(repas => {
                 res.status(200).json({
                     success: true,
                     message: "Repas ajoutE avec success",
-                    rep
+                    repas
                 });
             })
             .catch(err => {
@@ -46,14 +46,14 @@ exports.createRepas = (req, res) => {
 exports.getAllRepas = (req, res) => {
     const filter = {};
     Repas.find(filter)
-        .then(rep => {
-            if (rep.length == 0) {
+        .then(repas => {
+            if (repas.length == 0) {
                 res.status(201).json({
                     message: "Aucun repas dans enreigistE "
                 });
             } else {
                 res.status(200).json({
-                    rep
+                    repas
                 });
             }
         })

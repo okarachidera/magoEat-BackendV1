@@ -44,7 +44,8 @@ const userSchema = mongoose.Schema({
     updated: {
         type: Date,
         default: Date.now
-    }
+    },
+    isAuthentcated: Boolean
 });
 
 userSchema.plugin(uniqueValidator);
