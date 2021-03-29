@@ -1,6 +1,6 @@
 # MagoEat App - Backend
 
-## Tech stacks
+# Tech stacks
 
 1. NodeJs - ExpressJs
 2. Database: MongoDB 
@@ -9,11 +9,11 @@
 5. Authentication & Authoriwation: JsonWebToken
 6. SMS System: Twilio
 
-## Get Started
+# Get Started
 
 :danger: This is a personal project, to contribute, feel free to contact the author and request to contribute, with the author's authorization, this project can be forked
 
-### Prerequisites
+## Prerequisites
 
 Before stating contributing to this project, kindly make sure you master one of the specified tech stacks 
 To get a copy of this project you need: 
@@ -22,7 +22,7 @@ To get a copy of this project you need:
 2. At least one code editor installed
 3. At least one testing tool for the backend [Postman](https://www.postman.com/) is a best example
 
-### Instructions
+## Instructions
 
 4. Clone this repo
 ```
@@ -48,9 +48,9 @@ At this point the project should run at
 10. Create a Pull request from your branch to the development branch
 11. **[Optional]** Notify the owner to consider your contribution
 
-### Test routes
+# Test routes
 
-1. User's routes
+## 1. User's routes
 - *[POST]* **Login**: To login in the app
 > - path: `api/auth/login`
 > - Authorization: No
@@ -76,10 +76,10 @@ At this point the project should run at
     role: String[Default]
 }
 - *[PUT]* **Update**: Updates users infor 
-- Get list of users 
-- Get list of owners
+- *[GET]* **Get list of users**:
+- *[GET]* **Get list of owners**:
 
-2. Orders routes
+## 2. Orders routes
 - Get all the orders:
 - Get orders by users:
 - Get orders by restaurants:
@@ -88,19 +88,19 @@ At this point the project should run at
 - Rate an order:
 - Get full history of orders by user:
 
-3. Restaurants
+## 3. Restaurants
 - Get full list of restaurants
 - Update Restaurant informations 
 - Hold a restaurant 
 - Get restaurant menu 
 - Delete a restaurant
 
-4. Items (Repas in the App context)
+## 4. Items (Repas in the App context)
 - Create an item: 
 - Delete an item 
 - Put Coupon 
 
-## Project structure
+# Project structure
 
     |── src/
         ├── constatnts/
@@ -156,7 +156,7 @@ At this point the project should run at
 
 Contributions, issues and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/pacyL2K19/my_ruby_linter/issues).
+Feel free to check the [issues page](https://github.com/pacyL2K19/magoEat-BackendV1/issues).
 
 ## Show your support
 
