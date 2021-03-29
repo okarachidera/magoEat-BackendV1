@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
-// const uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require("mongoose-unique-validator");
 
 const categorySchema = mongoose.Schema({
     label : {
         type : String,
-        required : true
+        required : true,
+        unique: true
     },
     imgWhite : {
         type : String,
@@ -26,5 +27,7 @@ const categorySchema = mongoose.Schema({
         default: Date.now
     }
 });
+
+categorySchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model("Category", categorySchema);

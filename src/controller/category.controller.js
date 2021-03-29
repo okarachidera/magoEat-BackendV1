@@ -31,7 +31,8 @@ exports.createCategory = (req, res) => {
     const category = new Category({
         label: value.label,
         imgWhite: value.imgWhite,
-        imgRed: value.imgRed
+        imgRed: value.imgRed,
+        imgBrushed: value.imgBrushed
     });
     category.save()
         .then((cat) => {
@@ -42,7 +43,7 @@ exports.createCategory = (req, res) => {
                     category: cat
                 });
         }).catch((err) => {
-            res,status(500)
+            res.status(500)
                 .json({
                     success: false,
                     message: "Une erreur s'est produite",
@@ -83,5 +84,12 @@ exports.updateCategory = (req, res) => {
                     });
                 });
         })
-        .catch();
+        .catch(err => {
+            res.status(501)
+                .json({
+                    success: false,
+                    message: "Erreur inattendue",
+                    err
+                });
+        });
 };
