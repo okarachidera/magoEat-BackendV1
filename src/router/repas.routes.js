@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const repasCtl = require("../controller/repas.controller");
-const {authMiddleware} = require("../Middlewares/auth.middleware");
+const authMiddleware = require("../Middlewares/auth.middleware");
 const categoryController = require("../controller/category.controller");
 
 router.post("/creation", repasCtl.createRepas);
