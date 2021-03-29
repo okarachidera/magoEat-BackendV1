@@ -11,9 +11,7 @@ const userValidation = require("../validators/users.validators");
 const client = require("twilio")(accountSid, auth_token);
 
 exports.signup = (req, res) => {
-    // Fisrt validation 
     const {error, value} = userValidation.signupValidator.validate(req.body);
-    // console.log(value)
     if (!error) {
         // All the data put inside fit the requirements
         User.findOne({phone: value.phone})
@@ -26,13 +24,11 @@ exports.signup = (req, res) => {
                                 password : hash,
                                 phone : req.body.phone,
                                 avatar: req.body.avatar,
-                                // adress : req.body.adress,
                                 mail : req.body.mail,
                                 msgCode : Math.floor(Math.random()*999)+1000,
                                 role: req.body.role,
                                 verified: req.body.verified
                             });
-                            // res.status(201).send({ user })
                             user.save()
                                 .then(user => res.status(200).json({ 
                                     success: true,
@@ -103,8 +99,8 @@ exports.login = (req, res) => {
                             success: true,
                             token : jwt.sign(
                                 {userId : user._id},
-                                "RANDOM_TOKEN_SECRET",
-                                {expiresIn : "48h"}
+                                process.env.AUTH_TOKEN,
+                                {expiresIn : process.env.EXPIRES_IN}
                             )
                         });
                     })
@@ -206,7 +202,6 @@ exports.sendMsgConf = (req, res) => {
  * 
  * @param {*} req 
  * @param {*} res 
- * @param {*} next 
  */
 
 exports.sendMsgToAdmins = (req, res) => {
