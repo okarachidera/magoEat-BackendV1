@@ -7,6 +7,7 @@ const User = require("../models/users.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
+const statusCode = require("../constants/status-code");
 // const request1 = require('request');
 const client = require("twilio")(accountSid, auth_token);
 
@@ -30,36 +31,36 @@ exports.signup = (req, res) => {
                                 verified: req.body.verified
                             });
                             user.save()
-                                .then(user => res.status(200).json({ 
+                                .then(user => res.status(statusCode.OK).json({ 
                                     success: true,
                                     user 
                                 }))
-                                .catch((error) => res.status(400).json({ 
+                                .catch((error) => res.status(statusCode.BAD_REQUEST).json({ 
                                     success: false,
                                     error,
                                     message : "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?" 
                                 }));
                         })
-                        .catch(error => res.status(500).json({ 
+                        .catch(error => res.status(statusCode.FORBIDDEN).json({ 
                             success: false,
                             error 
                         }));
                 } else {
-                    res.status(401).json({
+                    res.status(statusCode.FORBIDDEN).json({
                         success: false,
                         message: "Vous avez déja un compte MagoEat ? Veuillez vous connecter"
                     });
                 }
             })
             .catch(error => {
-                res.status(500).json({
+                res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     error,
                     message: "Une erreur s'est produite, veuillez réessayer"
                 });
             });
     } else {
-        res.status(400).json({
+        res.status(statusCode.FORBIDDEN).json({
             success: false,
             message: "Vous avez entré des données invalides",
             error
@@ -142,7 +143,7 @@ exports.consfirmSms = (req, res) => {
         avatar: req.body.avatar
     });
     user.save()
-        .then((user) => res.status(200).send({ user }))
+        .then((user) => res.status(statusCode.OK).send({ user }))
         .catch((error) => res.status(400).send({ error }));
 };
 
@@ -155,7 +156,7 @@ exports.consfirmSms = (req, res) => {
 exports.sendMsgConf = (req, res) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
-        from: "+12283356156",
+        from: process.env.NUMBER,
         to: req.body.phone
     })
         .then(message => {
@@ -256,7 +257,6 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getUserByUsername = (req, res) => {
-    // console.log(req.params.username)
     User.findOne({username : req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
