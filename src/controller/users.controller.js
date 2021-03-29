@@ -91,12 +91,10 @@ exports.login = (req, res) => {
                             });
                         }
                         res.status(200).json({
-                            username : user.username,
+                            user,
                             success: true,
-                            mail : user.mail,
-                            phone : user.phone,
                             token : jwt.sign(
-                                {username : req.body.username},
+                                {userId : user._id},
                                 "RANDOM_TOKEN_SECRET",
                                 {expiresIn : "48h"}
                             )
