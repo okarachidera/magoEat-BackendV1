@@ -11,7 +11,7 @@
 
 # Get Started
 
-:danger: This is a personal project, to contribute, feel free to contact the author and request to contribute, with the author's authorization, this project can be forked
+⚠️ This is a personal project, to contribute, feel free to contact the author and request to contribute, with the author's authorization, this project can be forked
 
 ## Prerequisites
 
