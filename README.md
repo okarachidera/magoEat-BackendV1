@@ -51,9 +51,31 @@ At this point the project should run at
 ### Test routes
 
 1. User's routes
-- Login: 
-- Signup: 
-- Update: 
+- *[POST]* **Login**: To login in the app
+> - path: `api/auth/login`
+> - Authorization: No
+> - body: 
+> ```
+{
+    username: String[Required]
+    password: String[Required]
+}
+- *[POST]* **Signup**: To create a user account
+> - path: `api/auth/signup`
+> - Authorization: No
+> - body: 
+> ```
+{
+    username: String[Required]
+    password: String[Required]
+    confirmPassword: String[Required]
+    phone: Number[Required]
+    email: String[Required] - email address
+    avatarUrl: String[Optional]
+    verified: Boolean[Default]
+    role: String[Default]
+}
+- *[PUT]* **Update**: Updates users infor 
 - Get list of users 
 - Get list of owners
 
