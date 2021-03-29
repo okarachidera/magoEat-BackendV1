@@ -27,8 +27,8 @@ exports.getAllRestau = (req, res) => {
 exports.getOwnerRestau = (req, res) => {
     const ownerId = req.params.restauId;
     Restau.find({ownerId})
-        .then(rest => {
-            if (!rest) {
+        .then(restaurants => {
+            if (!restaurants) {
                 res.status(404).json({
                     success: true,
                     message: "Aucun restaurant trouvE pour cet utilisateur"
@@ -37,7 +37,7 @@ exports.getOwnerRestau = (req, res) => {
             res.status(201).json({
                 success: true,
                 message: "La liste des restaurants",
-                rest
+                restaurants
             });
         })
         .catch(err => {
