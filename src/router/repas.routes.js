@@ -12,7 +12,7 @@ router.get("/", repasCtl.getAllRepas);
 
 router.post("/category", authMiddleware, categoryController.createCategory);
 router.put("/category", authMiddleware, categoryController.updateCategory);
-router.get("/categories", authMiddleware, categoryController.index);
+router.get("/categories", categoryController.index);
 
 // --- End ---
 
