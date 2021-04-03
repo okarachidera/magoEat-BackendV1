@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require('dotenv').config();
 const accountSid = Process.env.ACCOUNT_SID;
 const auth_token = Process.env.AUTH_TOKEN;
@@ -6,11 +7,23 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userValidation = require('../validators/users.validators');
 const client = require('twilio')(accountSid, auth_token);
+=======
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+require("dotenv").config();
+const accountSid = process.env.ACCCOUNT_SID;
+const auth_token = process.env.AUTH_TOKEN;
+const User = require("../models/users.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const userValidation = require("../validators/users.validators");
+const statusCode = require("../constants/status-code");
+// const request1 = require('request');
+const client = require("twilio")(accountSid, auth_token);
+>>>>>>> develop
 
 exports.signup = (req, res) => {
-    // Fisrt validation 
     const {error, value} = userValidation.signupValidator.validate(req.body);
-    // console.log(value)
     if (!error) {
         // All the data put inside fit the requirements
         User.findOne({phone: value.phone})
@@ -23,50 +36,56 @@ exports.signup = (req, res) => {
                                 password : hash,
                                 phone : req.body.phone,
                                 avatar: req.body.avatar,
-                                // adress : req.body.adress,
                                 mail : req.body.mail,
                                 msgCode : Math.floor(Math.random()*999)+1000,
                                 role: req.body.role,
                                 verified: req.body.verified
-                            })
-                            // res.status(201).send({ user })
+                            });
                             user.save()
-                                .then(user => res.status(200).json({ 
+                                .then(user => res.status(statusCode.OK).json({ 
                                     success: true,
                                     user 
                                 }))
-                                .catch((error) => res.status(400).json({ 
+                                .catch((error) => res.status(statusCode.BAD_REQUEST).json({ 
                                     success: false,
                                     error,
-                                    message : 'Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?' 
-                                }))
+                                    message : "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?" 
+                                }));
                         })
-                        .catch(error => res.status(500).json({ 
+                        .catch(error => res.status(statusCode.FORBIDDEN).json({ 
                             success: false,
                             error 
-                        }))
+                        }));
                 } else {
-                    res.status(401).json({
+                    res.status(statusCode.FORBIDDEN).json({
                         success: false,
-                        message: 'Vous avez déja un compte MagoEat ? Veuillez vous connecter'
-                    })
+                        message: "Vous avez déja un compte MagoEat ? Veuillez vous connecter"
+                    });
                 }
             })
             .catch(error => {
-                res.status(500).json({
+                res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     error,
-                    message: `Une erreur s'est produite, veuillez réessayer`
-                })
-            })
+                    message: "Une erreur s'est produite, veuillez réessayer"
+                });
+            });
     } else {
-        res.status(400).json({
+        res.status(statusCode.FORBIDDEN).json({
             success: false,
-            message: 'Vous avez entré des données invalides',
+            message: "Vous avez entré des données invalides",
             error
-        })
+        });
     }
-}
+};
+
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Response.json}
+ * @res.status: Boolean 
+ */
 
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
@@ -75,51 +94,60 @@ exports.login = (req, res) => {
             .then(user => {
                 if (!user) {
                     res.status(400).json({ 
-                        errorMessage : 'Utilisateur non trouvE !',
+                        errorMessage : "Utilisateur non trouvE !",
                         success: false
-                    })
+                    });
                 }
                 bcrypt.compare(req.body.password, user.password)
                     .then(validUser => {
                         if (!validUser) {
                             res.status(401).json({ 
                                 success: false,
-                                errorMessage : 'Mot de passe incorect' 
-                            })
+                                errorMessage : "Mot de passe incorect" 
+                            });
                         }
                         res.status(200).json({
-                            username : user.username,
+                            user,
                             success: true,
-                            mail : user.mail,
-                            phone : user.phone,
                             token : jwt.sign(
+<<<<<<< HEAD
                                 {username : req.body.username},
                                 'RANDOM_TOKEN_SECRET',
+=======
+                                {userId : user._id},
+                                process.env.AUTH_TOKEN,
+>>>>>>> develop
                                 {expiresIn : process.env.EXPIRES_IN}
                             )
-                        })
+                        });
                     })
                     .catch(error => res.status(500).json({ 
                         success: false,
-                        message: 'Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard',
+                        message: "Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard",
                         error 
-                    }))
+                    }));
             })
-            .catch(error => res.status(500).json({ error }))
+            .catch(error => res.status(500).json({ error }));
     } else {
         res.status(500).json({
             success: false,
-            message: 'Veuillez remplir les bonnes informations',
+            message: "Veuillez remplir les bonnes informations",
             error
-        })
+        });
     }
-}
+};
+
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
-        res.status(400).json({ errorMessage : 'Aucune session est ouverte'})
+        res.status(400).json({ errorMessage : "Aucune session est ouverte"});
     }
-        // then we can save the user ...
+    // then we can save the user ...
     const user = new User ({
         username : req.body.username,
         password : req.body.password,
@@ -129,22 +157,28 @@ exports.consfirmSms = (req, res) => {
         msgCode : req.body.msgCode,
         role: req.body.role,
         avatar: req.body.avatar
-    })
+    });
     user.save()
-        .then((user) => res.status(200).send({ user }))
-        .catch((error) => res.status(400).send({ error }))
-}
+        .then((user) => res.status(statusCode.OK).send({ user }))
+        .catch((error) => res.status(400).send({ error }));
+};
+
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 
 exports.sendMsgConf = (req, res) => {
     client.messages.create({
         body: req.body.msgDetail +" "+ req.body.msgCode,
-        from: "+12283356156",
+        from: process.env.NUMBER,
         to: req.body.phone
     })
         .then(message => {
             res.status(201).json({
                 message,
-                alert: 'Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants',
+                alert: "Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants",
                 username : req.body.username,
                 password : req.body.password,
                 phone : req.body.phone,
@@ -153,15 +187,15 @@ exports.sendMsgConf = (req, res) => {
                 msgCode : req.body.msgCode,
                 success: true,
                 avatar: req.body.avatar
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
                 success: false,
-                alert: 'Echec de confirmation du code, veuillez reessayer',
+                alert: "Echec de confirmation du code, veuillez reessayer",
                 err
-            })
-        })
+            });
+        });
     // var phone = req.body.phone;
     // var username = "";
     // var password = "";
@@ -179,58 +213,61 @@ exports.sendMsgConf = (req, res) => {
     //         msgCode : req.body.msgCode
     //     })
     // });
-}
+};
 
 /**
  * 
  * @param {*} req 
  * @param {*} res 
+<<<<<<< HEAD
  * @param {*} next [optional: not a middleware]
+=======
+>>>>>>> develop
  */
 
 exports.sendMsgToAdmins = (req, res) => {
     client.messages.create({
         from: process.env.NUMBER,
-        to: '+243990831772',
+        to: req.body.phone,
         body: "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau
     })
         .then(message => {
             res.status(201).json({
                 message,
-                alert: 'Votre commande a ete effectuee avec succes',
+                alert: "Votre commande a ete effectuee avec succes",
                 date: Date(Date.now())
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
-                alert: 'Echec de confirmation du code, veuillez reessayer',
+                alert: "Echec de confirmation du code, veuillez reessayer",
                 err
-            })
-        })
-}
+            });
+        });
+};
 
 // GET logic
 
 exports.getOwners = (req, res) => {
     User.find(  {role: "OWNER", verified: true}, 
-                (err, owners) => {
-        if (!err) {
-            res.status(201).json({owners})
-        } else {
-            res.status(500).send(err)
-        }
-    })
-}
+        (err, owners) => {
+            if (!err) {
+                res.status(201).json({owners});
+            } else {
+                res.status(500).send(err);
+            }
+        });
+};
 
 exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
         if(!err) {
-            res.status(201).json({users})
+            res.status(201).json({users});
         } else {
-            res.status(500).send(err)
+            res.status(500).send(err);
         }
-    })
-}
+    });
+};
 
 /**
  * 
@@ -240,27 +277,26 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getUserByUsername = (req, res) => {
-    // console.log(req.params.username)
     User.findOne({username : req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
-                res.status(200).json({user})
+                res.status(200).json({user});
             } else {
-                res.status(401).json({ message : 'Uilisateur introuvable' })
+                res.status(401).json({ message : "Uilisateur introuvable" });
             }
         } else {
-            res.send(err)
+            res.send(err);
         }
-    })
-}
+    });
+};
 
 // PUT logic  
 
 exports.updateUserInfo = (req, res) => {
 
-}
+};
 
 exports.updateUserPassword = (req, res) => {
     // Validation
 
-}
+};
