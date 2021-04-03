@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+require('dotenv').config();
+const accountSid = Process.env.ACCOUNT_SID;
+const auth_token = Process.env.AUTH_TOKEN;
+const User = require('../models/users.model');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const userValidation = require('../validators/users.validators');
+const client = require('twilio')(accountSid, auth_token);
+=======
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 require("dotenv").config();
@@ -10,6 +20,7 @@ const userValidation = require("../validators/users.validators");
 const statusCode = require("../constants/status-code");
 // const request1 = require('request');
 const client = require("twilio")(accountSid, auth_token);
+>>>>>>> develop
 
 exports.signup = (req, res) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
@@ -99,8 +110,13 @@ exports.login = (req, res) => {
                             user,
                             success: true,
                             token : jwt.sign(
+<<<<<<< HEAD
+                                {username : req.body.username},
+                                'RANDOM_TOKEN_SECRET',
+=======
                                 {userId : user._id},
                                 process.env.AUTH_TOKEN,
+>>>>>>> develop
                                 {expiresIn : process.env.EXPIRES_IN}
                             )
                         });
@@ -181,9 +197,9 @@ exports.sendMsgConf = (req, res) => {
             });
         });
     // var phone = req.body.phone;
-    // var username = "pacyL20";
-    // var password = "zKssVK4u";
-    // var source = "MAGOEAT APP";
+    // var username = "";
+    // var password = "";
+    // var source = "";
     // var msg = req.body.msgDetail +" "+ req.body.msgCode;
         
     // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
@@ -203,6 +219,10 @@ exports.sendMsgConf = (req, res) => {
  * 
  * @param {*} req 
  * @param {*} res 
+<<<<<<< HEAD
+ * @param {*} next [optional: not a middleware]
+=======
+>>>>>>> develop
  */
 
 exports.sendMsgToAdmins = (req, res) => {
