@@ -203,10 +203,6 @@ exports.sendMsgConf = (req, res) => {
  * 
  * @param {*} req 
  * @param {*} res 
-<<<<<<< HEAD
- * @param {*} next [optional: not a middleware]
-=======
->>>>>>> develop
  */
 
 exports.sendMsgToAdmins = (req, res) => {
