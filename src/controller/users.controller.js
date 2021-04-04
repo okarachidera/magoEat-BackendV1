@@ -94,18 +94,15 @@ exports.login = (req, res) => {
                                 errorMessage : "Mot de passe incorect" 
                             });
                         }
-
-                        res.status(200).json({ok: "ok"});
-
-                        // res.status(200).json({
-                        //     user,
-                        //     success: true,
-                        //     token : jwt.sign(
-                        //         {userId : user._id},
-                        //         process.env.AUTH_TOKEN,
-                        //         {expiresIn : process.env.EXPIRES_IN}
-                        //     )
-                        // });
+                        res.status(200).json({
+                            user,
+                            success: true,
+                            token : jwt.sign(
+                                {userId : user._id},
+                                "RANDOM_TOKEN_SECRET",
+                                {expiresIn : "48h"}
+                            )
+                        });
                     })
                     .catch(error => res.status(500).json({ 
                         success: false,
