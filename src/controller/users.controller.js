@@ -72,7 +72,6 @@ exports.signup = (req, res) => {
  * 
  * @param {Request} req 
  * @param {Response} res 
- * @returns {Response.json}
  * @res.status: Boolean 
  */
 
