@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-require('dotenv').config();
-const accountSid = Process.env.ACCOUNT_SID;
-const auth_token = Process.env.AUTH_TOKEN;
-const User = require('../models/users.model');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const userValidation = require('../validators/users.validators');
-const client = require('twilio')(accountSid, auth_token);
-=======
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 require("dotenv").config();
@@ -20,7 +10,6 @@ const userValidation = require("../validators/users.validators");
 const statusCode = require("../constants/status-code");
 // const request1 = require('request');
 const client = require("twilio")(accountSid, auth_token);
->>>>>>> develop
 
 exports.signup = (req, res) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
@@ -110,13 +99,8 @@ exports.login = (req, res) => {
                             user,
                             success: true,
                             token : jwt.sign(
-<<<<<<< HEAD
-                                {username : req.body.username},
-                                'RANDOM_TOKEN_SECRET',
-=======
                                 {userId : user._id},
                                 process.env.AUTH_TOKEN,
->>>>>>> develop
                                 {expiresIn : process.env.EXPIRES_IN}
                             )
                         });
