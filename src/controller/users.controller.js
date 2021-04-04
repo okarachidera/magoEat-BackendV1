@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 require("dotenv").config();
-const accountSid = process.env.ACCOUNT_SID;
-const auth_token = process.env.AUTH_TOKEN;
+const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
+const auth_token = "9b49b6969b55d22a3143a36a1838387a";
 const User = require("../models/users.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -99,8 +99,8 @@ exports.login = (req, res) => {
                             success: true,
                             token : jwt.sign(
                                 {userId : user._id},
-                                process.env.AUTH_TOKEN,
-                                {expiresIn : process.env.EXPIRES_IN}
+                                "RANDOM_TOKEN_SECRET",
+                                {expiresIn : "48h"}
                             )
                         });
                     })
