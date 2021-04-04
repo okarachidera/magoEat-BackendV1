@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 require("dotenv").config();
-const accountSid = process.env.ACCCOUNT_SID;
+const accountSid = process.env.ACCOUNT_SID;
 const auth_token = process.env.AUTH_TOKEN;
 const User = require("../models/users.model");
 const bcrypt = require("bcrypt");
