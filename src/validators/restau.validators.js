@@ -4,15 +4,21 @@ const Joi = require("@hapi/joi");
 const textField = Joi.string()
     .max(120)
     .min(3);
+
 const rate = Joi.number()
     .min(1)
     .max(5)
     .optional();
+
 const url = Joi.string()
     .optional();
+
 const validId = Joi.string()
     .alphanum();
-const validDate = Joi.date().iso().optional();
+
+const validDate = Joi.date()
+    .iso()
+    .optional();
 
 exports.createRestau = Joi.object().keys({
     label: textField.required(),
