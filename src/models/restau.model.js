@@ -33,9 +33,12 @@ const restaurantSchema = mongoose.Schema({
         unique : false,
         ref: "User"
     },
-    feedback: {
-
-    },
+    feedback: [
+        {
+            type: String,
+            required: false
+        }
+    ]
     rate: {
         type : Number,
         required : false,
