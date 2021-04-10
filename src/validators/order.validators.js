@@ -47,12 +47,10 @@ exports.placeOrder = Joi.object().keys({
 
 exports.cancelOrder = Joi.object().keys({
     orderId: validId.required(),
-    cancelReason,
-    status
+    cancelReason
 });
 
 exports.closeOrder = Joi.object().keys({
-    status,
     feedback: stringField.optional(),
     rate
 });
@@ -63,7 +61,7 @@ exports.updateStatus = Joi.object().keys({
 
 exports.rateOrder = Joi.object().keys({
     orderId: validId.required(),
-    platId: validId.required(),
+    feedback: stringField.optional(),
     rate
 });
 
