@@ -77,11 +77,11 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
     if (!error) {
-        User.findOne({phone : req.body.phone})
+        User.findOne({phone: req.body.phone})
             .then(user => {
                 if (!user) {
                     res.status(400).json({ 
-                        errorMessage : "Utilisateur non trouvE !",
+                        message : "Utilisateur non trouvé !",
                         success: false
                     });
                 }
@@ -90,7 +90,7 @@ exports.login = (req, res) => {
                         if (!validUser) {
                             res.status(401).json({ 
                                 success: false,
-                                errorMessage : "Mot de passe incorect" 
+                                message : "Mot de passe incorect" 
                             });
                         }
                         res.status(200).json({
@@ -105,7 +105,7 @@ exports.login = (req, res) => {
                     })
                     .catch(error => res.status(500).json({ 
                         success: false,
-                        message: "Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard",
+                        message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
                         error 
                     }));
             })
@@ -127,7 +127,7 @@ exports.login = (req, res) => {
 
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
-        res.status(400).json({ errorMessage : "Aucune session est ouverte"});
+        res.status(400).json({ errorMessage : "Aucune session n'est ouverte"});
     }
     const user = new User ({
         username: req.body.username,
@@ -158,7 +158,7 @@ exports.sendMsgConf = (req, res) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: "Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants",
+                alert: "Votre code de confirmation a été envoyé avec succes, veuillez verifier vos messages entrants",
                 username: req.body.username,
                 password: req.body.password,
                 phone: req.body.phone,
@@ -172,7 +172,7 @@ exports.sendMsgConf = (req, res) => {
         .catch(err => {
             res.status(500).json({
                 success: false,
-                alert: "Echec de confirmation du code, veuillez reessayer",
+                alert: "Echec de confirmation du code, veuillez réessayer",
                 err
             });
         });
@@ -210,13 +210,13 @@ exports.sendMsgToAdmins = (req, res) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: "Votre commande a ete effectuee avec succes",
+                alert: "Votre commande a été effectuée avec succes",
                 date: Date(Date.now())
             });
         })
         .catch(err => {
             res.status(500).json({
-                alert: "Echec de confirmation du code, veuillez reessayer",
+                alert: "Echec de confirmation du code, veuillez réessayer",
                 err
             });
         });
