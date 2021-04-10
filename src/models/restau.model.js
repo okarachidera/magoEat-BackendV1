@@ -29,21 +29,27 @@ const restaurantSchema = mongoose.Schema({
     },
     owner: {
         type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        unique : false,
+        required: true,
+        unique: false,
         ref: "User"
     },
-    averageRating: {
-        type : Number,
-        required : false,
-        unique : false
+    feedback: [
+        {
+            type: String,
+            required: false
+        }
+    ],
+    averageRate: {
+        type: Number,
+        required: false,
+        unique: false
     },
     opensAt: {
-        type: String,
+        type: Date,
         required: false
     },
     closeAt: {
-        type: String,
+        type: Date,
         required: false
     }
 }, {

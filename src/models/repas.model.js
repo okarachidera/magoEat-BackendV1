@@ -56,7 +56,13 @@ const repasSchema = mongoose.Schema({
         type: Number,
         required: false,
         default: 0
-    }
+    },
+    tags: [
+        {
+            type: [String],
+            required: false
+        }
+    ]
 }, {
     timestamps: true
 });
