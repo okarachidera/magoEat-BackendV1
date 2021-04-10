@@ -12,9 +12,10 @@ const orderSchema = mongoose.Schema({
     },
     plat: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Repas",
         required: true
     },
-    rate : {
+    rate: {
         type: Number,
         required: false
     },
