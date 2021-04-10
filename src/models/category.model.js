@@ -23,11 +23,7 @@ const categorySchema = mongoose.Schema({
         {
             restau: mongoose.Schema.Types.ObjectId
         }
-    ],
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
+    ]
 }, {
     timestamps: true
 });

@@ -14,19 +14,18 @@ const client = require("twilio")(accountSid, auth_token);
 exports.signup = (req, res) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
     if (!error) {
-        // All the data put inside fit the requirements
         User.findOne({phone: value.phone})
             .then(user => {
                 if (!user) {
                     bcrypt.hash(req.body.password, 10)
                         .then(hash => {
                             const user = new User ({
-                                username : req.body.username,
-                                password : hash,
-                                phone : req.body.phone,
+                                username: req.body.username,
+                                password: hash,
+                                phone: req.body.phone,
                                 avatar: req.body.avatar,
-                                mail : req.body.mail,
-                                msgCode : Math.floor(Math.random()*999)+1000,
+                                mail: req.body.mail,
+                                msgCode: (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
                                 role: req.body.role,
                                 verified: req.body.verified
                             });
@@ -78,11 +77,11 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
     if (!error) {
-        User.findOne({phone : req.body.phone})
+        User.findOne({phone: req.body.phone})
             .then(user => {
                 if (!user) {
                     res.status(400).json({ 
-                        errorMessage : "Utilisateur non trouvE !",
+                        message : "Utilisateur non trouvé !",
                         success: false
                     });
                 }
@@ -91,22 +90,22 @@ exports.login = (req, res) => {
                         if (!validUser) {
                             res.status(401).json({ 
                                 success: false,
-                                errorMessage : "Mot de passe incorect" 
+                                message : "Mot de passe incorect" 
                             });
                         }
                         res.status(200).json({
                             user,
                             success: true,
-                            token : jwt.sign(
-                                {userId : user._id},
+                            token: jwt.sign(
+                                {userId: user._id},
                                 "RANDOM_TOKEN_SECRET",
-                                {expiresIn : "48h"}
+                                {expiresIn: "48h"}
                             )
                         });
                     })
                     .catch(error => res.status(500).json({ 
                         success: false,
-                        message: "Un probleme est survenu sur votre mot de passe, veuillez reessayer plutard",
+                        message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
                         error 
                     }));
             })
@@ -128,16 +127,14 @@ exports.login = (req, res) => {
 
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
-        res.status(400).json({ errorMessage : "Aucune session est ouverte"});
+        res.status(400).json({ errorMessage : "Aucune session n'est ouverte"});
     }
-    // then we can save the user ...
     const user = new User ({
-        username : req.body.username,
-        password : req.body.password,
-        phone : req.body.phone,
-        // adress : req.body.adress,
-        mail : req.body.mail,
-        msgCode : req.body.msgCode,
+        username: req.body.username,
+        password: req.body.password,
+        phone: req.body.phone,
+        mail: req.body.mail,
+        msgCode: req.body.msgCode,
         role: req.body.role,
         avatar: req.body.avatar
     });
@@ -161,13 +158,13 @@ exports.sendMsgConf = (req, res) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: "Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants",
-                username : req.body.username,
-                password : req.body.password,
-                phone : req.body.phone,
+                alert: "Votre code de confirmation a été envoyé avec succes, veuillez verifier vos messages entrants",
+                username: req.body.username,
+                password: req.body.password,
+                phone: req.body.phone,
                 role: req.body.role,
                 verified: false,
-                msgCode : req.body.msgCode,
+                msgCode: req.body.msgCode,
                 success: true,
                 avatar: req.body.avatar
             });
@@ -175,7 +172,7 @@ exports.sendMsgConf = (req, res) => {
         .catch(err => {
             res.status(500).json({
                 success: false,
-                alert: "Echec de confirmation du code, veuillez reessayer",
+                alert: "Echec de confirmation du code, veuillez réessayer",
                 err
             });
         });
@@ -200,8 +197,8 @@ exports.sendMsgConf = (req, res) => {
 
 /**
  * 
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
 exports.sendMsgToAdmins = (req, res) => {
@@ -213,13 +210,13 @@ exports.sendMsgToAdmins = (req, res) => {
         .then(message => {
             res.status(201).json({
                 message,
-                alert: "Votre commande a ete effectuee avec succes",
+                alert: "Votre commande a été effectuée avec succes",
                 date: Date(Date.now())
             });
         })
         .catch(err => {
             res.status(500).json({
-                alert: "Echec de confirmation du code, veuillez reessayer",
+                alert: "Echec de confirmation du code, veuillez réessayer",
                 err
             });
         });
@@ -256,7 +253,7 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getUserByUsername = (req, res) => {
-    User.findOne({username : req.params.username}, (err, user) => {
+    User.findOne({username: req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
                 res.status(200).json({user});

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Repas = require("../models/repas.model");
 const repasValidator = require("../validators/repas.validators");
+const codeStatus = require("../constants/status-code");
 
 exports.createRepas = (req, res) => {
     // First validation 
@@ -8,35 +9,36 @@ exports.createRepas = (req, res) => {
     const {error, value} = repasValidator.createRepas.validate(data);
     if (!error) {
         const rep = new Repas({
-            label: data.label,
-            idRestau: data.idRestau,
-            description: data.description,
-            imgUrl: data.imgUrl,
-            category: data.category,
-            subCategory: data.subCategory,
-            timeForCook: data.timeForCook,
-            price: data.price,
-            charge: data.charge,
-            averageRate: 5
+            label: value.label,
+            restau: value.idRestau,
+            description: value.description,
+            imgUrl: value.imgUrl,
+            category: value.category,
+            subCategory: value.subCategory,
+            timeForCook: value.timeForCook,
+            price: value.price,
+            charge: value.charge,
+            averageRate: 5,
+            tags: value.tags
         });
         rep.save()
             .then(repas => {
                 res.status(200).json({
                     success: true,
-                    message: "Repas ajoutE avec success",
+                    message: "Repas ajouté avec success",
                     repas
                 });
             })
             .catch(err => {
                 res.status(505).json({
                     success: false,
-                    message: "Quelque chose ne va pas dans le formulaire envoyE",
+                    message: "Quelque chose ne va pas dans le formulaire envoyé",
                     err
                 });
             });
     } else {
         res.status(400).json({
-            message: "Veuillez remplir les champs par des donnees valides",
+            message: "Veuillez remplir les champs par des données valides",
             success: false,
             error
         });
@@ -46,13 +48,18 @@ exports.createRepas = (req, res) => {
 exports.getAllRepas = (req, res) => {
     const filter = {};
     Repas.find(filter)
+        .populate("restau")
+        .populate("category")
+        .populate("subCategory")
         .then(repas => {
             if (repas.length == 0) {
                 res.status(201).json({
-                    message: "Aucun repas dans enreigistE "
+                    success: true,
+                    message: "Aucun repas dans enreigisté "
                 });
             } else {
                 res.status(200).json({
+                    success: true,
                     repas
                 });
             }
@@ -60,8 +67,32 @@ exports.getAllRepas = (req, res) => {
         .catch(err => {
             res.status(505).json({
                 success: false,
-                message: "Quelque chose ne va pas dans le formulaire envoyE",
+                message: "Quelque chose ne va pas dans le formulaire envoyé",
                 err
             });
+        });
+};
+
+exports.getRepasByRestuarants = (req, res) => {
+    const filter = {
+        restau: req.query.idRestau
+    };
+    Repas.find(filter)
+        .populate("category")
+        .populate("subCategory")
+        .then(repas => {
+            res.status(codeStatus.OK)
+                .json({
+                    success: true,
+                    repas
+                });
+        })
+        .catch(err => {
+            res.status(codeStatus.BAD_REQUEST)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue est survenue",
+                    err
+                });
         });
 };

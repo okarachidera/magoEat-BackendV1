@@ -15,10 +15,6 @@ const tags = Joi.array()
     .items(textField)
     .optional();
 
-// const url = Joi.string()
-//     .alphanum()
-//     .optional();
-
 const charge = Joi.number()
     .max(1)
     .min(0);
@@ -33,6 +29,10 @@ exports.createRepas = Joi.object().keys({
     timeForCook: Joi.number().required(),
     price: Joi.number().required(),
     charge,
+    coupon: Joi.number()
+        .min(0)
+        .max(1)
+        .optional,
     tags
 });
 
@@ -45,6 +45,10 @@ exports.updateRepas = Joi.object().keys({
     timeForCook: Joi.number().optional(),
     price: Joi.number().optional(),
     charge,
+    coupon: Joi.number()
+        .min(0)
+        .max(1)
+        .optional(),
     rate,
     tags
 });
