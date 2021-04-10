@@ -14,7 +14,6 @@ const client = require("twilio")(accountSid, auth_token);
 exports.signup = (req, res) => {
     const {error, value} = userValidation.signupValidator.validate(req.body);
     if (!error) {
-        // All the data put inside fit the requirements
         User.findOne({phone: value.phone})
             .then(user => {
                 if (!user) {
@@ -25,7 +24,7 @@ exports.signup = (req, res) => {
                                 password : hash,
                                 phone : req.body.phone,
                                 avatar: req.body.avatar,
-                                mail : req.body.mail,
+                                mail: req.body.mail,
                                 msgCode : (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
                                 role: req.body.role,
                                 verified: req.body.verified
@@ -200,8 +199,8 @@ exports.sendMsgConf = (req, res) => {
 
 /**
  * 
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 
 exports.sendMsgToAdmins = (req, res) => {
