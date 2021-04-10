@@ -39,7 +39,7 @@ const restaurantSchema = mongoose.Schema({
             required: false
         }
     ],
-    qverageRate: {
+    averageRate: {
         type: Number,
         required: false,
         unique: false

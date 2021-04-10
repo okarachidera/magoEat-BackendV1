@@ -45,7 +45,6 @@ exports.updateRestInfo = Joi.object({
 });
 
 exports.rateRestaurant = Joi.object({
-    rate,
+    averageRage: rate,
     feedback: textField.optional()
 });
-
