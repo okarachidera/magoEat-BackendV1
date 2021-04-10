@@ -29,8 +29,8 @@ const restaurantSchema = mongoose.Schema({
     },
     owner: {
         type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        unique : false,
+        required: true,
+        unique: false,
         ref: "User"
     },
     feedback: [
@@ -38,11 +38,11 @@ const restaurantSchema = mongoose.Schema({
             type: String,
             required: false
         }
-    ]
-    rate: {
-        type : Number,
-        required : false,
-        unique : false
+    ],
+    qverageRate: {
+        type: Number,
+        required: false,
+        unique: false
     },
     opensAt: {
         type: Date,
