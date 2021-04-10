@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Repas = require("../models/repas.model");
 const repasValidator = require("../validators/repas.validators");
+const codeStatus = require("../constants/status-code");
 
 exports.createRepas = (req, res) => {
     // First validation 
@@ -47,13 +48,18 @@ exports.createRepas = (req, res) => {
 exports.getAllRepas = (req, res) => {
     const filter = {};
     Repas.find(filter)
+        .populate("restau")
+        .populate("category")
+        .populate("subCategory")
         .then(repas => {
             if (repas.length == 0) {
                 res.status(201).json({
+                    success: true,
                     message: "Aucun repas dans enreigisté "
                 });
             } else {
                 res.status(200).json({
+                    success: true,
                     repas
                 });
             }
@@ -64,5 +70,29 @@ exports.getAllRepas = (req, res) => {
                 message: "Quelque chose ne va pas dans le formulaire envoyé",
                 err
             });
+        });
+};
+
+exports.getRepasByRestuarants = (req, res) => {
+    const filter = {
+        restau: req.query.idRestau
+    };
+    Repas.find(filter)
+        .populate("category")
+        .populate("subCategory")
+        .then(repas => {
+            res.status(codeStatus.OK)
+                .json({
+                    success: true,
+                    repas
+                });
+        })
+        .catch(err => {
+            res.status(codeStatus.BAD_REQUEST)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue est survenue",
+                    err
+                });
         });
 };
