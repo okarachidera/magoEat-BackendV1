@@ -131,22 +131,22 @@ exports.createRestau = (req, res) => {
     const {error, value} = restauValidator.createRestau.validate(data);
     if (!error) {
         const restau = new Restau({
-            label: data.label,
-            adress: data.adress,
-            description: data.description,
-            imgUrl: data.imgUrl,
-            ownerId: data.ownerId,
-            imgBrushed: data.imgBrushed,
+            label: value.label,
+            adress: value.adress,
+            description: value.description,
+            imgUrl: value.imgUrl,
+            owner: value.ownerId,
+            imgBrushed: value.imgBrushed,
             averageRating: 5,
-            opensAt: data.opensAt,
-            closeAt: data.closeAt
+            opensAt: value.opensAt,
+            closeAt: value.closeAt
         });
         restau.save()
-            .then(rest => {
+            .then(restaurant => {
                 res.status(statusCode.OK).json({
-                    rest,
+                    restaurant,
                     success: true,
-                    message: "Restaurant ajoutE avec succes"
+                    message: "Restaurant ajouté avec succes"
                 });
             })
             .catch(err => {
@@ -160,7 +160,7 @@ exports.createRestau = (req, res) => {
         res.status(statusCode.NOT_FOUND).json({
             error,
             success: false,
-            message: "Vous avez entrE des donnees invalides, veillez verifier "
+            message: "Vous avez entrE des données invalides, veillez verifier "
         });
     }
 };
