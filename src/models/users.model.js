@@ -5,7 +5,7 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = mongoose.Schema({
     username : {
-        type : String, 
+        type : String,
         required : true, 
         unique : true
     },
@@ -43,6 +43,8 @@ const userSchema = mongoose.Schema({
         default: Date.now
     },
     isAuthentcated: Boolean
+}, {
+    timestamps: true
 });
 
 userSchema.plugin(uniqueValidator);
