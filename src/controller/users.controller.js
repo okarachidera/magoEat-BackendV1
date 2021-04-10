@@ -20,12 +20,12 @@ exports.signup = (req, res) => {
                     bcrypt.hash(req.body.password, 10)
                         .then(hash => {
                             const user = new User ({
-                                username : req.body.username,
-                                password : hash,
-                                phone : req.body.phone,
+                                username: req.body.username,
+                                password: hash,
+                                phone: req.body.phone,
                                 avatar: req.body.avatar,
                                 mail: req.body.mail,
-                                msgCode : (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
+                                msgCode: (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
                                 role: req.body.role,
                                 verified: req.body.verified
                             });
@@ -96,10 +96,10 @@ exports.login = (req, res) => {
                         res.status(200).json({
                             user,
                             success: true,
-                            token : jwt.sign(
-                                {userId : user._id},
+                            token: jwt.sign(
+                                {userId: user._id},
                                 "RANDOM_TOKEN_SECRET",
-                                {expiresIn : "48h"}
+                                {expiresIn: "48h"}
                             )
                         });
                     })
@@ -129,14 +129,12 @@ exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
         res.status(400).json({ errorMessage : "Aucune session est ouverte"});
     }
-    // then we can save the user ...
     const user = new User ({
-        username : req.body.username,
-        password : req.body.password,
-        phone : req.body.phone,
-        // adress : req.body.adress,
-        mail : req.body.mail,
-        msgCode : req.body.msgCode,
+        username: req.body.username,
+        password: req.body.password,
+        phone: req.body.phone,
+        mail: req.body.mail,
+        msgCode: req.body.msgCode,
         role: req.body.role,
         avatar: req.body.avatar
     });
@@ -161,12 +159,12 @@ exports.sendMsgConf = (req, res) => {
             res.status(201).json({
                 message,
                 alert: "Votre code de confirmation a ete envoye avec succes, veuillez verifier vos messages entrants",
-                username : req.body.username,
-                password : req.body.password,
-                phone : req.body.phone,
+                username: req.body.username,
+                password: req.body.password,
+                phone: req.body.phone,
                 role: req.body.role,
                 verified: false,
-                msgCode : req.body.msgCode,
+                msgCode: req.body.msgCode,
                 success: true,
                 avatar: req.body.avatar
             });
@@ -255,7 +253,7 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getUserByUsername = (req, res) => {
-    User.findOne({username : req.params.username}, (err, user) => {
+    User.findOne({username: req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
                 res.status(200).json({user});
