@@ -39,11 +39,11 @@ const restaurantSchema = mongoose.Schema({
         unique : false
     },
     opensAt: {
-        type: String,
+        type: Date,
         required: false
     },
     closeAt: {
-        type: String,
+        type: Date,
         required: false
     }
 }, {

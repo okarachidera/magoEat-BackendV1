@@ -12,12 +12,13 @@ const url = Joi.string()
     .optional();
 const validId = Joi.string()
     .alphanum();
+const validDate = Joi.date().iso().optional();
 
 exports.createRestau = Joi.object().keys({
     label: textField.required(),
-    ownerId: validId.required(),
-    opensAt: textField.optional(),
-    closeAt: textField.optional(),
+    owner: validId.required(),
+    opensAt: validDate,
+    closeAt: validDate,
     imgUrl: url.optional(),
     imgBrushed: url.optional(),
     adress: textField.optional(),
