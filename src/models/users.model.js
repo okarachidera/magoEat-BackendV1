@@ -42,7 +42,13 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
-    isAuthentcated: Boolean
+    isAuthentcated: Boolean,
+    orders: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Order"
+        }
+    ]
 }, {
     timestamps: true
 });

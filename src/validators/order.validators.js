@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
-const { valid } = require("@hapi/joi");
 const Joi = require("@hapi/joi");
 
 const rate = Joi.number()
     .min(1)
     .max(5)
     .optional();
+
 const status = Joi.string()
     .valid(
         "PLACED",
@@ -15,34 +14,35 @@ const status = Joi.string()
         "CANCELED"
     )
     .required();
+
 const validId = Joi.string()
     .alphanum();
-const amount = Joi.number()
-    .required();
+
 const devise = Joi.string()
     .valid(
         "USD",
         "CDF"
     )
     .required();
+
 const stringField = Joi.string()
     .min(2)
     .max(255);
-// const ratable = Joi.boolean()
-//                     .default(true)
+
 const cancelReason = Joi.string()
     .min(2)
     .max(100)
     .optional();
-// const date = Joi.date()
-//                     .required()
+
+const quantity = Joi.number()
+    .min(1);
+
 
 exports.placeOrder = Joi.object().keys({
-    idUser: validId.required(),
-    platId: validId.required(),
-    restauId: validId.required(),
-    amount,
-    devise,
+    user: validId.required(),
+    plat: validId.required(),
+    quantity,
+    devise
 });
 
 exports.cancelOrder = Joi.object().keys({

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-// const uniqueValidator = require('mongoose-unique-validator')
 
 const orderSchema = mongoose.Schema({
-    idUser: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     date: {
@@ -19,16 +19,20 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: false
     },
-    ratable: {
-        type: Boolean,
-        required: true
+    quanity: {
+        type: Number,
+        default: 1
     },
-    feedBack: [
-        {
-            body: String,
-            date: Date
+    feedBack: {
+        body: {
+            type: String,
+            required: true
+        },
+        date: {
+            type: Number,
+            default: Date.now()
         }
-    ],
+    },
     amount: {
         type: Number,
         required: true
@@ -44,11 +48,6 @@ const orderSchema = mongoose.Schema({
     cancelReason: {
         type: String,
         required: false
-    },
-    restau: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Restau",
-        require: false
     },
     closedAt: {
         type: Date,
