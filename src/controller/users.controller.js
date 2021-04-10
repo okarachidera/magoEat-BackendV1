@@ -26,7 +26,7 @@ exports.signup = (req, res) => {
                                 phone : req.body.phone,
                                 avatar: req.body.avatar,
                                 mail : req.body.mail,
-                                msgCode : Math.floor(Math.random()*999)+1000,
+                                msgCode : (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
                                 role: req.body.role,
                                 verified: req.body.verified
                             });
