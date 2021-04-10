@@ -33,7 +33,10 @@ const restaurantSchema = mongoose.Schema({
         unique : false,
         ref: "User"
     },
-    averageRating: {
+    feedback: {
+
+    },
+    rate: {
         type : Number,
         required : false,
         unique : false

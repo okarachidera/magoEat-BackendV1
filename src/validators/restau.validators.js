@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const Joi = require("@hapi/joi");
 
 const textField = Joi.string()
@@ -43,5 +42,10 @@ exports.updateRestInfo = Joi.object({
     imgUrl: url.optional(),
     adress: textField.optional(),
     description: Joi.string().min(3).max(255).optional()
+});
+
+exports.rateRestaurant = Joi.object({
+    rate,
+    feedback: textField.optional()
 });
 
