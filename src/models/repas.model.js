@@ -57,6 +57,8 @@ const repasSchema = mongoose.Schema({
         required: false,
         default: 0
     }
+}, {
+    timestamps: true
 });
 
 repasSchema.plugin(uniqueValidator);
