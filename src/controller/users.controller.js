@@ -93,7 +93,7 @@ exports.login = (req, res) => {
                                     message : "Mot de passe incorect"
                                 });
                             } else {
-                                res.status(200).json({
+                                res.status(statusCode.OK).json({
                                     user,
                                     success: true,
                                     token: jwt.sign(

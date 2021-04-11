@@ -10,7 +10,6 @@ const repasSchema = mongoose.Schema({
     restau: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Restau",
-        require: true
     },
     description: {
         type: String,
@@ -18,12 +17,11 @@ const repasSchema = mongoose.Schema({
     },
     imgUrl: {
         type: String,
-        require: true
+        required: true
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: true
     },
     subCategory: {
         type: mongoose.Schema.Types.ObjectId,

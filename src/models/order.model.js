@@ -4,7 +4,6 @@ const orderSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
     },
     date: {
         type: Date,
@@ -13,7 +12,6 @@ const orderSchema = mongoose.Schema({
     plat: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Repas",
-        required: true
     },
     rate: {
         type: Number,

@@ -15,15 +15,15 @@ const url = Joi.string()
 const validId = Joi.string()
     .alphanum();
 
-const validDate = Joi.date()
-    .iso()
-    .optional();
+// const validDate = Joi.date()
+//     .iso()
+//     .optional();
 
 exports.createRestau = Joi.object().keys({
     label: textField.required(),
     owner: validId.required(),
-    opensAt: validDate,
-    closeAt: validDate,
+    opensAt: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/),
+    closeAt: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/),
     imgUrl: url.optional(),
     imgBrushed: url.optional(),
     adress: textField.optional(),

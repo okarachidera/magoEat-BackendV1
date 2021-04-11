@@ -29,8 +29,6 @@ const restaurantSchema = mongoose.Schema({
     },
     owner: {
         type : mongoose.Schema.Types.ObjectId,
-        required: true,
-        unique: false,
         ref: "User"
     },
     feedback: [
@@ -45,11 +43,11 @@ const restaurantSchema = mongoose.Schema({
         unique: false
     },
     opensAt: {
-        type: Date,
+        type: String,
         required: false
     },
     closeAt: {
-        type: Date,
+        type: String,
         required: false
     }
 }, {
