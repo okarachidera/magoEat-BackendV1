@@ -3,7 +3,7 @@
 require("dotenv").config();
 const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
 const auth_token = "9b49b6969b55d22a3143a36a1838387a";
-const User = require("../models/users.model");
+const {User} = require("../models/");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
@@ -77,7 +77,11 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     const {error, value} = userValidation.loginValidator.validate(req.body);
     if (!error) {
-        User.findOne({phone: req.body.phone})
+        User.findOne({
+            phone: req.body.phone
+        })
+            .populate("restaurants")
+            .execPopulate()
             .then(user => {
                 if (!user) {
                     res.status(statusCode.FORBIDDEN).json({ 
@@ -239,19 +243,20 @@ exports.getOwners = (req, res) => {
         verified: true
     })
         .populate("restaurants")
-        .then(owners => {
-            res.status(statusCode.OK)
-                .json({
-                    success: true,
-                    owners
-                });
-        })
-        .catch(err => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR)
-                .json({
-                    success: false,
-                    err
-                });
+        .exec((err, owners) => {
+            if (! err) {
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        owners
+                    });
+            } else {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            }
         });
 };
 

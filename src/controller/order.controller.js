@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-const Order = require("../models/order.model");
-const Repas = require("../models/repas.model");
+const { Order, Repas } = require("../models/");
 const orderValidator = require("../validators/order.validators");
 const codeStatus = require("../constants/status-code");
 // For get routes

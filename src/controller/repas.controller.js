@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const Repas = require("../models/repas.model");
+const { Repas } = require("../models/");
 const repasValidator = require("../validators/repas.validators");
 const codeStatus = require("../constants/status-code");
 

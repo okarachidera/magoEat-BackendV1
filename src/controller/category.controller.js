@@ -1,5 +1,4 @@
-const Category = require("../models/category.model");
-const SubCategory = require("../models/subCategory.model");
+const { Category, SubCategory} = require("../models/");
 const categoryValidator = require("../validators/category.validators");
 const subCategoryValidator = require("../validators/subCategoy.validators");
 const codeStatus = require("../constants/status-code");
