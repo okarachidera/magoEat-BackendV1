@@ -43,13 +43,13 @@ exports.getAllOrders = (req, res) => {
         .populate("user")
         .populate("plat")
         .then(orders => {
-            res.status(201).json({
+            res.status(codeStatus.OK).json({
                 success: true,
                 orders
             });
         })
         .catch(error => {
-            res.status(500).json({
+            res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur s'est produite",
                 error
@@ -68,20 +68,31 @@ exports.rateOrder = (req, res) => {
      * Then we check if the order exists. Finding it in the model
      */
         Order.findOne({ _id : req.params.id })
+            .populate("plat")
             .then(order => {
                 if (!order) {
-                    res.status(400).json({ errorMessage : "Erreur, cette commande n'existe pas "});
+                    res.status(codeStatus.NOT_FOUND).json({ errorMessage : "Erreur, cette commande n'existe pas "});
                 }
                 /**
                  * Then we check if its ratable field is true
                  */
-                if (!order.ratable) {
-                    res.status(400).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
+                if (!order.plat.ratable) {
+                    res.status(codeStatus.NO_CONTENT).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
                 }
                 /**
                  * Then we can update its rate and its ratable fields
                  */
-                Order.updateOne({ id_ : req.body.id }, { ratable: false , rate: req.body.rate })
+                const feedback = {
+                    body: value.feedback,
+                    date: new Date(Date.now())
+                };
+
+                Order.updateOne({ 
+                    id_ : req.body.id
+                }, { 
+                    rate: req.body.rate,
+                    feedback 
+                })
                     .then(orderUpdated => {
                         /**
                          * Let's check if the response is not empty
