@@ -43,13 +43,13 @@ exports.getAllOrders = (req, res) => {
         .populate("user")
         .populate("plat")
         .then(orders => {
-            res.status(201).json({
+            res.status(codeStatus.OK).json({
                 success: true,
                 orders
             });
         })
         .catch(error => {
-            res.status(500).json({
+            res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur s'est produite",
                 error
@@ -60,9 +60,6 @@ exports.getAllOrders = (req, res) => {
 // For post routes
 
 exports.rateOrder = (req, res) => {
-    /**
-     * First check if request is valid 
-     */
     // eslint-disable-next-line no-unused-vars
     const {error, value} = orderValidator.rateOrder.validate(req.body);
 
@@ -71,20 +68,31 @@ exports.rateOrder = (req, res) => {
      * Then we check if the order exists. Finding it in the model
      */
         Order.findOne({ _id : req.params.id })
+            .populate("plat")
             .then(order => {
                 if (!order) {
-                    res.status(400).json({ errorMessage : "Erreur, cette commande n'existe pas "});
+                    res.status(codeStatus.NOT_FOUND).json({ errorMessage : "Erreur, cette commande n'existe pas "});
                 }
                 /**
                  * Then we check if its ratable field is true
                  */
-                if (!order.ratable) {
-                    res.status(400).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
+                if (!order.plat.ratable) {
+                    res.status(codeStatus.NO_CONTENT).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
                 }
                 /**
                  * Then we can update its rate and its ratable fields
                  */
-                Order.updateOne({ id_ : req.body.id }, { ratable: false , rate: req.body.rate })
+                const feedback = {
+                    body: value.feedback,
+                    date: new Date(Date.now())
+                };
+
+                Order.updateOne({ 
+                    id_ : req.body.id
+                }, { 
+                    rate: req.body.rate,
+                    feedback 
+                })
                     .then(orderUpdated => {
                         /**
                          * Let's check if the response is not empty
@@ -207,7 +215,27 @@ exports.cancelOrder = (req,res) => {
     const data = req.body;
     const {error, value} = orderValidator.cancelOrder.validate(data);
     if (!error) {
-        console.log(error);
+        Order.updateOne({
+            _id: req.params.idOrder
+        }, {
+            cancelReason: value.cancelReason,
+            status: "CANCELED"
+        })
+            .then(order => {
+                res.status(codeStatus.OK)
+                    .json({
+                        success: true,
+                        message: "Merci de votre note, nous allons en tenir compte",
+                        order
+                    });
+            })
+            .catch(err => {
+                res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            });
     } else {
         res.status(500).json({
             message: "Une erreur s'est produite lors de l'analyse de vos donnees",
@@ -219,10 +247,13 @@ exports.cancelOrder = (req,res) => {
 exports.closeOrder = (req, res) => {
     const {error, value} = orderValidator.closeOrder.validate(req.body);
     if (!error) {
-        Order.update(
+        Order.updateOne(
             {_id: req.params.id},
             {
-                feedback: value.feedback,
+                feedback: {
+                    body: req.body.feedback,
+                    date: new Date(Date.now())
+                },
                 rate: value.rate
             }
         )
@@ -252,26 +283,27 @@ exports.closeOrder = (req, res) => {
 exports.updateStatus = (req, res) => {
     const {error, value} = orderValidator.updateStatus.validate(req.body);
     if (!error) {
-        Order.update(
-            {_id: req.params.id},
-            {status: value.status}
-        )
+        Order.updateOne({
+            _id: req.params.id
+        },{
+            status: value.status
+        })
             .then(updatedOrder => {
-                res.status(200).json({
+                res.status(codeStatus.CREATED).json({
                     success: true,
                     updatedOrder,
                     message: "Status updated successfully"
                 });
             })
             .catch(error => {
-                res.status(505).json({
+                res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     error,
                     message: "Une erreur sest produite"
                 });
             });
     } else {
-        res.status(404).json({
+        res.status(codeStatus.FORBIDDEN).json({
             success: false,
             message: "Echec de mise a jour de la commande"
         });
