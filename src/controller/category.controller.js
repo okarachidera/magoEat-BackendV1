@@ -71,18 +71,20 @@ exports.updateCategory = (req, res) => {
                 imgWhite: value.imgWhite ? value : cat.imgWhite
             })
                 .then(category => {
-                    res.status(codeStatus.OK).json({
-                        success: true,
-                        message: "Mise a jour reussie",
-                        category
-                    });
+                    res.status(codeStatus.OK)
+                        .json({
+                            success: true,
+                            message: "Mise a jour reussie",
+                            category
+                        });
                 })
                 .catch(err => {
-                    res.status(500).json({
-                        success: false,
-                        message: "Mise a jour echouée",
-                        err
-                    });
+                    res.status(500)
+                        .json({
+                            success: false,
+                            message: "Mise a jour echouée",
+                            err
+                        });
                 });
         })
         .catch(err => {
