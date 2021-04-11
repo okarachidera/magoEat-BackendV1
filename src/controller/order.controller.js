@@ -247,10 +247,13 @@ exports.cancelOrder = (req,res) => {
 exports.closeOrder = (req, res) => {
     const {error, value} = orderValidator.closeOrder.validate(req.body);
     if (!error) {
-        Order.update(
+        Order.updateOne(
             {_id: req.params.id},
             {
-                feedback: value.feedback,
+                feedback: {
+                    body: req.body.feedback,
+                    date: new Date(Date.now())
+                },
                 rate: value.rate
             }
         )
@@ -280,26 +283,27 @@ exports.closeOrder = (req, res) => {
 exports.updateStatus = (req, res) => {
     const {error, value} = orderValidator.updateStatus.validate(req.body);
     if (!error) {
-        Order.update(
-            {_id: req.params.id},
-            {status: value.status}
-        )
+        Order.updateOne({
+            _id: req.params.id
+        },{
+            status: value.status
+        })
             .then(updatedOrder => {
-                res.status(200).json({
+                res.status(codeStatus.CREATED).json({
                     success: true,
                     updatedOrder,
                     message: "Status updated successfully"
                 });
             })
             .catch(error => {
-                res.status(505).json({
+                res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     error,
                     message: "Une erreur sest produite"
                 });
             });
     } else {
-        res.status(404).json({
+        res.status(codeStatus.FORBIDDEN).json({
             success: false,
             message: "Echec de mise a jour de la commande"
         });
