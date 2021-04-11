@@ -137,7 +137,7 @@ exports.createRestau = (req, res) => {
             imgUrl: value.imgUrl,
             owner: value.owner,
             imgBrushed: value.imgBrushed,
-            averageRating: 5,
+            averageRate: 5,
             opensAt: value.opensAt,
             closeAt: value.closeAt
         });
