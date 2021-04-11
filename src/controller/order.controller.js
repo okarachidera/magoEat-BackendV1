@@ -60,9 +60,6 @@ exports.getAllOrders = (req, res) => {
 // For post routes
 
 exports.rateOrder = (req, res) => {
-    /**
-     * First check if request is valid 
-     */
     // eslint-disable-next-line no-unused-vars
     const {error, value} = orderValidator.rateOrder.validate(req.body);
 

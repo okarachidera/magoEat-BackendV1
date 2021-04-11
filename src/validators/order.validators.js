@@ -64,4 +64,3 @@ exports.rateOrder = Joi.object().keys({
     feedback: stringField.optional(),
     rate
 });
-
