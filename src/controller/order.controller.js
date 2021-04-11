@@ -215,7 +215,27 @@ exports.cancelOrder = (req,res) => {
     const data = req.body;
     const {error, value} = orderValidator.cancelOrder.validate(data);
     if (!error) {
-        console.log(error);
+        Order.updateOne({
+            _id: req.params.idOrder
+        }, {
+            cancelReason: value.cancelReason,
+            status: "CANCELED"
+        })
+            .then(order => {
+                res.status(codeStatus.OK)
+                    .json({
+                        success: true,
+                        message: "Merci de votre note, nous allons en tenir compte",
+                        order
+                    });
+            })
+            .catch(err => {
+                res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            });
     } else {
         res.status(500).json({
             message: "Une erreur s'est produite lors de l'analyse de vos donnees",
