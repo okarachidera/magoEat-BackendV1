@@ -75,7 +75,7 @@ exports.getAllRepas = (req, res) => {
 
 exports.getRepasByRestuarants = (req, res) => {
     const filter = {
-        restau: req.query.idRestau
+        restau: req.params.idRestau
     };
     Repas.find(filter)
         .populate("category")
