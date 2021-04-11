@@ -234,13 +234,24 @@ exports.sendMsgToAdmins = (req, res) => {
 // GET logic
 
 exports.getOwners = (req, res) => {
-    User.find(  {role: "OWNER", verified: true}, 
-        (err, owners) => {
-            if (!err) {
-                res.status(201).json({owners});
-            } else {
-                res.status(500).send(err);
-            }
+    User.find({
+        role: "OWNER",
+        verified: true
+    })
+        .populate("restaurants")
+        .then(owners => {
+            res.status(statusCode.OK)
+                .json({
+                    success: true,
+                    owners
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    err
+                });
         });
 };
 
