@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const categorySchema = mongoose.Schema({
+const subCategorySchema = mongoose.Schema({
     label: {
         type: String,
         required: true,
@@ -15,6 +15,6 @@ const categorySchema = mongoose.Schema({
     timestamps: true
 });
 
-categorySchema.plugin(uniqueValidator);
+subCategorySchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("SubCategory", subCategorySchema);
