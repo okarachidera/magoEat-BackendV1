@@ -80,7 +80,7 @@ exports.login = (req, res) => {
         User.findOne({phone: req.body.phone})
             .then(user => {
                 if (!user) {
-                    res.status(400).json({ 
+                    res.status(statusCode.FORBIDDEN).json({ 
                         message : "Utilisateur non trouvé !",
                         success: false
                     });
@@ -92,16 +92,17 @@ exports.login = (req, res) => {
                                     success: false,
                                     message : "Mot de passe incorect"
                                 });
+                            } else {
+                                res.status(200).json({
+                                    user,
+                                    success: true,
+                                    token: jwt.sign(
+                                        {userId: user._id},
+                                        "RANDOM_TOKEN_SECRET",
+                                        {expiresIn: "48h"}
+                                    )
+                                });
                             }
-                            res.status(200).json({
-                                user,
-                                success: true,
-                                token: jwt.sign(
-                                    {userId: user._id},
-                                    "RANDOM_TOKEN_SECRET",
-                                    {expiresIn: "48h"}
-                                )
-                            });
                         })
                         .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
                             success: false,
