@@ -153,7 +153,7 @@ exports.consfirmSms = (req, res) => {
     });
     user.save()
         .then((user) => res.status(statusCode.OK).send({ user }))
-        .catch((error) => res.status(400).send({ error }));
+        .catch((error) => res.status(statusCode.FORBIDDEN).send({ error }));
 };
 
 /**
@@ -169,7 +169,7 @@ exports.sendMsgConf = (req, res) => {
         to: req.body.phone
     })
         .then(message => {
-            res.status(201).json({
+            res.status(statusCode.CREATED).json({
                 message,
                 alert: "Votre code de confirmation a été envoyé avec succes, veuillez verifier vos messages entrants",
                 username: req.body.username,
@@ -183,7 +183,7 @@ exports.sendMsgConf = (req, res) => {
             });
         })
         .catch(err => {
-            res.status(500).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 alert: "Echec de confirmation du code, veuillez réessayer",
                 err
@@ -228,7 +228,7 @@ exports.sendMsgToAdmins = (req, res) => {
             });
         })
         .catch(err => {
-            res.status(500).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 alert: "Echec de confirmation du code, veuillez réessayer",
                 err
             });
@@ -263,9 +263,9 @@ exports.getOwners = (req, res) => {
 exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
         if(!err) {
-            res.status(201).json({users});
+            res.status(statusCode.OK).json({users});
         } else {
-            res.status(500).send(err);
+            res.status(statusCode.INTERNAL_SERVER_ERROR).send(err);
         }
     });
 };

@@ -9,13 +9,13 @@ exports.getAllRestau = (req, res) => {
     const query = {};
     Restau.find(query)
         .then(restaus => {
-            res.status(201).json({
+            res.status(statusCode.OK).json({
                 success: true,
                 restaus
             });
         })
         .catch(error => {
-            res.status(500).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur s'est produite",
                 error
@@ -28,19 +28,19 @@ exports.getOwnerRestau = (req, res) => {
     Restau.find({ownerId})
         .then(restaurants => {
             if (!restaurants) {
-                res.status(404).json({
+                res.status(statusCode.NO_CONTENT).json({
                     success: true,
                     message: "Aucun restaurant trouvE pour cet utilisateur"
                 });
             }
-            res.status(201).json({
+            res.status(statusCode.OK).json({
                 success: true,
                 message: "La liste des restaurants",
                 restaurants
             });
         })
         .catch(err => {
-            res.status(505).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue a ete rencontree, veuillez reesayer",
                 err
@@ -66,7 +66,7 @@ exports.getFeaturedRepas = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(400).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue s'est produite",
                 err
@@ -84,14 +84,14 @@ exports.getOrderList = (req, res) => {
                     orders
                 });
             } else {
-                res.status(404).json({
+                res.status(statusCode.UNAUTHORIZED).json({
                     success: false,
                     message: "Les commandes sont inaccessibles"
                 });
             }
         })
         .catch(err => {
-            res.status(400).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue s'est produite",
                 err
@@ -103,12 +103,12 @@ exports.getRepasByRestau = (req, res) => {
     Repas.find({idRestau: req.params.idRestau})
         .then(repas => {
             if (repas) {
-                res.status(200).json({
+                res.status(statusCode.OK).json({
                     success: true,
                     repas
                 });
             } else {
-                res.status(400).json({
+                res.status(statusCode.NO_CONTENT).json({
                     success: false,
                     message: "Une erreur inattendue s'est produite"
                 });

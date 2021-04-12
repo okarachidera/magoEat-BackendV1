@@ -23,21 +23,21 @@ exports.createRepas = (req, res) => {
         });
         rep.save()
             .then(repas => {
-                res.status(200).json({
+                res.status(codeStatus.CREATED).json({
                     success: true,
                     message: "Repas ajouté avec success",
                     repas
                 });
             })
             .catch(err => {
-                res.status(505).json({
+                res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                     success: false,
                     message: "Quelque chose ne va pas dans le formulaire envoyé",
                     err
                 });
             });
     } else {
-        res.status(400).json({
+        res.status(codeStatus.UNAUTHORIZED).json({
             message: "Veuillez remplir les champs par des données valides",
             success: false,
             error
@@ -53,19 +53,19 @@ exports.getAllRepas = (req, res) => {
         .populate("subCategory")
         .then(repas => {
             if (repas.length == 0) {
-                res.status(201).json({
+                res.status(codeStatus.NO_CONTENT).json({
                     success: true,
                     message: "Aucun repas dans enreigisté "
                 });
             } else {
-                res.status(200).json({
+                res.status(codeStatus.OK).json({
                     success: true,
                     repas
                 });
             }
         })
         .catch(err => {
-            res.status(505).json({
+            res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Quelque chose ne va pas dans le formulaire envoyé",
                 err

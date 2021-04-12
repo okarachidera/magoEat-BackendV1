@@ -2,6 +2,7 @@
 const { Order, Repas } = require("../models/");
 const orderValidator = require("../validators/order.validators");
 const codeStatus = require("../constants/status-code");
+
 // For get routes
 
 exports.getOrdersHistory = (req, res) => {
@@ -35,6 +36,13 @@ exports.getOrdersHistory = (req, res) => {
             });
         });
 };
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns [Users]:{role: "owner"}
+ */
 
 exports.getAllOrders = (req, res) => {
     const filter = {};
