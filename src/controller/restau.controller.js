@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const {Restau, Order, Repas} = require("../models/");
+const {Restau, Order, Repas, User} = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
 
@@ -8,18 +8,42 @@ const statusCode = require("../constants/status-code");
 exports.getAllRestau = (req, res) => {
     const query = {};
     Restau.find(query)
-        .then(restaus => {
-            res.status(statusCode.OK).json({
-                success: true,
-                restaus
-            });
-        })
-        .catch(error => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                message: "Une erreur s'est produite",
-                error
-            });
+        .populate("owner")
+        .exec((err, restaus) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Erreur inattendue",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK).json({
+                    success: true,
+                    restaus
+                });
+            }
+        });
+};
+
+exports.showRestau = (req, res) => {
+    Restau.findOne({ _id: req.params.restauId})
+        .populate("owner")
+        .exec((err, restaurant) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Une erreur s'est produite, veuillez reessayer",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        restaurant
+                    });
+            }
         });
 };
 
@@ -141,11 +165,28 @@ exports.createRestau = (req, res) => {
         });
         restau.save()
             .then(restaurant => {
-                res.status(statusCode.OK).json({
-                    restaurant,
-                    success: true,
-                    message: "Restaurant ajouté avec succes"
-                });
+                User.findByIdAndUpdate(
+                    value.owner, {
+                        $push: {
+                            restaurants: restaurant._id
+                        }
+                    }
+                )
+                    .then((owner) => {
+                        res.status(statusCode.OK).json({
+                            restaurant,
+                            success: true,
+                            owner,
+                            message: "Restaurant ajouté avec succes"
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(statusCode.UNAUTHORIZED).json({
+                            success: false,
+                            message: "Erreur survenue sur l'enregistrement du proprio",
+                            err
+                        });
+                    });
             })
             .catch(err => {
                 res.status(statusCode.UNAUTHORIZED).json({
@@ -164,5 +205,26 @@ exports.createRestau = (req, res) => {
 };
 
 exports.updateRestau = (req, res) => {
-    
+    // const {error, value} = restauValidator
+    //     .updateRestauInfo
+    //     .validate(req.body);
+    // if (!error) {
+    //     Restau.findOneAndUpdate(req.params.idRestau, {
+    //         {
+    //             label: value.label,
+    //             ownerId: value.ownerId,
+    //             opensAt: value.opensAt,
+    //             closeAt: value.closeAt,
+    //             imgUrl: value.imgUrl,
+    //             adress: value.adress,
+    //             description: value.description
+    //         }
+    //     });
+    // } else {
+    //     res.status(statusCode.NOT_FOUND).json({
+    //         error,
+    //         success: false,
+    //         message: "Vous avez entrE des données invalides, veillez verifier "
+    //     });
+    // }
 };

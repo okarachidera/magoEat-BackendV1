@@ -20,5 +20,6 @@ router.get("/users", authMiddleware, userCtl.getAllUsers);
  * Get complet list of owners of restaurants
  */
 router.get("/owners", authMiddleware, userCtl.getOwners);
+router.get("/owner/:idOwner", authMiddleware, userCtl.showOwner);
 
 module.exports = router;
