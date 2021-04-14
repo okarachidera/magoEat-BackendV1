@@ -271,6 +271,27 @@ exports.getOwners = (req, res) => {
         });
 };
 
+exports.showOwner = (req, res) => {
+    User.findById(req.params.idOwner)
+        .populate("restaurants")
+        .exec((err, owners) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Une erreur inattendue s'est produite",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        owners
+                    });
+            }
+        });
+};
+
 exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
         if(!err) {
