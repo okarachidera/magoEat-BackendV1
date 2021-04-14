@@ -8,18 +8,21 @@ const statusCode = require("../constants/status-code");
 exports.getAllRestau = (req, res) => {
     const query = {};
     Restau.find(query)
-        .then(restaus => {
-            res.status(statusCode.OK).json({
-                success: true,
-                restaus
-            });
-        })
-        .catch(error => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                message: "Une erreur s'est produite",
-                error
-            });
+        .populate("owner")
+        .exec((err, restaus) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Erreur inattendue",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK).json({
+                    success: true,
+                    restaus
+                });
+            }
         });
 };
 
