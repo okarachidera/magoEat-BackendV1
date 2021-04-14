@@ -80,8 +80,6 @@ exports.login = (req, res) => {
         User.findOne({
             phone: req.body.phone
         })
-            .populate("restaurants")
-            .execPopulate()
             .then(user => {
                 if (!user) {
                     res.status(statusCode.FORBIDDEN).json({ 
@@ -97,15 +95,19 @@ exports.login = (req, res) => {
                                     message : "Mot de passe incorect"
                                 });
                             } else {
-                                res.status(statusCode.OK).json({
-                                    user,
-                                    success: true,
-                                    token: jwt.sign(
-                                        {userId: user._id},
-                                        "RANDOM_TOKEN_SECRET",
-                                        {expiresIn: "48h"}
-                                    )
-                                });
+                                user.populate("restaurants")
+                                    .populate("orders")
+                                    .execPopulate(() => {
+                                        res.status(statusCode.OK).json({
+                                            user,
+                                            success: true,
+                                            token: jwt.sign(
+                                                {userId: user._id},
+                                                "RANDOM_TOKEN_SECRET",
+                                                {expiresIn: "48h"}
+                                            )
+                                        });
+                                    });
                             }
                         })
                         .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
