@@ -32,7 +32,7 @@ exports.signup = (req, res) => {
                             user.save()
                                 .then(user => res.status(statusCode.OK).json({ 
                                     success: true,
-                                    user 
+                                    user
                                 }))
                                 .catch((error) => res.status(statusCode.BAD_REQUEST).json({ 
                                     success: false,
