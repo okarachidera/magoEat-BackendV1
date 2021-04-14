@@ -100,38 +100,6 @@ exports.login = (req, res) => {
                     });
                 }
             });
-        // .then(user => {
-        //     if (!user) {
-        //         res.status(statusCode.FORBIDDEN).json({ 
-        //             message : "Utilisateur non trouvé !",
-        //             success: false
-        //         });
-        //     } else {
-        //         bcrypt.compare(req.body.password, user.password)
-        //             .then(validUser => {
-        //                 if (!validUser) {
-        //                     res.status(statusCode.FORBIDDEN).json({ 
-        //                         success: false,
-        //                         message : "Mot de passe incorect"
-        //                     });
-        //                 } else {
-        
-        //                 }
-        //             })
-        //             .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
-        //                 success: false,
-        //                 message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
-        //                 error 
-        //             }));
-        //     }
-        // })
-        // .catch(error => {
-        //     res.status(statusCode.INTERNAL_SERVER_ERROR)
-        //         .json({
-        //             success: false,
-        //             error
-        //         });
-        // });
     } else {
         res.status(statusCode.INTERNAL_SERVER_ERROR)
             .json({
