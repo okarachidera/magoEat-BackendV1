@@ -15,10 +15,6 @@ const url = Joi.string()
 const validId = Joi.string()
     .alphanum();
 
-// const validDate = Joi.date()
-//     .iso()
-//     .optional();
-
 exports.createRestau = Joi.object()
     .keys({
         label: textField.required(),
