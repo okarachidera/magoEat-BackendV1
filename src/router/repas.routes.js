@@ -4,7 +4,7 @@ const repasCtl = require("../controller/repas.controller");
 const authMiddleware = require("../Middlewares/auth.middleware");
 const categoryController = require("../controller/category.controller");
 
-router.post("/creation", authMiddleware, repasCtl.createRepas);
+router.post("/:idRestau/creation", authMiddleware, repasCtl.createRepas);
 
 router.get("/", repasCtl.getAllRepas);
 

@@ -10,7 +10,13 @@ const subCategorySchema = mongoose.Schema({
     imgCroped: {
         type: String,
         required: true
-    }
+    },
+    repas: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Repas"
+        }
+    ]
 }, {
     timestamps: true
 });

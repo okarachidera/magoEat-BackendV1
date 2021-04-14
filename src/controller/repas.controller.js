@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { Repas } = require("../models/");
+const { Repas, Restau, Category, SubCategory } = require("../models/");
 const repasValidator = require("../validators/repas.validators");
 const codeStatus = require("../constants/status-code");
 
@@ -10,7 +10,7 @@ exports.createRepas = (req, res) => {
     if (!error) {
         const rep = new Repas({
             label: value.label,
-            restau: value.idRestau,
+            restau: req.params.idRestau,
             description: value.description,
             imgUrl: value.imgUrl,
             category: value.category,
@@ -23,11 +23,56 @@ exports.createRepas = (req, res) => {
         });
         rep.save()
             .then(repas => {
-                res.status(codeStatus.CREATED).json({
-                    success: true,
-                    message: "Repas ajouté avec success",
-                    repas
-                });
+                Restau.findByIdAndUpdate(req.params.idRestau, {
+                    $push: {
+                        repas: repas._id
+                    }
+                })
+                    .then(restaurant => {
+                        Category.findByIdAndUpdate(req.body.category, {
+                            $push: {
+                                repas: repas._id
+                            }
+                        })
+                            .then(category => {
+                                SubCategory.findByIdAndUpdate(req.body.subCategory, {
+                                    $push: {
+                                        repas: repas._id
+                                    }
+                                })
+                                    .then(subCategory => {
+                                        res.status(codeStatus.CREATED).json({
+                                            success: true,
+                                            message: "Repas ajouté avec success",
+                                            repas,
+                                            category,
+                                            subCategory,
+                                            restaurant
+                                        });
+                                    })
+                                    .catch((err) => {
+                                        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                                            success: false,
+                                            message: "Quelque chose ne va pas dans le formulaire envoyé",
+                                            err
+                                        });
+                                    });
+                            })
+                            .catch((err) => {
+                                res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                                    success: false,
+                                    message: "Quelque chose ne va pas dans le formulaire envoyé",
+                                    err
+                                });
+                            });
+                    })
+                    .catch(err => {
+                        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                            success: false,
+                            message: "Quelque chose ne va pas dans le formulaire envoyé",
+                            err
+                        });
+                    });
             })
             .catch(err => {
                 res.status(codeStatus.INTERNAL_SERVER_ERROR).json({

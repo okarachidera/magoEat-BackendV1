@@ -31,6 +31,10 @@ const restaurantSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    repas: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Repas"
+    },
     feedback: [
         {
             type: String,
