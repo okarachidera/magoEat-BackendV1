@@ -205,5 +205,18 @@ exports.createRestau = (req, res) => {
 };
 
 exports.updateRestau = (req, res) => {
-    
+    const {error, value} = restauValidator
+        .updateRestauInfo
+        .validate(req.body);
+    if (!error) {
+        Restau.findOneAndUpdate(req.params.idRestau, {
+            
+        });
+    } else {
+        res.status(statusCode.NOT_FOUND).json({
+            error,
+            success: false,
+            message: "Vous avez entrE des données invalides, veillez verifier "
+        });
+    }
 };
