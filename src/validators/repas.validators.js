@@ -21,7 +21,6 @@ const charge = Joi.number()
 
 exports.createRepas = Joi.object().keys({
     label: textField.required(),
-    restau: validId.required(),
     description: textField.required(),
     imgUrl: textField.required(),
     category: validId.required(),
