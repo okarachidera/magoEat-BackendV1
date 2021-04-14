@@ -10,7 +10,7 @@ exports.createRepas = (req, res) => {
     if (!error) {
         const rep = new Repas({
             label: value.label,
-            restau: value.idRestau,
+            restau: req.params.idRestau,
             description: value.description,
             imgUrl: value.imgUrl,
             category: value.category,
