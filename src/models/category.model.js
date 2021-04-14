@@ -24,6 +24,12 @@ const categorySchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Repas"
         }
+    ],
+    restaurants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Restau"
+        }
     ]
 }, {
     timestamps: true
