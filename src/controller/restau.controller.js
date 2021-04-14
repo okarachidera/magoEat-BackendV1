@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const {Restau, Order, Repas, User} = require("../models/");
+const { Restau, Order, Repas, User } = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
 

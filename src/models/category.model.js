@@ -19,9 +19,10 @@ const categorySchema = mongoose.Schema({
         type: String,
         required: true
     },
-    restaurants: [
+    repas: [
         {
-            restau: mongoose.Schema.Types.ObjectId
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Repas"
         }
     ]
 }, {
