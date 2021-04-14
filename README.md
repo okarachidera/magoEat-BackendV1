@@ -71,7 +71,7 @@ At this point the project should run at
     password: String[Required]
     confirmPassword: String[Required]
     phone: Number[Required]
-    email: String[Required] - email address
+    email: String[Required] // email address
     avatarUrl: String[Optional]
     verified: Boolean[Default]
     role: String[Default]
