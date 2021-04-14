@@ -37,7 +37,7 @@ exports.holdRestau = Joi.object()
         isActive: Joi.boolean
     });
 
-exports.updateRestInfo = Joi.object()
+exports.updateRestauInfo = Joi.object()
     .keys({
         label: textField.optional(),
         ownerId: validId.optional(),
