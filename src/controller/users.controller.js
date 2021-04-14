@@ -89,8 +89,15 @@ exports.login = (req, res) => {
                         error 
                     });
                 } else {
-                    console.log(user);
-                    res.send(user);
+                    res.status(statusCode.OK).json({
+                        user,
+                        success: true,
+                        token: jwt.sign(
+                            {userId: user._id},
+                            "RANDOM_TOKEN_SECRET",
+                            {expiresIn: "48h"}
+                        )
+                    });
                 }
             });
         // .then(user => {
@@ -108,15 +115,7 @@ exports.login = (req, res) => {
         //                         message : "Mot de passe incorect"
         //                     });
         //                 } else {
-        //                     res.status(statusCode.OK).json({
-        //                         user,
-        //                         success: true,
-        //                         token: jwt.sign(
-        //                             {userId: user._id},
-        //                             "RANDOM_TOKEN_SECRET",
-        //                             {expiresIn: "48h"}
-        //                         )
-        //                     });
+        
         //                 }
         //             })
         //             .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 

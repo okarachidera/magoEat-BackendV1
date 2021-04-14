@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const {Restau, Order, Repas} = require("../models/");
+const {Restau, Order, Repas, User} = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
 
@@ -165,11 +165,28 @@ exports.createRestau = (req, res) => {
         });
         restau.save()
             .then(restaurant => {
-                res.status(statusCode.OK).json({
-                    restaurant,
-                    success: true,
-                    message: "Restaurant ajouté avec succes"
-                });
+                User.findByIdAndUpdate(
+                    value.owner, {
+                        $push: {
+                            restaurants: restaurant._id
+                        }
+                    }
+                )
+                    .then((owner) => {
+                        res.status(statusCode.OK).json({
+                            restaurant,
+                            success: true,
+                            owner,
+                            message: "Restaurant ajouté avec succes"
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(statusCode.UNAUTHORIZED).json({
+                            success: false,
+                            message: "Erreur survenue sur l'enregistrement du proprio",
+                            err
+                        });
+                    });
             })
             .catch(err => {
                 res.status(statusCode.UNAUTHORIZED).json({
