@@ -205,18 +205,26 @@ exports.createRestau = (req, res) => {
 };
 
 exports.updateRestau = (req, res) => {
-    const {error, value} = restauValidator
-        .updateRestauInfo
-        .validate(req.body);
-    if (!error) {
-        Restau.findOneAndUpdate(req.params.idRestau, {
-            
-        });
-    } else {
-        res.status(statusCode.NOT_FOUND).json({
-            error,
-            success: false,
-            message: "Vous avez entrE des données invalides, veillez verifier "
-        });
-    }
+    // const {error, value} = restauValidator
+    //     .updateRestauInfo
+    //     .validate(req.body);
+    // if (!error) {
+    //     Restau.findOneAndUpdate(req.params.idRestau, {
+    //         {
+    //             label: value.label,
+    //             ownerId: value.ownerId,
+    //             opensAt: value.opensAt,
+    //             closeAt: value.closeAt,
+    //             imgUrl: value.imgUrl,
+    //             adress: value.adress,
+    //             description: value.description
+    //         }
+    //     });
+    // } else {
+    //     res.status(statusCode.NOT_FOUND).json({
+    //         error,
+    //         success: false,
+    //         message: "Vous avez entrE des données invalides, veillez verifier "
+    //     });
+    // }
 };
