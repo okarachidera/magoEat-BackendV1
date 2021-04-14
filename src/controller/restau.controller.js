@@ -23,6 +23,27 @@ exports.getAllRestau = (req, res) => {
         });
 };
 
+exports.showRestau = (req, res) => {
+    Restau.findOne({ _id: req.params.restauId})
+        .populate("owner")
+        .exec((err, restaurant) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Une erreur s'est produite, veuillez reessayer",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        restaurant
+                    });
+            }
+        });
+};
+
 exports.getOwnerRestau = (req, res) => {
     const ownerId = req.params.restauId;
     Restau.find({ownerId})
