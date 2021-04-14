@@ -25,8 +25,7 @@ const repasSchema = mongoose.Schema({
     },
     subCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "SubCategory",
-        required: false
+        ref: "SubCategory"
     },
     timeForCook: {
         type: Number,
