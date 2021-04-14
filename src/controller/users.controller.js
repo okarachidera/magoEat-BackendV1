@@ -80,50 +80,59 @@ exports.login = (req, res) => {
         User.findOne({
             phone: req.body.phone
         })
-            .then(user => {
-                if (!user) {
-                    res.status(statusCode.FORBIDDEN).json({ 
-                        message : "Utilisateur non trouvé !",
-                        success: false
+            .populate("restaurants")
+            .exec((err, user) => {
+                if (err) {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
+                        success: false,
+                        message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
+                        error 
                     });
                 } else {
-                    bcrypt.compare(req.body.password, user.password)
-                        .then(validUser => {
-                            if (!validUser) {
-                                res.status(statusCode.FORBIDDEN).json({ 
-                                    success: false,
-                                    message : "Mot de passe incorect"
-                                });
-                            } else {
-                                user.populate("restaurants")
-                                    .populate("orders")
-                                    .execPopulate(() => {
-                                        res.status(statusCode.OK).json({
-                                            user,
-                                            success: true,
-                                            token: jwt.sign(
-                                                {userId: user._id},
-                                                "RANDOM_TOKEN_SECRET",
-                                                {expiresIn: "48h"}
-                                            )
-                                        });
-                                    });
-                            }
-                        })
-                        .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
-                            success: false,
-                            message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
-                            error 
-                        }));
+                    console.log(user);
+                    res.send(user);
                 }
-            })
-            .catch(error => {
-                res.status(statusCode.INTERNAL_SERVER_ERROR)
-                    .json({
-                        success: false,
-                        error
-                    });
             });
+        // .then(user => {
+        //     if (!user) {
+        //         res.status(statusCode.FORBIDDEN).json({ 
+        //             message : "Utilisateur non trouvé !",
+        //             success: false
+        //         });
+        //     } else {
+        //         bcrypt.compare(req.body.password, user.password)
+        //             .then(validUser => {
+        //                 if (!validUser) {
+        //                     res.status(statusCode.FORBIDDEN).json({ 
+        //                         success: false,
+        //                         message : "Mot de passe incorect"
+        //                     });
+        //                 } else {
+        //                     res.status(statusCode.OK).json({
+        //                         user,
+        //                         success: true,
+        //                         token: jwt.sign(
+        //                             {userId: user._id},
+        //                             "RANDOM_TOKEN_SECRET",
+        //                             {expiresIn: "48h"}
+        //                         )
+        //                     });
+        //                 }
+        //             })
+        //             .catch(error => res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
+        //                 success: false,
+        //                 message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
+        //                 error 
+        //             }));
+        //     }
+        // })
+        // .catch(error => {
+        //     res.status(statusCode.INTERNAL_SERVER_ERROR)
+        //         .json({
+        //             success: false,
+        //             error
+        //         });
+        // });
     } else {
         res.status(statusCode.INTERNAL_SERVER_ERROR)
             .json({
