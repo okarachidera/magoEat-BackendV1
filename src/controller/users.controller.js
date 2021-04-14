@@ -293,27 +293,6 @@ exports.showOwner = (req, res) => {
                 });
         }
     });
-    // User.findOne({
-    //     _id: req.params.idOwner
-    // }, (err, owner) => {
-    //     if (err) {
-    //         res.status(statusCode.INTERNAL_SERVER_ERROR)
-    //             .json({
-    //                 success: false,
-    //                 message: "Une erreur inattendue s'est produite",
-    //                 err
-    //             });
-    //     } else {
-    //         owner.populate("restaurants")
-    //             .execPopupate(() => {
-    //                 res.status(statusCode.OK)
-    //                     .json({
-    //                         success: true,
-    //                         owner
-    //                     });
-    //             });
-    //     }
-    // });
 };
 
 exports.getAllUsers = (req, res) => {
