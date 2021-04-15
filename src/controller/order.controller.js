@@ -71,42 +71,43 @@ exports.rateOrder = (req, res) => {
     if (!error) {
         const feedBack = {
             body: value.feedBack,
-            date: new Date(Date.now())
+            date: Date.now()
         };
-        Order.findOneAndUpdate(req.params.idOrder, {
+        Order.findOneAndUpdate(req.params.order, {
             rate: value.rate,
             feedBack
         })
             .populate("user")
-            .populate("plat")
-            .then(order => {
-                Repas.findOneAndUpdate(order.plat._id, {
-                    $push: {
-                        rates: value.rate
-                    }
-                })
-                    .then(repas => {
-                        res.status(codeStatus.CREATED).json({
-                            success: true,
-                            message: "Merci de votre cotation",
-                            repas,
-                            order
-                        });
-                    })
-                    .catch(error => {
-                        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
-                            success: false,
-                            message: "Echec de mise a jour des donnees dans le restaurant",
-                            error
-                        });
+            .populate("repas")
+            .exec((err, order) => {
+                if (err) {
+                    res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                        success: false,
+                        message: "Echec de mise a jour des donnees dans le restaurant",
+                        err
                     });
-            })
-            .catch(error => {
-                res.status(400).json({
-                    success: false,
-                    message: "Echec",
-                    error
-                });
+                } else {
+                    Repas.findByIdAndUpdate(order.repas, {
+                        $push: {
+                            rates: value.rate
+                        }
+                    })
+                        .then(repas => {
+                            res.status(codeStatus.CREATED).json({
+                                success: true,
+                                message: "Merci de votre cotation",
+                                repas,
+                                order
+                            });
+                        })
+                        .catch(error => {
+                            res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                                success: false,
+                                message: "Echec de mise a jour des donnees dans le restaurant",
+                                error
+                            });
+                        });
+                }
             });
     } else {
         res.status(codeStatus.FORBIDDEN).json({

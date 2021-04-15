@@ -23,7 +23,7 @@ const orderSchema = mongoose.Schema({
     },
     feedBack: {
         body: {
-            type: String,
+            type: String
         },
         date: {
             type: Number,
