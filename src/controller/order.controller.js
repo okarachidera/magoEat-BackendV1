@@ -136,7 +136,9 @@ exports.placeOrder = (req, res) => {
             .populate("repas")
             .save()
             .then(odr => {
-                User.findOneAndUpdate(value.idUser, {
+                User.updateOne({
+                    _id: value.idUser
+                }, {
                     $push: {
                         orders: odr._id
                     }
@@ -211,8 +213,9 @@ exports.closeOrder = (req, res) => {
     const {error, value} = orderValidator.closeOrder.validate(req.body);
     if (!error) {
         Order.updateOne(
-            {_id: req.params.id},
             {
+                _id: req.params.id
+            }, {
                 feedback: {
                     body: req.body.feedback,
                     date: new Date(Date.now())
@@ -221,21 +224,21 @@ exports.closeOrder = (req, res) => {
             }
         )
             .then(updatedOrder => {
-                res.status(201).json({
+                res.status(codeStatus.CREATED).json({
                     success: true,
                     message: "Merci de votre confiance, votre commande a ete cloturee",
                     updatedOrder
                 });
             })
             .catch(error => {
-                res.status(505).json({
+                res.status(codeStatus.BAD_REQUEST).json({
                     success: false,
                     error,
                     message: "Echec de confirmation"
                 });
             });
     } else {
-        res.status(500).json({
+        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
             error,
             success: false,
             message: "Vous avez entrE des donnEes incorrectes"
