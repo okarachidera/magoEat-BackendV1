@@ -122,9 +122,8 @@ exports.placeOrder = (req, res) => {
     const data = req.body;
     const {error, value} = orderValidator.placeOrder.validate(data);
     if (!error) {
-        // Next, create a new order with entered data
         const order = new Order ({
-            user: value.idUser,
+            user: value.user,
             date: Date(Date.now()),
             repas: value.repas,
             quantity: value.quantity,
@@ -133,12 +132,9 @@ exports.placeOrder = (req, res) => {
             status: "PLACED"
         });
         order.populate("user")
-            .populate("repas")
             .save()
             .then(odr => {
-                User.updateOne({
-                    _id: value.idUser
-                }, {
+                User.findOneAndUpdate(value.user, {
                     $push: {
                         orders: odr._id
                     }

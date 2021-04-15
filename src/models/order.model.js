@@ -24,7 +24,6 @@ const orderSchema = mongoose.Schema({
     feedBack: {
         body: {
             type: String,
-            required: true
         },
         date: {
             type: Number,
