@@ -131,8 +131,7 @@ exports.placeOrder = (req, res) => {
             devise: value.devise,
             status: "PLACED"
         });
-        order.populate("user")
-            .save()
+        order.save()
             .then(odr => {
                 User.findOneAndUpdate(value.user, {
                     $push: {
