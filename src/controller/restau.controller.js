@@ -9,6 +9,7 @@ exports.getAllRestau = (req, res) => {
     const query = {};
     Restau.find(query)
         .populate("owner")
+        .populate("repas")
         .exec((err, restaus) => {
             if (err) {
                 res.status(statusCode.INTERNAL_SERVER_ERROR)
