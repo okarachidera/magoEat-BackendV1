@@ -67,13 +67,8 @@ exports.getAllOrders = (req, res) => {
 // For post routes
 
 exports.rateOrder = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
     const {error, value} = orderValidator.rateOrder.validate(req.body);
-
     if (!error) {
-        /**
-     * Then we check if the order exists. Finding it in the model
-     */
         const feedBack = {
             body: value.feedBack,
             date: new Date(Date.now())
