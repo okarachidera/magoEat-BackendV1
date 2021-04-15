@@ -10,6 +10,7 @@ router.post("/create", authMiddleware, restauCtl.createRestau);
 // GET routes
 
 router.get("/", restauCtl.getAllRestau);
+router.get("/:restauId", restauCtl.showRestau);
 router.get("/list/:restauId", restauCtl.getOrderList);
 router.get("/repas/:restauId", restauCtl.getRepasByRestau);
 

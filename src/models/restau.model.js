@@ -27,15 +27,26 @@ const restaurantSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    ownerId: {
-        type : String,
-        required : true,
-        unique : false
+    owner: {
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
-    averageRating: {
-        type : Number,
-        required : false,
-        unique : false
+    repas: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Repas"
+        }
+    ],
+    feedback: [
+        {
+            type: String,
+            required: false
+        }
+    ],
+    averageRate: {
+        type: Number,
+        required: false,
+        unique: false
     },
     opensAt: {
         type: String,
@@ -45,6 +56,8 @@ const restaurantSchema = mongoose.Schema({
         type: String,
         required: false
     }
+}, {
+    timestamps: true
 });
 
 restaurantSchema.plugin(uniqueValidator);

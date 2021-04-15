@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
-const Restau = require("../models/restau.model");
-const Order = require("../models/order.model");
-const Repas = require("../models/repas.model");
+const { Restau, Order, Repas, User } = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
 
@@ -10,18 +8,43 @@ const statusCode = require("../constants/status-code");
 exports.getAllRestau = (req, res) => {
     const query = {};
     Restau.find(query)
-        .then(restaus => {
-            res.status(201).json({
-                success: true,
-                restaus
-            });
-        })
-        .catch(error => {
-            res.status(500).json({
-                success: false,
-                message: "Une erreur s'est produite",
-                error
-            });
+        .populate("owner")
+        .populate("repas")
+        .exec((err, restaus) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Erreur inattendue",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK).json({
+                    success: true,
+                    restaus
+                });
+            }
+        });
+};
+
+exports.showRestau = (req, res) => {
+    Restau.findOne({ _id: req.params.restauId})
+        .populate("owner")
+        .exec((err, restaurant) => {
+            if (err) {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Une erreur s'est produite, veuillez reessayer",
+                        err
+                    });
+            } else {
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        restaurant
+                    });
+            }
         });
 };
 
@@ -30,19 +53,19 @@ exports.getOwnerRestau = (req, res) => {
     Restau.find({ownerId})
         .then(restaurants => {
             if (!restaurants) {
-                res.status(404).json({
+                res.status(statusCode.NO_CONTENT).json({
                     success: true,
                     message: "Aucun restaurant trouvE pour cet utilisateur"
                 });
             }
-            res.status(201).json({
+            res.status(statusCode.OK).json({
                 success: true,
                 message: "La liste des restaurants",
                 restaurants
             });
         })
         .catch(err => {
-            res.status(505).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue a ete rencontree, veuillez reesayer",
                 err
@@ -68,7 +91,7 @@ exports.getFeaturedRepas = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(400).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue s'est produite",
                 err
@@ -86,14 +109,14 @@ exports.getOrderList = (req, res) => {
                     orders
                 });
             } else {
-                res.status(404).json({
+                res.status(statusCode.UNAUTHORIZED).json({
                     success: false,
                     message: "Les commandes sont inaccessibles"
                 });
             }
         })
         .catch(err => {
-            res.status(400).json({
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: "Une erreur inattendue s'est produite",
                 err
@@ -105,12 +128,12 @@ exports.getRepasByRestau = (req, res) => {
     Repas.find({idRestau: req.params.idRestau})
         .then(repas => {
             if (repas) {
-                res.status(200).json({
+                res.status(statusCode.OK).json({
                     success: true,
                     repas
                 });
             } else {
-                res.status(400).json({
+                res.status(statusCode.NO_CONTENT).json({
                     success: false,
                     message: "Une erreur inattendue s'est produite"
                 });
@@ -131,23 +154,40 @@ exports.createRestau = (req, res) => {
     const {error, value} = restauValidator.createRestau.validate(data);
     if (!error) {
         const restau = new Restau({
-            label: data.label,
-            adress: data.adress,
-            description: data.description,
-            imgUrl: data.imgUrl,
-            ownerId: data.ownerId,
-            imgBrushed: data.imgBrushed,
-            averageRating: 5,
-            opensAt: data.opensAt,
-            closeAt: data.closeAt
+            label: value.label,
+            adress: value.adress,
+            description: value.description,
+            imgUrl: value.imgUrl,
+            owner: value.owner,
+            imgBrushed: value.imgBrushed,
+            averageRate: 5,
+            opensAt: value.opensAt,
+            closeAt: value.closeAt
         });
         restau.save()
-            .then(rest => {
-                res.status(statusCode.OK).json({
-                    rest,
-                    success: true,
-                    message: "Restaurant ajoutE avec succes"
-                });
+            .then(restaurant => {
+                User.findByIdAndUpdate(
+                    value.owner, {
+                        $push: {
+                            restaurants: restaurant._id
+                        }
+                    }
+                )
+                    .then((owner) => {
+                        res.status(statusCode.OK).json({
+                            restaurant,
+                            success: true,
+                            owner,
+                            message: "Restaurant ajouté avec succes"
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(statusCode.UNAUTHORIZED).json({
+                            success: false,
+                            message: "Erreur survenue sur l'enregistrement du proprio",
+                            err
+                        });
+                    });
             })
             .catch(err => {
                 res.status(statusCode.UNAUTHORIZED).json({
@@ -160,11 +200,32 @@ exports.createRestau = (req, res) => {
         res.status(statusCode.NOT_FOUND).json({
             error,
             success: false,
-            message: "Vous avez entrE des donnees invalides, veillez verifier "
+            message: "Vous avez entrE des données invalides, veillez verifier "
         });
     }
 };
 
 exports.updateRestau = (req, res) => {
-    
+    // const {error, value} = restauValidator
+    //     .updateRestauInfo
+    //     .validate(req.body);
+    // if (!error) {
+    //     Restau.findOneAndUpdate(req.params.idRestau, {
+    //         {
+    //             label: value.label,
+    //             ownerId: value.ownerId,
+    //             opensAt: value.opensAt,
+    //             closeAt: value.closeAt,
+    //             imgUrl: value.imgUrl,
+    //             adress: value.adress,
+    //             description: value.description
+    //         }
+    //     });
+    // } else {
+    //     res.status(statusCode.NOT_FOUND).json({
+    //         error,
+    //         success: false,
+    //         message: "Vous avez entrE des données invalides, veillez verifier "
+    //     });
+    // }
 };

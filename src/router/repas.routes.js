@@ -4,7 +4,7 @@ const repasCtl = require("../controller/repas.controller");
 const authMiddleware = require("../Middlewares/auth.middleware");
 const categoryController = require("../controller/category.controller");
 
-router.post("/creation", authMiddleware, repasCtl.createRepas);
+router.post("/:idRestau/creation", authMiddleware, repasCtl.createRepas);
 
 router.get("/", repasCtl.getAllRepas);
 
@@ -13,6 +13,12 @@ router.get("/", repasCtl.getAllRepas);
 router.post("/category", authMiddleware, categoryController.createCategory);
 router.put("/category", authMiddleware, categoryController.updateCategory);
 router.get("/categories", categoryController.index);
+
+/**
+ * @model Subcategory 
+ */
+
+router.post("/subcategory", authMiddleware, categoryController.newSubCategory);
 
 // --- End ---
 

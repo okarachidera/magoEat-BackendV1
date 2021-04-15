@@ -16,9 +16,10 @@ router.get("/user/:username", userCtl.getUserByUsername);
 router.get("/users", authMiddleware, userCtl.getAllUsers);
 
 /**
- * @route:  
+ * @route:
  * Get complet list of owners of restaurants
  */
 router.get("/owners", authMiddleware, userCtl.getOwners);
+router.get("/owner/:idOwner", authMiddleware, userCtl.showOwner);
 
 module.exports = router;

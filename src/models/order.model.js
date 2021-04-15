@@ -1,30 +1,35 @@
 const mongoose = require("mongoose");
-// const uniqueValidator = require('mongoose-unique-validator')
 
 const orderSchema = mongoose.Schema({
-    idUser : {
-        type : String,
-        required : true
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
-    date : {
-        type : Date,
-        required : true
+    date: {
+        type: Date,
+        required: true
     },
-    platId: {
-        type : String,
-        required : true
+    repas: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Repas",
     },
-    rate : {
-        type : Number,
-        required : false
+    rate: {
+        type: Number,
+        required: false
     },
-    ratable : {
-        type : Boolean,
-        required : true
+    quanity: {
+        type: Number,
+        default: 1
     },
-    feedBack : [
-        {body: String, date: Date}
-    ],
+    feedBack: {
+        body: {
+            type: String
+        },
+        date: {
+            type: Number,
+            default: Date.now()
+        }
+    },
     amount: {
         type: Number,
         required: true
@@ -41,14 +46,12 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    idRestau: {
-        type: String,
-        require: false
-    },
     closedAt: {
         type: Date,
         required: false
     }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model("Order", orderSchema);

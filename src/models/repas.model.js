@@ -4,11 +4,11 @@ const uniqueValidator = require("mongoose-unique-validator");
 const repasSchema = mongoose.Schema({
     label: {
         type: String,
-        require: true
+        require: true,
     },
-    idRestau: {
-        type: String,
-        require: true
+    restau: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Restau",
     },
     description: {
         type: String,
@@ -16,15 +16,15 @@ const repasSchema = mongoose.Schema({
     },
     imgUrl: {
         type: String,
-        require: true
-    },
-    category: {
-        type: String,
         required: true
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+    },
     subCategory: {
-        type: String,
-        required: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubCategory"
     },
     timeForCook: {
         type: Number,
@@ -34,19 +34,32 @@ const repasSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    devise: {
+        type: String,
+        default: "USD",
+        required: true
+    },
     charge: {
         type: Number,
         required: true
     },
-    averageRate: {
+    rates: {
         type: [Number],
-        required: false
+        required: false,
+        default: [0]
     },
     coupon: {
         type: Number,
         required: false,
         default: 0
-    }
+    },
+    tags: [
+        {
+            type: [String],
+        }
+    ]
+}, {
+    timestamps: true
 });
 
 repasSchema.plugin(uniqueValidator);

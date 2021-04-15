@@ -25,22 +25,22 @@ To get a copy of this project you need:
 ## Instructions
 
 4. Clone this repo
-```
-$ git clone https://github.com/pacyL2K19/magoEat-BackendV1.git
-```
+    ``` bash
+    $ git clone https://github.com/pacyL2K19/magoEat-BackendV1.git
+    ```
 5. Go to the directory
-```
-$ cd magoEat-BackendV1
-```
+    ``` bash
+    $ cd magoEat-BackendV1
+    ```
 6. Install all the packages
-```
-$ npm install
-```
+    ``` bash
+    $ npm install
+    ```
 7. Generate your `.env` file following the `.sample.env` template
 8. Run the project 
-```
-$ npm run start 
-```
+    ``` bash
+    $ npm run start 
+    ```
 At this point the project should run at 
 [http://localhost:YOUR_PORT](http://localhost:8080)
 
@@ -55,7 +55,7 @@ At this point the project should run at
 > - path: `api/auth/login`
 > - Authorization: No
 > - body: 
-```
+```javascript
 {
     username: String[Required]
     password: String[Required]
@@ -65,13 +65,13 @@ At this point the project should run at
 > - path: `api/auth/signup`
 > - Authorization: No
 > - body: 
-```
+```javascript
 {
     username: String[Required]
     password: String[Required]
     confirmPassword: String[Required]
     phone: Number[Required]
-    email: String[Required] - email address
+    email: String[Required] // email address
     avatarUrl: String[Optional]
     verified: Boolean[Default]
     role: String[Default]
