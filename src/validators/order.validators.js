@@ -37,11 +37,15 @@ const cancelReason = Joi.string()
 const quantity = Joi.number()
     .min(1);
 
+const amount = Joi.number()
+    .positive();
+
 
 exports.placeOrder = Joi.object().keys({
     user: validId.required(),
-    plat: validId.required(),
+    repas: validId.required(),
     quantity,
+    amount: amount.required(),
     devise
 });
 

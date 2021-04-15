@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { Order, Repas } = require("../models/");
+const { Order, Repas, User } = require("../models/");
 const orderValidator = require("../validators/order.validators");
 const codeStatus = require("../constants/status-code");
 
@@ -124,22 +124,38 @@ exports.placeOrder = (req, res) => {
     if (!error) {
         // Next, create a new order with entered data
         const order = new Order ({
-            idUser: data.idUser,
+            user: value.idUser,
             date: Date(Date.now()),
-            platId: data.platId,
-            idRestaurant: data.idRestau,
-            ratable: true,
-            amount: data.amount,
-            devise: data.devise,
+            repas: value.repas,
+            quantity: value.quantity,
+            amount: value.amount,
+            devise: value.devise,
             status: "PLACED"
         });
-        order.save()
+        order.populate("user")
+            .populate("repas")
+            .save()
             .then(odr => {
-                res.status(200).json({
-                    success: true,
-                    message: "Votre commande a ete effectué avec succes, en cours de traitement",
-                    odr
-                });
+                User.findOneAndUpdate(value.idUser, {
+                    $push: {
+                        orders: odr._id
+                    }
+                })
+                    .then(user => {
+                        res.status(codeStatus.OK).json({
+                            success: true,
+                            odr,
+                            user,
+                            message: "Votre commande a ete effectué avec succes, en cours de traitement",
+                        });
+                    })
+                    .catch(error => {
+                        res.status(codeStatus.BAD_REQUEST).json({
+                            success: false,
+                            message: "Quelque chose ne va pas dans votre requete, veuillez ressayer plustard",
+                            error
+                        });
+                    });
             })
             .catch(error => {
                 res.status(400).json({
