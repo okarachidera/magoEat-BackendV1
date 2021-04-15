@@ -63,6 +63,6 @@ exports.updateStatus = Joi.object().keys({
 });
 
 exports.rateOrder = Joi.object().keys({
-    feedback: stringField.optional(),
+    feedBack: stringField.optional(),
     rate
 });
