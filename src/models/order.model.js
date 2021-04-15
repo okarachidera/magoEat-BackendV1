@@ -9,7 +9,7 @@ const orderSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    plat: {
+    repas: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Repas",
     },
@@ -23,8 +23,7 @@ const orderSchema = mongoose.Schema({
     },
     feedBack: {
         body: {
-            type: String,
-            required: true
+            type: String
         },
         date: {
             type: Number,

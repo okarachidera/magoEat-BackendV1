@@ -37,11 +37,15 @@ const cancelReason = Joi.string()
 const quantity = Joi.number()
     .min(1);
 
+const amount = Joi.number()
+    .positive();
+
 
 exports.placeOrder = Joi.object().keys({
     user: validId.required(),
-    plat: validId.required(),
+    repas: validId.required(),
     quantity,
+    amount: amount.required(),
     devise
 });
 
@@ -50,7 +54,7 @@ exports.cancelOrder = Joi.object().keys({
 });
 
 exports.closeOrder = Joi.object().keys({
-    feedback: stringField.optional(),
+    feedBack: stringField.optional(),
     rate
 });
 
@@ -59,6 +63,6 @@ exports.updateStatus = Joi.object().keys({
 });
 
 exports.rateOrder = Joi.object().keys({
-    feedback: stringField.optional(),
+    feedBack: stringField.optional(),
     rate
 });

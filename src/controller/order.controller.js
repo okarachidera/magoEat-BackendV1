@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-const { Order, Repas } = require("../models/");
+const { Order, Repas, User } = require("../models/");
 const orderValidator = require("../validators/order.validators");
 const codeStatus = require("../constants/status-code");
 
 // For get routes
 
 exports.getOrdersHistory = (req, res) => {
-    Order.find({ user : req.params.idUser })
+    Order.find({ user: req.params.idUser })
         .populate("plat")
         .then(orders => {
             if (!orders) {
                 res.status(codeStatus.NO_CONTENT)
                     .json({
                         success: true,
-                        message : "Quelque chose ne va pas, rassurez-vous d'etre connecte" 
+                        message: "Quelque chose ne va pas, rassurez-vous d'etre connecte" 
                     });
             }
             if (orders.length == 0) {
                 res.status(codeStatus.NO_CONTENT)
                     .json({
                         success: true,
-                        message : "Il y a aucune commancde dans votre historique" 
+                        message: "Il y a aucune commancde dans votre historique" 
                     });
             } else {
                 res.status(codeStatus.OK).json({
@@ -67,109 +67,50 @@ exports.getAllOrders = (req, res) => {
 // For post routes
 
 exports.rateOrder = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
     const {error, value} = orderValidator.rateOrder.validate(req.body);
-
     if (!error) {
-        /**
-     * Then we check if the order exists. Finding it in the model
-     */
-        Order.findOne({ _id : req.params.id })
-            .populate("plat")
-            .then(order => {
-                if (!order) {
-                    res.status(codeStatus.NOT_FOUND).json({ errorMessage : "Erreur, cette commande n'existe pas "});
-                }
-                /**
-                 * Then we check if its ratable field is true
-                 */
-                if (!order.plat.ratable) {
-                    res.status(codeStatus.NO_CONTENT).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
-                }
-                /**
-                 * Then we can update its rate and its ratable fields
-                 */
-                const feedback = {
-                    body: value.feedback,
-                    date: new Date(Date.now())
-                };
-
-                Order.updateOne({ 
-                    id_ : req.body.id
-                }, { 
-                    rate: req.body.rate,
-                    feedback 
-                })
-                    .then(orderUpdated => {
-                        /**
-                         * Let's check if the response is not empty
-                         */
-                        if (!orderUpdated) {
-                            /**
-                             * Need to update the specific average rate of the repas before sending a response
-                             */
-                            let newAvgRates  = [req.body.rate];
-                            Repas.findOne({_id: req.body.idPlat})
-                                .then(repas => {
-                                    if (repas) {
-                                        newAvgRates.concat(repas.averageRate);
-                                        Repas.updateOne({_id: req.body.idPlat}, {averageRate: newAvgRates})
-                                            .then(repasUp => {
-                                                if (repasUp) {
-                                                    res.status(201).json({
-                                                        success: true,
-                                                        message: "Merci de votre cotation",
-                                                        repasUp,
-                                                        orderUpdated
-                                                    });
-                                                } else {
-                                                    res.status(400).json({
-                                                        success: false,
-                                                        message: "Cotation en souffrance"
-                                                    });
-                                                }
-                                            })
-                                            .catch(err => {
-                                                res.status(400).json({
-                                                    success: false,
-                                                    message: "Une erreur inatendue",
-                                                    err
-                                                });
-                                            });
-                                    } else {
-                                        res.status(400).json({
-                                            success: false,
-                                            message: "Une erreur constatée",
-                                            repas // for debugging
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    res.status(500).json({
-                                        success: false,
-                                        message: "Une erreur s'est produite, veuilleez réessayer plus tard",
-                                        err // for debugging
-                                    });
-                                });
-                            res.status(400).json({ 
-                                success: false,
-                                errorMessage : "Erreur de mise a jour de votre cotaton"
-                            });
+        const feedBack = {
+            body: value.feedBack,
+            date: Date.now()
+        };
+        Order.findOneAndUpdate(req.params.order, {
+            rate: value.rate,
+            feedBack
+        })
+            .populate("user")
+            .populate("repas")
+            .exec((err, order) => {
+                if (err) {
+                    res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                        success: false,
+                        message: "Echec de mise a jour des donnees dans le restaurant",
+                        err
+                    });
+                } else {
+                    Repas.findByIdAndUpdate(order.repas, {
+                        $push: {
+                            rates: value.rate
                         }
                     })
-                    .catch(error => {
-                        res.status(400).json({
-                            success: false,
-                            message: "Echec",
-                            error
+                        .then(repas => {
+                            res.status(codeStatus.CREATED).json({
+                                success: true,
+                                message: "Merci de votre cotation",
+                                repas,
+                                order
+                            });
+                        })
+                        .catch(error => {
+                            res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
+                                success: false,
+                                message: "Echec de mise a jour des donnees dans le restaurant",
+                                error
+                            });
                         });
-                    });
-            })
-            .catch(error => {
-                console.log(error);
+                }
             });
     } else {
-        res.status(404).json({
+        res.status(codeStatus.FORBIDDEN).json({
             success: false,
             message: "Veuillez entrer des données valides",
             error
@@ -182,24 +123,37 @@ exports.placeOrder = (req, res) => {
     const data = req.body;
     const {error, value} = orderValidator.placeOrder.validate(data);
     if (!error) {
-        // Next, create a new order with entered data
         const order = new Order ({
-            idUser: data.idUser,
+            user: value.user,
             date: Date(Date.now()),
-            platId: data.platId,
-            idRestaurant: data.idRestau,
-            ratable: true,
-            amount: data.amount,
-            devise: data.devise,
+            repas: value.repas,
+            quantity: value.quantity,
+            amount: value.amount,
+            devise: value.devise,
             status: "PLACED"
         });
         order.save()
             .then(odr => {
-                res.status(200).json({
-                    success: true,
-                    message: "Votre commande a ete effectué avec succes, en cours de traitement",
-                    odr
-                });
+                User.findOneAndUpdate(value.user, {
+                    $push: {
+                        orders: odr._id
+                    }
+                })
+                    .then(user => {
+                        res.status(codeStatus.OK).json({
+                            success: true,
+                            odr,
+                            user,
+                            message: "Votre commande a ete effectué avec succes, en cours de traitement",
+                        });
+                    })
+                    .catch(error => {
+                        res.status(codeStatus.BAD_REQUEST).json({
+                            success: false,
+                            message: "Quelque chose ne va pas dans votre requete, veuillez ressayer plustard",
+                            error
+                        });
+                    });
             })
             .catch(error => {
                 res.status(400).json({
@@ -255,8 +209,9 @@ exports.closeOrder = (req, res) => {
     const {error, value} = orderValidator.closeOrder.validate(req.body);
     if (!error) {
         Order.updateOne(
-            {_id: req.params.id},
             {
+                _id: req.params.id
+            }, {
                 feedback: {
                     body: req.body.feedback,
                     date: new Date(Date.now())
@@ -265,21 +220,21 @@ exports.closeOrder = (req, res) => {
             }
         )
             .then(updatedOrder => {
-                res.status(201).json({
+                res.status(codeStatus.CREATED).json({
                     success: true,
                     message: "Merci de votre confiance, votre commande a ete cloturee",
                     updatedOrder
                 });
             })
             .catch(error => {
-                res.status(505).json({
+                res.status(codeStatus.BAD_REQUEST).json({
                     success: false,
                     error,
                     message: "Echec de confirmation"
                 });
             });
     } else {
-        res.status(500).json({
+        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
             error,
             success: false,
             message: "Vous avez entrE des donnEes incorrectes"

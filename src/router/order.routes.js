@@ -9,7 +9,7 @@ router.post("/placeOrder", authMiddleware, orderCtl.placeOrder);
 router.post("/closeOrder", authMiddleware, orderCtl.closeOrder);
 router.post("/updateStatus", authMiddleware, orderCtl.updateStatus);
 router.post("/cancelOrder", authMiddleware, orderCtl.cancelOrder);
-router.post("/rate/:id", authMiddleware, orderCtl.rateOrder);
+router.post("/rate/:order", authMiddleware, orderCtl.rateOrder);
 
 // The get routes
 
