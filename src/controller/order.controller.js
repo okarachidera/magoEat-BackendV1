@@ -6,21 +6,21 @@ const codeStatus = require("../constants/status-code");
 // For get routes
 
 exports.getOrdersHistory = (req, res) => {
-    Order.find({ user : req.params.idUser })
+    Order.find({ user: req.params.idUser })
         .populate("plat")
         .then(orders => {
             if (!orders) {
                 res.status(codeStatus.NO_CONTENT)
                     .json({
                         success: true,
-                        message : "Quelque chose ne va pas, rassurez-vous d'etre connecte" 
+                        message: "Quelque chose ne va pas, rassurez-vous d'etre connecte" 
                     });
             }
             if (orders.length == 0) {
                 res.status(codeStatus.NO_CONTENT)
                     .json({
                         success: true,
-                        message : "Il y a aucune commancde dans votre historique" 
+                        message: "Il y a aucune commancde dans votre historique" 
                     });
             } else {
                 res.status(codeStatus.OK).json({
@@ -74,102 +74,130 @@ exports.rateOrder = (req, res) => {
         /**
      * Then we check if the order exists. Finding it in the model
      */
-        Order.findOne({ _id : req.params.id })
+        const feedBack = {
+            body: value.feedBack,
+            date: new Date(Date.now())
+        };
+        Order.findOneAndUpdate(req.params.idOrder, {
+            rate: value.rate,
+            feedBack
+        })
+            .populate("user")
             .populate("plat")
             .then(order => {
-                if (!order) {
-                    res.status(codeStatus.NOT_FOUND).json({ errorMessage : "Erreur, cette commande n'existe pas "});
-                }
-                /**
-                 * Then we check if its ratable field is true
-                 */
-                if (!order.plat.ratable) {
-                    res.status(codeStatus.NO_CONTENT).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
-                }
-                /**
-                 * Then we can update its rate and its ratable fields
-                 */
-                const feedback = {
-                    body: value.feedback,
-                    date: new Date(Date.now())
-                };
-
-                Order.updateOne({ 
-                    id_ : req.body.id
-                }, { 
-                    rate: req.body.rate,
-                    feedback 
+                Repas.findOneAndUpdate(order.plat._id, {
+                    $push: {
+                        rates: value.rate
+                    }
                 })
-                    .then(orderUpdated => {
-                        /**
-                         * Let's check if the response is not empty
-                         */
-                        if (!orderUpdated) {
-                            /**
-                             * Need to update the specific average rate of the repas before sending a response
-                             */
-                            let newAvgRates  = [req.body.rate];
-                            Repas.findOne({_id: req.body.idPlat})
-                                .then(repas => {
-                                    if (repas) {
-                                        newAvgRates.concat(repas.averageRate);
-                                        Repas.updateOne({_id: req.body.idPlat}, {averageRate: newAvgRates})
-                                            .then(repasUp => {
-                                                if (repasUp) {
-                                                    res.status(201).json({
-                                                        success: true,
-                                                        message: "Merci de votre cotation",
-                                                        repasUp,
-                                                        orderUpdated
-                                                    });
-                                                } else {
-                                                    res.status(400).json({
-                                                        success: false,
-                                                        message: "Cotation en souffrance"
-                                                    });
-                                                }
-                                            })
-                                            .catch(err => {
-                                                res.status(400).json({
-                                                    success: false,
-                                                    message: "Une erreur inatendue",
-                                                    err
-                                                });
-                                            });
-                                    } else {
-                                        res.status(400).json({
-                                            success: false,
-                                            message: "Une erreur constatée",
-                                            repas // for debugging
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    res.status(500).json({
-                                        success: false,
-                                        message: "Une erreur s'est produite, veuilleez réessayer plus tard",
-                                        err // for debugging
-                                    });
-                                });
-                            res.status(400).json({ 
-                                success: false,
-                                errorMessage : "Erreur de mise a jour de votre cotaton"
-                            });
-                        }
+                    .then(repas => {
+                        res.status(codeStatus.CREATED).json({
+                            success: true,
+                            message: "Merci de votre cotation",
+                            repas,
+                            order
+                        });
                     })
                     .catch(error => {
-                        res.status(400).json({
+                        res.status(codeStatus.INTERNAL_SERVER_ERROR).json({
                             success: false,
-                            message: "Echec",
+                            message: "Echec de mise a jour des donnees dans le restaurant",
                             error
                         });
                     });
             })
             .catch(error => {
-                console.log(error);
+                res.status(400).json({
+                    success: false,
+                    message: "Echec",
+                    error
+                });
             });
+        // Order.findOne({ _id : req.params.id })
+        //     .populate("plat")
+        //     .then(order => {
+        //         if (!order) {
+        //             res.status(codeStatus.NOT_FOUND).json({ errorMessage : "Erreur, cette commande n'existe pas "});
+        //         }
+        //         /**
+        //          * Then we check if its ratable field is true
+        //          */
+        //         if (!order.plat.ratable) {
+        //             res.status(codeStatus.NO_CONTENT).json({ errorMessage : "Cette commande ne peut être cotée pour l'instant"});
+        //         }
+        //         /**
+        //          * Then we can update its rate and its ratable fields
+        //          */
+        //         const feedback = {
+        //             body: value.feedback,
+        //             date: new Date(Date.now())
+        //         };
+
+        //         Order.updateOne({ 
+        //             id_ : req.body.id
+        //         }, { 
+        //             rate: req.body.rate,
+        //             feedback 
+        //         })
+        //             .then(orderUpdated => {
+        //                 /**
+        //                  * Let's check if the response is not empty
+        //                  */
+        //                 if (!orderUpdated) {
+        //                     /**
+        //                      * Need to update the specific average rate of the repas before sending a response
+        //                      */
+        //                     let newAvgRates  = [req.body.rate];
+        //                     Repas.findOne({_id: req.body.idPlat})
+        //                         .then(repas => {
+        //                             if (repas) {
+        //                                 newAvgRates.concat(repas.averageRate);
+        //                                 Repas.updateOne({_id: req.body.idPlat}, {averageRate: newAvgRates})
+        //                                     .then(repasUp => {
+        //                                         if (repasUp) {
+                                                    
+        //                                         } else {
+        //                                             res.status(400).json({
+        //                                                 success: false,
+        //                                                 message: "Cotation en souffrance"
+        //                                             });
+        //                                         }
+        //                                     })
+        //                                     .catch(err => {
+        //                                         res.status(400).json({
+        //                                             success: false,
+        //                                             message: "Une erreur inatendue",
+        //                                             err
+        //                                         });
+        //                                     });
+        //                             } else {
+        //                                 res.status(400).json({
+        //                                     success: false,
+        //                                     message: "Une erreur constatée",
+        //                                     repas // for debugging
+        //                                 });
+        //                             }
+        //                         })
+        //                         .catch(err => {
+        //                             res.status(500).json({
+        //                                 success: false,
+        //                                 message: "Une erreur s'est produite, veuilleez réessayer plus tard",
+        //                                 err // for debugging
+        //                             });
+        //                         });
+        //                     res.status(400).json({ 
+        //                         success: false,
+        //                         errorMessage : "Erreur de mise a jour de votre cotaton"
+        //                     });
+        //                 }
+        //             })
+                    
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
     } else {
-        res.status(404).json({
+        res.status(codeStatus.FORBIDDEN).json({
             success: false,
             message: "Veuillez entrer des données valides",
             error

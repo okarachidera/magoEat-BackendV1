@@ -50,7 +50,7 @@ exports.cancelOrder = Joi.object().keys({
 });
 
 exports.closeOrder = Joi.object().keys({
-    feedback: stringField.optional(),
+    feedBack: stringField.optional(),
     rate
 });
 

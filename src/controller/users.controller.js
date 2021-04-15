@@ -81,6 +81,7 @@ exports.login = (req, res) => {
             phone: req.body.phone
         })
             .populate("restaurants")
+            .populate("orders")
             .exec((err, user) => {
                 if (err) {
                     res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
