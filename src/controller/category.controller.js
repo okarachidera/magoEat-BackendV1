@@ -124,11 +124,12 @@ exports.newSubCategory = (req, res) => {
                         error
                     });
             });
+    } else {
+        res.status(codeStatus.FORBIDDEN)
+            .json({
+                success: false,
+                message: "Veuillez entrer des donnees valides",
+                error
+            });
     }
-    res.status(codeStatus.FORBIDDEN)
-        .json({
-            success: false,
-            message: "Veuillez entrer des donnees valides",
-            error
-        });
 };

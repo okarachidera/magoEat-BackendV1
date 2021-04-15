@@ -13,6 +13,8 @@ const rate = Joi.number()
 
 const tags = Joi.array()
     .items(textField)
+    .max(5)
+    .min(0)
     .optional();
 
 const charge = Joi.number()

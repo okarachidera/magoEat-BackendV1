@@ -4,7 +4,7 @@ exports.createSubCategory = Joi.object()
     .keys({
         label: Joi.string()
             .max(255)
-            .min(6)
+            .min(3)
             .required(),
         imgCroped: Joi.string()
             .uri()

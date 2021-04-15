@@ -57,7 +57,6 @@ const repasSchema = mongoose.Schema({
     tags: [
         {
             type: [String],
-            required: false
         }
     ]
 }, {

@@ -14,6 +14,12 @@ router.post("/category", authMiddleware, categoryController.createCategory);
 router.put("/category", authMiddleware, categoryController.updateCategory);
 router.get("/categories", categoryController.index);
 
+/**
+ * @model Subcategory 
+ */
+
+router.post("/subcategory", authMiddleware, categoryController.newSubCategory);
+
 // --- End ---
 
 module.exports = router;
