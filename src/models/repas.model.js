@@ -5,7 +5,6 @@ const repasSchema = mongoose.Schema({
     label: {
         type: String,
         require: true,
-        unique: true
     },
     restau: {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,7 +35,7 @@ const repasSchema = mongoose.Schema({
         required: true
     },
     devise: {
-        type: Number,
+        type: String,
         default: "USD",
         required: true
     },
@@ -57,7 +56,6 @@ const repasSchema = mongoose.Schema({
     tags: [
         {
             type: [String],
-            required: false
         }
     ]
 }, {

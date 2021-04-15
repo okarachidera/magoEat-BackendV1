@@ -96,6 +96,7 @@ exports.getAllRepas = (req, res) => {
         .populate("restau")
         .populate("category")
         .populate("subCategory")
+        .sort("price")
         .then(repas => {
             if (repas.length == 0) {
                 res.status(codeStatus.NO_CONTENT).json({
