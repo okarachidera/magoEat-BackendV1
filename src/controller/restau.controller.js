@@ -30,6 +30,7 @@ exports.getAllRestau = (req, res) => {
 exports.showRestau = (req, res) => {
     Restau.findOne({ _id: req.params.restauId})
         .populate("owner")
+        .populate("restaurants")
         .exec((err, restaurant) => {
             if (err) {
                 res.status(statusCode.INTERNAL_SERVER_ERROR)
