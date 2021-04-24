@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 require("dotenv").config();
 const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
 const auth_token = "9b49b6969b55d22a3143a36a1838387a";
@@ -113,20 +112,19 @@ exports.login = (req, res) => {
 
 exports.addFavoriteRestaurant = (req, res) => {
     const { idUser, idRestau } = req.params;
-    console.log(idUser, idRestau);
     Restau.findById(req.params.idRestau)
         .then(restau => {
-            User.findById(req.params.idUser)
+            User.findById(idUser)
                 .then(user => {
-                    restau.update({
+                    restau.updateOne({
                         $push: {
-                            featuredUsers: req.params.idUser
+                            featuredUsers: idUser
                         }
                     })
                         .then(() => {
-                            user.update({
+                            user.updateOne({
                                 $push: {
-                                    favoriteRestaurants: req.params.idRestau
+                                    favoriteRestaurants: idRestau
                                 }
                             })
                                 .then(() => {
@@ -172,15 +170,58 @@ exports.addFavoriteRestaurant = (req, res) => {
 };
 
 exports.removeFromFavoriteRestaurants = (req, res) => {
-    Restau.findById(req.params.idRestau)
+    const { idUser, idRestau } = req.params;
+    Restau.findById(idRestau)
         .then(restau => {
-            restau.update({
-                $pull: {
-                    featuredUsers: req.params.idUser
-                }
-            });
+            User.findById(idUser)
+                .then(user => {
+                    restau.updateOne({
+                        $pull: {
+                            featuredUsers: req.params.idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $pull: {
+                                    favoriteRestaurants: idRestau
+                                }
+                            })
+                                .then(() => {
+                                    
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
         })
-        .catch();
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
 };
 
 /**
