@@ -21,12 +21,6 @@ exports.index = (req, res) => {
                     });
             }
         });
-    // .then(categories => {
-            
-    // })
-    // .catch(err => {
-        
-    // });
 };
 
 exports.createCategory = (req, res) => {
