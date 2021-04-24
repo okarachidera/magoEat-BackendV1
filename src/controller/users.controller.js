@@ -112,20 +112,47 @@ exports.login = (req, res) => {
 };
 
 exports.addFavoriteRestaurant = (req, res) => {
+    const { idUser, idRestau } = req.params;
+    console.log(idUser, idRestau);
     Restau.findById(req.params.idRestau)
         .then(restau => {
-            restau.update({
-                $push: {
-                    featuredUser: req.params.idUser
-                }
-            })
-                .then(() => {
-                    res.status(statusCode.OK)
-                        .json({
-                            success: true,
-                            message: "Ajouté avec succes aux favoris"
+            User.findById(req.params.idUser)
+                .then(user => {
+                    restau.update({
+                        $push: {
+                            featuredUsers: req.params.idUser
+                        }
+                    })
+                        .then(() => {
+                            user.update({
+                                $push: {
+                                    favoriteRestaurants: req.params.idRestau
+                                }
+                            })
+                                .then(() => {
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Ajouté avec succes aux favoris"
+                                        });
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
                         });
-                }).catch((err) => {
+                })
+                .catch(err => {
                     res.status(statusCode.INTERNAL_SERVER_ERROR)
                         .json({
                             success: false,
@@ -146,7 +173,14 @@ exports.addFavoriteRestaurant = (req, res) => {
 
 exports.removeFromFavoriteRestaurants = (req, res) => {
     Restau.findById(req.params.idRestau)
-        .then();
+        .then(restau => {
+            restau.update({
+                $pull: {
+                    featuredUsers: req.params.idUser
+                }
+            });
+        })
+        .catch();
 };
 
 /**
