@@ -210,7 +210,7 @@ exports.addFavoriteRepas = (req, res) => {
                                     res.status(statusCode.OK)
                                         .json({
                                             success: true,
-                                            message: "Retiré avec succes des favoris"
+                                            message: "Ajouté avec succes des favoris"
                                         });
                                 }).catch((err) => {
                                     res.status(statusCode.INTERNAL_SERVER_ERROR)
