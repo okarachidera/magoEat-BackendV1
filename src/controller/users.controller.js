@@ -306,6 +306,64 @@ exports.removeFromFavoriteRestaurants = (req, res) => {
         });
 };
 
+exports.removeFromFavoriteRepas = (req, res) => {
+    const {
+        idUser,
+        idRepas
+    } = req.params;
+    Restau.findById(idRepas)
+        .then(repas => {
+            User.findById(idUser)
+                .then(user => {
+                    repas.updateOne({
+                        $pull: {
+                            featuredUsers: idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $pull: {
+                                    favoriteRestaurants: idRepas
+                                }
+                            })
+                                .then(() => {
+
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
 /**
  * 
  * @param {Request} req
