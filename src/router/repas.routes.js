@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require("express");
 const router = express.Router();
 const { repasController, userController } = require("../controller/");
@@ -7,7 +8,7 @@ const categoryController = require("../controller/category.controller");
 router.post("/:idRestau/creation", authMiddleware, repasController.createRepas);
 
 // Favorite feature
-router.post("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRestaurant);
+// router.post("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRepas);
 
 router.get("/", repasController.getAllRepas);
 
