@@ -22,6 +22,12 @@ const repasSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
     },
+    featuredUsers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
     subCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "SubCategory"

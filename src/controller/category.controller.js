@@ -5,19 +5,21 @@ const codeStatus = require("../constants/status-code");
 
 exports.index = (req, res) => {
     Category.find({})
-        .then(categories => {
-            res.status(codeStatus.OK)
-                .json({
-                    success: true,
-                    categories
-                });
-        })
-        .catch(err => {
-            res.status(codeStatus.INTERNAL_SERVER_ERROR)
-                .json({
-                    success: false,
-                    err
-                });
+        .populate("repas")
+        .exec((err, categories) => {
+            if (!err) {
+                res.status(codeStatus.OK)
+                    .json({
+                        success: true,
+                        categories
+                    });
+            } else {
+                res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            }
         });
 };
 

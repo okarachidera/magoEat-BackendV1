@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 require("dotenv").config();
 const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
 const auth_token = "9b49b6969b55d22a3143a36a1838387a";
-const {User} = require("../models/");
+const {
+    User,
+    Restau,
+    Repas
+} = require("../models/");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
@@ -12,14 +15,19 @@ const statusCode = require("../constants/status-code");
 const client = require("twilio")(accountSid, auth_token);
 
 exports.signup = (req, res) => {
-    const {error, value} = userValidation.signupValidator.validate(req.body);
+    const {
+        error,
+        value
+    } = userValidation.signupValidator.validate(req.body);
     if (!error) {
-        User.findOne({phone: value.phone})
+        User.findOne({
+            phone: value.phone
+        })
             .then(user => {
                 if (!user) {
                     bcrypt.hash(req.body.password, 10)
                         .then(hash => {
-                            const user = new User ({
+                            const user = new User({
                                 username: req.body.username,
                                 password: hash,
                                 phone: req.body.phone,
@@ -30,19 +38,19 @@ exports.signup = (req, res) => {
                                 verified: req.body.verified
                             });
                             user.save()
-                                .then(user => res.status(statusCode.OK).json({ 
+                                .then(user => res.status(statusCode.OK).json({
                                     success: true,
                                     user
                                 }))
-                                .catch((error) => res.status(statusCode.BAD_REQUEST).json({ 
+                                .catch((error) => res.status(statusCode.BAD_REQUEST).json({
                                     success: false,
                                     error,
-                                    message : "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?" 
+                                    message: "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?"
                                 }));
                         })
-                        .catch(error => res.status(statusCode.FORBIDDEN).json({ 
+                        .catch(error => res.status(statusCode.FORBIDDEN).json({
                             success: false,
-                            error 
+                            error
                         }));
                 } else {
                     res.status(statusCode.FORBIDDEN).json({
@@ -75,7 +83,10 @@ exports.signup = (req, res) => {
  */
 
 exports.login = (req, res) => {
-    const {error, value} = userValidation.loginValidator.validate(req.body);
+    const {
+        error,
+        value
+    } = userValidation.loginValidator.validate(req.body);
     if (!error) {
         User.findOne({
             phone: req.body.phone
@@ -84,19 +95,21 @@ exports.login = (req, res) => {
             .populate("orders")
             .exec((err, user) => {
                 if (err) {
-                    res.status(statusCode.INTERNAL_SERVER_ERROR).json({ 
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                         success: false,
                         message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
-                        error 
+                        error
                     });
                 } else {
                     res.status(statusCode.OK).json({
                         user,
                         success: true,
-                        token: jwt.sign(
-                            {userId: user._id},
-                            "RANDOM_TOKEN_SECRET",
-                            {expiresIn: "48h"}
+                        token: jwt.sign({
+                            userId: user._id
+                        },
+                        "RANDOM_TOKEN_SECRET", {
+                            expiresIn: "48h"
+                        }
                         )
                     });
                 }
@@ -111,6 +124,246 @@ exports.login = (req, res) => {
     }
 };
 
+exports.addFavoriteRestaurant = (req, res) => {
+    const {
+        idUser,
+        idRestau
+    } = req.params;
+    Restau.findById(idRestau)
+        .then(restau => {
+            User.findById(idUser)
+                .then(user => {
+                    restau.updateOne({
+                        $push: {
+                            featuredUsers: idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $push: {
+                                    favoriteRestaurants: idRestau
+                                }
+                            })
+                                .then(() => {
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Ajouté avec succes aux favoris"
+                                        });
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
+exports.addFavoriteRepas = (req, res) => {
+    const {
+        idUser,
+        idRepas
+    } = req.params;
+    Repas.findById(idRepas)
+        .then(repas => {
+            User.findById(idUser)
+                .then(user => {
+                    repas.updateOne({
+                        $push: {
+                            featuredUsers: idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $push: {
+                                    favoriteRepas: idRepas
+                                }
+                            })
+                                .then(() => {
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Ajouté avec succes aux favoris"
+                                        });
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
+exports.removeFromFavoriteRestaurants = (req, res) => {
+    const {
+        idUser,
+        idRestau
+    } = req.params;
+    Restau.findById(idRestau)
+        .then(restau => {
+            User.findById(idUser)
+                .then(user => {
+                    restau.updateOne({
+                        $pull: {
+                            featuredUsers: req.params.idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $pull: {
+                                    favoriteRestaurants: idRestau
+                                }
+                            })
+                                .then(() => {
+
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
+exports.removeFromFavoriteRepas = (req, res) => {
+    const {
+        idUser,
+        idRepas
+    } = req.params;
+    Restau.findById(idRepas)
+        .then(repas => {
+            User.findById(idUser)
+                .then(user => {
+                    repas.updateOne({
+                        $pull: {
+                            featuredUsers: idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $pull: {
+                                    favoriteRepas: idRepas
+                                }
+                            })
+                                .then(() => {
+
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
 /**
  * 
  * @param {Request} req
@@ -119,9 +372,11 @@ exports.login = (req, res) => {
 
 exports.consfirmSms = (req, res) => {
     if (!req.body.msgCode) {
-        res.status(400).json({ errorMessage : "Aucune session n'est ouverte"});
+        res.status(400).json({
+            errorMessage: "Aucune session n'est ouverte"
+        });
     }
-    const user = new User ({
+    const user = new User({
         username: req.body.username,
         password: req.body.password,
         phone: req.body.phone,
@@ -131,8 +386,12 @@ exports.consfirmSms = (req, res) => {
         avatar: req.body.avatar
     });
     user.save()
-        .then((user) => res.status(statusCode.OK).send({ user }))
-        .catch((error) => res.status(statusCode.FORBIDDEN).send({ error }));
+        .then((user) => res.status(statusCode.OK).send({
+            user
+        }))
+        .catch((error) => res.status(statusCode.FORBIDDEN).send({
+            error
+        }));
 };
 
 /**
@@ -143,7 +402,7 @@ exports.consfirmSms = (req, res) => {
 
 exports.sendMsgConf = (req, res) => {
     client.messages.create({
-        body: req.body.msgDetail +" "+ req.body.msgCode,
+        body: req.body.msgDetail + " " + req.body.msgCode,
         from: process.env.NUMBER,
         to: req.body.phone
     })
@@ -173,7 +432,7 @@ exports.sendMsgConf = (req, res) => {
     // var password = "";
     // var source = "";
     // var msg = req.body.msgDetail +" "+ req.body.msgCode;
-        
+
     // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
     //     res.status(response1.statusCode).json({
     //         message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
@@ -197,7 +456,7 @@ exports.sendMsgToAdmins = (req, res) => {
     client.messages.create({
         from: process.env.NUMBER,
         to: req.body.phone,
-        body: "Bonjour, +"+req.body.msgPhoneClient+ " au pseudo "+req.body.username+" viens de passer une commande de"+req.body.quantity+" plats de "+req.body.repas+" chez "+req.body.restau
+        body: "Bonjour, +" + req.body.msgPhoneClient + " au pseudo " + req.body.username + " viens de passer une commande de" + req.body.quantity + " plats de " + req.body.repas + " chez " + req.body.restau
     })
         .then(message => {
             res.status(201).json({
@@ -223,7 +482,7 @@ exports.getOwners = (req, res) => {
     })
         .populate("restaurants")
         .exec((err, owners) => {
-            if (! err) {
+            if (!err) {
                 res.status(statusCode.OK)
                     .json({
                         success: true,
@@ -265,8 +524,10 @@ exports.showOwner = (req, res) => {
 
 exports.getAllUsers = (req, res) => {
     User.find({}, (err, users) => {
-        if(!err) {
-            res.status(statusCode.OK).json({users});
+        if (!err) {
+            res.status(statusCode.OK).json({
+                users
+            });
         } else {
             res.status(statusCode.INTERNAL_SERVER_ERROR).send(err);
         }
@@ -281,12 +542,18 @@ exports.getAllUsers = (req, res) => {
  */
 
 exports.getUserByUsername = (req, res) => {
-    User.findOne({username: req.params.username}, (err, user) => {
+    User.findOne({
+        username: req.params.username
+    }, (err, user) => {
         if (!err) {
             if (user) {
-                res.status(200).json({user});
+                res.status(statusCode.OK).json({
+                    user
+                });
             } else {
-                res.status(401).json({ message : "Uilisateur introuvable" });
+                res.status(401).json({
+                    message: "Uilisateur introuvable"
+                });
             }
         } else {
             res.send(err);

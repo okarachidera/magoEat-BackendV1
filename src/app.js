@@ -1,11 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const userRoute = require("./router/users.routes");
-const orderRoute = require("./router/order.routes");
-const restauRoutes = require("./router/restau.routes");
-const repasRoutes = require("./router/repas.routes");
-
+const {
+    orderRoutes,
+    repasRoutes,
+    restaurantRoutes,
+    userRoutes
+} = require("./router/");
 const app = express ();
 
 mongoose.set("useCreateIndex", true);
@@ -24,9 +25,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/auth",userRoute);
-app.use("/api/order", orderRoute);
-app.use("/api/restaurants", restauRoutes);
+app.use("/api/auth", userRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/repas", repasRoutes);
 
 module.exports = app;
