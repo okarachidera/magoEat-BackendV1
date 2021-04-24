@@ -1,9 +1,14 @@
 /* eslint-disable no-unused-vars */
-const { Restau, Order, Repas, User } = require("../models/");
+const {
+    Restau,
+    Order,
+    Repas,
+    User
+} = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
 
-// The GET logics
+// GET logics
 
 exports.getAllRestau = (req, res) => {
     const query = {};
@@ -28,7 +33,9 @@ exports.getAllRestau = (req, res) => {
 };
 
 exports.showRestau = (req, res) => {
-    Restau.findOne({ _id: req.params.restauId})
+    Restau.findOne({
+        _id: req.params.restauId
+    })
         .populate("owner")
         .populate("restaurants")
         .exec((err, restaurant) => {
@@ -51,7 +58,9 @@ exports.showRestau = (req, res) => {
 
 exports.getOwnerRestau = (req, res) => {
     const ownerId = req.params.restauId;
-    Restau.find({ownerId})
+    Restau.find({
+        ownerId
+    })
         .then(restaurants => {
             if (!restaurants) {
                 res.status(statusCode.NO_CONTENT).json({
@@ -75,7 +84,9 @@ exports.getOwnerRestau = (req, res) => {
 };
 
 exports.getFeaturedRepas = (req, res) => {
-    Order.find({restauId: req.params.restauId})
+    Order.find({
+        restauId: req.params.restauId
+    })
         .sort()
         .limit(5)
         .then(orders => {
@@ -102,7 +113,9 @@ exports.getFeaturedRepas = (req, res) => {
 
 exports.getOrderList = (req, res) => {
     // Here we have to create list of orders which belongs on a specific restaurant
-    Order.find({restauId: req.params.restauId})
+    Order.find({
+        restauId: req.params.restauId
+    })
         .then(orders => {
             if (orders) {
                 res.status(statusCode.CREATED).json({
@@ -126,7 +139,9 @@ exports.getOrderList = (req, res) => {
 };
 
 exports.getRepasByRestau = (req, res) => {
-    Repas.find({idRestau: req.params.idRestau})
+    Repas.find({
+        idRestau: req.params.idRestau
+    })
         .then(repas => {
             if (repas) {
                 res.status(statusCode.OK).json({
@@ -152,7 +167,10 @@ exports.getRepasByRestau = (req, res) => {
 
 exports.createRestau = (req, res) => {
     const data = req.body;
-    const {error, value} = restauValidator.createRestau.validate(data);
+    const {
+        error,
+        value
+    } = restauValidator.createRestau.validate(data);
     if (!error) {
         const restau = new Restau({
             label: value.label,
