@@ -203,7 +203,7 @@ exports.addFavoriteRepas = (req, res) => {
                         .then(() => {
                             user.updateOne({
                                 $push: {
-                                    favoriteRestaurants: idRepas
+                                    favoriteRepas: idRepas
                                 }
                             })
                                 .then(() => {
@@ -323,7 +323,7 @@ exports.removeFromFavoriteRepas = (req, res) => {
                         .then(() => {
                             user.updateOne({
                                 $pull: {
-                                    favoriteRestaurants: idRepas
+                                    favoriteRepas: idRepas
                                 }
                             })
                                 .then(() => {

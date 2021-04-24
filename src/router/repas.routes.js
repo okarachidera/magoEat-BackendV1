@@ -8,7 +8,8 @@ const categoryController = require("../controller/category.controller");
 router.post("/:idRestau/creation", authMiddleware, repasController.createRepas);
 
 // Favorite feature
-// router.post("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRepas);
+router.put("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRepas);
+router.put("/unfavorite/:idUser/:idRepas", authMiddleware, userController.removeFromFavoriteRepas);
 
 router.get("/", repasController.getAllRepas);
 

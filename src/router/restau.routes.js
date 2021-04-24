@@ -18,6 +18,7 @@ router.get("/list/:restauId", restaurantController.getOrderList);
 router.get("/repas/:restauId", restaurantController.getRepasByRestau);
 
 // Favorite feature
-router.post("/favorite/:idUser/:idRestau", authMiddleware, userController.addFavoriteRestaurant);
+router.put("/favorite/:idUser/:idRestau", authMiddleware, userController.addFavoriteRestaurant);
+router.put("/unfavorite/:idUser/:idRestau", authMiddleware, userController.removeFromFavoriteRestaurants);
 
 module.exports = router;
