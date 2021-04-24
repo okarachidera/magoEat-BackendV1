@@ -1,26 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const userCtl = require("../controller/users.controller");
+const { userController } = require("../controller/");
 const authMiddleware = require("../Middlewares/auth.middleware");
 
-router.post("/signup", userCtl.signup);
-router.post("/login", userCtl.login);
-router.post("/msgConf", userCtl.sendMsgConf);
-router.post("/validateSms", userCtl.consfirmSms);
-// router.post('/sendToAdmins', userCtl.sendMsgToAdmins);
+router.post("/signup", userController.signup);
+router.post("/login", userController.login);
+router.post("/msgConf", userController.sendMsgConf);
+router.post("/validateSms", userController.consfirmSms);
+// router.post('/sendToAdmins', userController.sendMsgToAdmins);
 
 // route to get connected user
 
-router.get("/user/:username", userCtl.getUserByUsername);
+router.get("/user/:username", userController.getUserByUsername);
 
 // to get all the users 
-router.get("/users", authMiddleware, userCtl.getAllUsers);
+router.get("/users", authMiddleware, userController.getAllUsers);
 
 /**
  * @route:
  * Get complet list of owners of restaurants
  */
-router.get("/owners", authMiddleware, userCtl.getOwners);
-router.get("/owner/:idOwner", authMiddleware, userCtl.showOwner);
+router.get("/owners", authMiddleware, userController.getOwners);
+router.get("/owner/:idOwner", authMiddleware, userController.showOwner);
 
 module.exports = router;
