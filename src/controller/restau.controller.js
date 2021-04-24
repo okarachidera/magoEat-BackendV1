@@ -24,10 +24,11 @@ exports.getAllRestau = (req, res) => {
                         err
                     });
             } else {
-                res.status(statusCode.OK).json({
-                    success: true,
-                    restaus
-                });
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        restaus
+                    });
             }
         });
 };
@@ -63,16 +64,18 @@ exports.getOwnerRestau = (req, res) => {
     })
         .then(restaurants => {
             if (!restaurants) {
-                res.status(statusCode.NO_CONTENT).json({
-                    success: true,
-                    message: "Aucun restaurant trouvE pour cet utilisateur"
-                });
+                res.status(statusCode.NO_CONTENT)
+                    .json({
+                        success: true,
+                        message: "Aucun restaurant trouvE pour cet utilisateur"
+                    });
             }
-            res.status(statusCode.OK).json({
-                success: true,
-                message: "La liste des restaurants",
-                restaurants
-            });
+            res.status(statusCode.OK)
+                .json({
+                    success: true,
+                    message: "La liste des restaurants",
+                    restaurants
+                });
         })
         .catch(err => {
             res.status(statusCode.INTERNAL_SERVER_ERROR).json({
@@ -91,23 +94,26 @@ exports.getFeaturedRepas = (req, res) => {
         .limit(5)
         .then(orders => {
             if (orders) {
-                res.status(statusCode.CREATED).json({
-                    success: true,
-                    orders
-                });
+                res.status(statusCode.CREATED)
+                    .json({
+                        success: true,
+                        orders
+                    });
             } else {
-                res.status(statusCode.NOT_FOUND).json({
-                    success: false,
-                    message: "Les commandes sont inaccessibles"
-                });
+                res.status(statusCode.NOT_FOUND)
+                    .json({
+                        success: false,
+                        message: "Les commandes sont inaccessibles"
+                    });
             }
         })
         .catch(err => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                message: "Une erreur inattendue s'est produite",
-                err
-            });
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est produite",
+                    err
+                });
         });
 };
 
@@ -154,7 +160,6 @@ exports.getRepasByRestau = (req, res) => {
                     });
             } else {
                 res.status(statusCode.NO_CONTENT)
-                
                     .json({
                         success: false,
                         message: "Une erreur inattendue s'est produite"
@@ -162,10 +167,11 @@ exports.getRepasByRestau = (req, res) => {
             }
         })
         .catch(error => {
-            res.status(statusCode.FORBIDDEN).json({
-                success: false,
-                message: "Une erreur serveur s'est produite, rassurez-vous qu vous avez la connection internet allumée"
-            });
+            res.status(statusCode.FORBIDDEN)
+                .json({
+                    success: false,
+                    message: "Une erreur serveur s'est produite, rassurez-vous qu vous avez la connection internet allumée"
+                });
         });
 };
 

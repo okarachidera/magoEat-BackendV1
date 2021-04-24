@@ -12,6 +12,7 @@ router.post("/validateSms", userCtl.consfirmSms);
 // route to get connected user
 
 router.get("/user/:username", userCtl.getUserByUsername);
+
 // to get all the users 
 router.get("/users", authMiddleware, userCtl.getAllUsers);
 
@@ -21,5 +22,8 @@ router.get("/users", authMiddleware, userCtl.getAllUsers);
  */
 router.get("/owners", authMiddleware, userCtl.getOwners);
 router.get("/owner/:idOwner", authMiddleware, userCtl.showOwner);
+
+// Favorite feature
+router.post("/favorite/:idUser/:idRestau", authMiddleware, userCtl.addFavoriteRestaurant);
 
 module.exports = router;

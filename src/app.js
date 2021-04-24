@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/api/auth",userRoute);
+app.use("/api/auth", userRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/restaurants", restauRoutes);
 app.use("/api/repas", repasRoutes);

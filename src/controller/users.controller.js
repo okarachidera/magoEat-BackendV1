@@ -3,7 +3,7 @@
 require("dotenv").config();
 const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
 const auth_token = "9b49b6969b55d22a3143a36a1838387a";
-const {User} = require("../models/");
+const {User, Restau} = require("../models/");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
@@ -109,6 +109,31 @@ exports.login = (req, res) => {
                 error
             });
     }
+};
+
+exports.addFavoriteRestaurant = (req, res) => {
+    Restau.findById(req.params.idRestau)
+        .then(restau => {
+            restau.update({
+                $push: {
+                    featuredUser: req.params.idUser
+                }
+            })
+                .then(() => {
+                    res.status(statusCode.OK)
+                        .json({
+                            success: true,
+                            message: "Ajouté avec succes aux favoris"
+                        });
+                }).catch((err) => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        });
 };
 
 /**
