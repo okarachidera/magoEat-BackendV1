@@ -118,23 +118,26 @@ exports.getOrderList = (req, res) => {
     })
         .then(orders => {
             if (orders) {
-                res.status(statusCode.CREATED).json({
-                    success: true,
-                    orders
-                });
+                res.status(statusCode.CREATED)
+                    .json({
+                        success: true,
+                        orders
+                    });
             } else {
-                res.status(statusCode.UNAUTHORIZED).json({
-                    success: false,
-                    message: "Les commandes sont inaccessibles"
-                });
+                res.status(statusCode.UNAUTHORIZED)
+                    .json({
+                        success: false,
+                        message: "Les commandes sont inaccessibles"
+                    });
             }
         })
         .catch(err => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                message: "Une erreur inattendue s'est produite",
-                err
-            });
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est produite",
+                    err
+                });
         });
 };
 
@@ -144,15 +147,18 @@ exports.getRepasByRestau = (req, res) => {
     })
         .then(repas => {
             if (repas) {
-                res.status(statusCode.OK).json({
-                    success: true,
-                    repas
-                });
+                res.status(statusCode.OK)
+                    .json({
+                        success: true,
+                        repas
+                    });
             } else {
-                res.status(statusCode.NO_CONTENT).json({
-                    success: false,
-                    message: "Une erreur inattendue s'est produite"
-                });
+                res.status(statusCode.NO_CONTENT)
+                
+                    .json({
+                        success: false,
+                        message: "Une erreur inattendue s'est produite"
+                    });
             }
         })
         .catch(error => {
