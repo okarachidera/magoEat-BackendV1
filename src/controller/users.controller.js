@@ -4,7 +4,8 @@ const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
 const auth_token = "9b49b6969b55d22a3143a36a1838387a";
 const {
     User,
-    Restau
+    Restau,
+    Repas
 } = require("../models/");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -128,7 +129,7 @@ exports.addFavoriteRestaurant = (req, res) => {
         idUser,
         idRestau
     } = req.params;
-    Restau.findById(req.params.idRestau)
+    Restau.findById(idRestau)
         .then(restau => {
             User.findById(idUser)
                 .then(user => {
@@ -141,6 +142,68 @@ exports.addFavoriteRestaurant = (req, res) => {
                             user.updateOne({
                                 $push: {
                                     favoriteRestaurants: idRestau
+                                }
+                            })
+                                .then(() => {
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Ajouté avec succes aux favoris"
+                                        });
+                                }).catch((err) => {
+                                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                        .json({
+                                            success: false,
+                                            message: "Une erreur inattendue s'est prodiuite",
+                                            err
+                                        });
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Une erreur inattendue s'est prodiuite",
+                                    err
+                                });
+                        });
+                })
+                .catch(err => {
+                    res.status(statusCode.INTERNAL_SERVER_ERROR)
+                        .json({
+                            success: false,
+                            message: "Une erreur inattendue s'est prodiuite",
+                            err
+                        });
+                });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
+        });
+};
+
+exports.addFavoriteRepas = (req, res) => {
+    const {
+        idUser,
+        idRepas
+    } = req.params;
+    Repas.findById(idRepas)
+        .then(repas => {
+            User.findById(idUser)
+                .then(user => {
+                    repas.updateOne({
+                        $push: {
+                            featuredUsers: idUser
+                        }
+                    })
+                        .then(() => {
+                            user.updateOne({
+                                $push: {
+                                    favoriteRestaurants: idRepas
                                 }
                             })
                                 .then(() => {
