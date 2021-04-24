@@ -284,7 +284,7 @@ exports.getUserByUsername = (req, res) => {
     User.findOne({username: req.params.username}, (err, user) => {
         if (!err) {
             if (user) {
-                res.status(200).json({user});
+                res.status(statusCode.OK).json({user});
             } else {
                 res.status(401).json({ message : "Uilisateur introuvable" });
             }
