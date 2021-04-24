@@ -24,6 +24,18 @@ const userSchema = mongoose.Schema({
         type: Number,
         unique: true
     },
+    favoriteRestaurants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Restau"
+        }
+    ],
+    favoriteRepas: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Repas"
+        }
+    ],
     restaurants: [
         {
             type: mongoose.Schema.Types.ObjectId,

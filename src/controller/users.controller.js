@@ -133,7 +133,20 @@ exports.addFavoriteRestaurant = (req, res) => {
                             err
                         });
                 });
+        })
+        .catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    message: "Une erreur inattendue s'est prodiuite",
+                    err
+                });
         });
+};
+
+exports.removeFromFavoriteRestaurants = (req, res) => {
+    Restau.findById(req.params.idRestau)
+        .then();
 };
 
 /**
