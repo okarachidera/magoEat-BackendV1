@@ -210,7 +210,7 @@ exports.addFavoriteRepas = (req, res) => {
                                     res.status(statusCode.OK)
                                         .json({
                                             success: true,
-                                            message: "Ajouté avec succes aux favoris"
+                                            message: "Retiré avec succes des favoris"
                                         });
                                 }).catch((err) => {
                                     res.status(statusCode.INTERNAL_SERVER_ERROR)
@@ -269,7 +269,11 @@ exports.removeFromFavoriteRestaurants = (req, res) => {
                                 }
                             })
                                 .then(() => {
-
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Retiré avec succes des favoris"
+                                        });
                                 }).catch((err) => {
                                     res.status(statusCode.INTERNAL_SERVER_ERROR)
                                         .json({
@@ -327,7 +331,11 @@ exports.removeFromFavoriteRepas = (req, res) => {
                                 }
                             })
                                 .then(() => {
-
+                                    res.status(statusCode.OK)
+                                        .json({
+                                            success: true,
+                                            message: "Retiré avec succes des favoris"
+                                        });
                                 }).catch((err) => {
                                     res.status(statusCode.INTERNAL_SERVER_ERROR)
                                         .json({
