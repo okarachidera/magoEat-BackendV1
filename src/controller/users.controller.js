@@ -23,9 +23,10 @@ exports.signup = (req, res) => {
             phone: value.phone
         })
             .then(user => {
+                const msgCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
                 if (!user) {
                     client.messages.create({
-                        body: "Bienvenu chez MagoEat, votre code de confirmation est " + (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
+                        body: "Bienvenu chez MagoEat, votre code de confirmation est " + msgCode,
                         from: process.env.NUMBER,
                         to: req.body.phone
                     })
@@ -40,17 +41,18 @@ exports.signup = (req, res) => {
                                         mail: req.body.mail,
                                         role: req.body.role,
                                         verified: false,
-                                        message
+                                        msgCode
                                     });
                                     user.save()
                                         .then(user => res.status(statusCode.OK).json({
                                             success: true,
-                                            user
+                                            user,
+                                            message
                                         }))
                                         .catch((error) => res.status(statusCode.BAD_REQUEST).json({
                                             success: false,
                                             error,
-                                            message: "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?"
+                                            message: "Adresse email ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?"
                                         }));
                                 })
                                 .catch(error => res.status(statusCode.FORBIDDEN).json({
@@ -403,7 +405,7 @@ exports.consfirmSms = (req, res) => {
                     user.updateOne({
                         verified: true
                     })
-                        .then((user) => {
+                        .then(() => {
                             res.status(statusCode.CREATED)
                                 .json({
                                     success: true,
