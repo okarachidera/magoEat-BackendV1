@@ -90,6 +90,10 @@ exports.createRepas = (req, res) => {
     }
 };
 
+exports.showRepas = (req, res) => {
+    
+};
+
 exports.getAllRepas = (req, res) => {
     const filter = {};
     Repas.find(filter)
