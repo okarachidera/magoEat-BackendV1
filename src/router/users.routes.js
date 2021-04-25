@@ -5,8 +5,7 @@ const authMiddleware = require("../Middlewares/auth.middleware");
 
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
-router.post("/send-confirmation-msg", userController.sendMsgConf);
-router.post("/validate-message", userController.consfirmSms);
+router.post("/validate-message/:idUser", userController.consfirmSms);
 // router.post('/sendToAdmins', userController.sendMsgToAdmins);
 
 // route to get connected user
