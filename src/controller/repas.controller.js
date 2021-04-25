@@ -91,7 +91,26 @@ exports.createRepas = (req, res) => {
 };
 
 exports.showRepas = (req, res) => {
-    
+    const { idRepas } = req.params;
+    Repas.findOne({
+        _id: idRepas
+    })
+        .populate("subCategory")
+        .exec((err, repas) => {
+            if (! err) {
+                res.status(codeStatus.OK)
+                    .json({
+                        success: true,
+                        repas
+                    });
+            } else {
+                res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            }
+        });
 };
 
 exports.getAllRepas = (req, res) => {

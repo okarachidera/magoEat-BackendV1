@@ -12,6 +12,7 @@ router.put("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavor
 router.put("/unfavorite/:idUser/:idRepas", authMiddleware, userController.removeFromFavoriteRepas);
 
 router.get("/", repasController.getAllRepas);
+router.get("/:idRepas", repasController.showRepas);
 
 // Categories
 router.post("/category", authMiddleware, categoryController.createCategory);
