@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 require("dotenv").config();
-const accountSid = "AC67179a4c82c9866fc8050d9b91999666";
-const auth_token = "9b49b6969b55d22a3143a36a1838387a";
+const accountSid = process.env.ACCOUNT_SID;
+const auth_token = process.env.AUTH_TOKEN;
 const {
     User,
     Restau,
@@ -11,7 +11,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
 const statusCode = require("../constants/status-code");
-// const request1 = require('request');
 const client = require("twilio")(accountSid, auth_token);
 
 exports.signup = (req, res) => {
@@ -24,34 +23,50 @@ exports.signup = (req, res) => {
             phone: value.phone
         })
             .then(user => {
+                const msgCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
                 if (!user) {
-                    bcrypt.hash(req.body.password, 10)
-                        .then(hash => {
-                            const user = new User({
-                                username: req.body.username,
-                                password: hash,
-                                phone: req.body.phone,
-                                avatar: req.body.avatar,
-                                mail: req.body.mail,
-                                msgCode: (Math.floor(Math.random() * 10000) + 10000).toString().substring(1),
-                                role: req.body.role,
-                                verified: req.body.verified
-                            });
-                            user.save()
-                                .then(user => res.status(statusCode.OK).json({
-                                    success: true,
-                                    user
-                                }))
-                                .catch((error) => res.status(statusCode.BAD_REQUEST).json({
+                    client.messages.create({
+                        body: "Bienvenu chez MagoEat, votre code de confirmation est " + msgCode,
+                        from: process.env.NUMBER,
+                        to: req.body.phone
+                    })
+                        .then(message => {
+                            bcrypt.hash(req.body.password, 10)
+                                .then(hash => {
+                                    const user = new User({
+                                        username: req.body.username,
+                                        password: hash,
+                                        phone: req.body.phone,
+                                        avatar: req.body.avatar,
+                                        mail: req.body.mail,
+                                        role: req.body.role,
+                                        verified: false,
+                                        msgCode
+                                    });
+                                    user.save()
+                                        .then(user => res.status(statusCode.OK).json({
+                                            success: true,
+                                            user,
+                                            message
+                                        }))
+                                        .catch((error) => res.status(statusCode.BAD_REQUEST).json({
+                                            success: false,
+                                            error,
+                                            message: "Adresse email ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?"
+                                        }));
+                                })
+                                .catch(error => res.status(statusCode.FORBIDDEN).json({
                                     success: false,
-                                    error,
-                                    message: "Adresse mail ou numero de telephone deja existant, avez-vous deja un compte MAgoEat ?"
+                                    error
                                 }));
                         })
-                        .catch(error => res.status(statusCode.FORBIDDEN).json({
-                            success: false,
-                            error
-                        }));
+                        .catch(err => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
+                                success: false,
+                                alert: "Echec de confirmation du code, veuillez réessayer",
+                                err
+                            });
+                        });
                 } else {
                     res.status(statusCode.FORBIDDEN).json({
                         success: false,
@@ -210,7 +225,7 @@ exports.addFavoriteRepas = (req, res) => {
                                     res.status(statusCode.OK)
                                         .json({
                                             success: true,
-                                            message: "Retiré avec succes des favoris"
+                                            message: "Ajouté avec succes des favoris"
                                         });
                                 }).catch((err) => {
                                     res.status(statusCode.INTERNAL_SERVER_ERROR)
@@ -383,75 +398,39 @@ exports.consfirmSms = (req, res) => {
         res.status(400).json({
             errorMessage: "Aucune session n'est ouverte"
         });
+    } else {
+        User.findById(req.params.idUser)
+            .then(user => {
+                if (user.msgCode === req.body.msgCode) {
+                    user.updateOne({
+                        verified: true
+                    })
+                        .then(() => {
+                            res.status(statusCode.CREATED)
+                                .json({
+                                    success: true,
+                                    message: "Felicitations, votre compte est maintenant actif, decourez nos restaurants et nos menus",
+                                    user
+                                });
+                        }).catch((err) => {
+                            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                                .json({
+                                    success: false,
+                                    message: "Echec de confirmation du code",
+                                    err
+                                });
+                        });
+                }
+            })
+            .catch(err => {
+                res.status(statusCode.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        message: "Echec de confirmation du code",
+                        err
+                    });
+            });
     }
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-        phone: req.body.phone,
-        mail: req.body.mail,
-        msgCode: req.body.msgCode,
-        role: req.body.role,
-        avatar: req.body.avatar
-    });
-    user.save()
-        .then((user) => res.status(statusCode.OK).send({
-            user
-        }))
-        .catch((error) => res.status(statusCode.FORBIDDEN).send({
-            error
-        }));
-};
-
-/**
- * 
- * @param {Request} req 
- * @param {Response} res 
- */
-
-exports.sendMsgConf = (req, res) => {
-    client.messages.create({
-        body: req.body.msgDetail + " " + req.body.msgCode,
-        from: process.env.NUMBER,
-        to: req.body.phone
-    })
-        .then(message => {
-            res.status(statusCode.CREATED).json({
-                message,
-                alert: "Votre code de confirmation a été envoyé avec succes, veuillez verifier vos messages entrants",
-                username: req.body.username,
-                password: req.body.password,
-                phone: req.body.phone,
-                role: req.body.role,
-                verified: false,
-                msgCode: req.body.msgCode,
-                success: true,
-                avatar: req.body.avatar
-            });
-        })
-        .catch(err => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                alert: "Echec de confirmation du code, veuillez réessayer",
-                err
-            });
-        });
-    // var phone = req.body.phone;
-    // var username = "";
-    // var password = "";
-    // var source = "";
-    // var msg = req.body.msgDetail +" "+ req.body.msgCode;
-
-    // request1('http://api.rmlconnect.net/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+phone+'&source='+source+'&message='+msg, function (error1, response1, body1) {
-    //     res.status(response1.statusCode).json({
-    //         message : 'Votre code de confirmation a ete envoye avec succes, veuillez veirifier vos messages entrants',
-    //         username : req.body.username,
-    //         password : req.body.password,
-    //         phone : req.body.phone,
-    //         adress : req.body.adress,
-    //         mail : req.body.mail,
-    //         msgCode : req.body.msgCode
-    //     })
-    // });
 };
 
 /**

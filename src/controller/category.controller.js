@@ -135,3 +135,56 @@ exports.newSubCategory = (req, res) => {
             });
     }
 };
+
+exports.showSubCategory = (req, res) => {
+    SubCategory.findById(req.params.idSubCategory)
+        .populate("repas")
+        .exec((err, subCategory) => {
+            if (!err) {
+                res.status(codeStatus.OK)
+                    .json({
+                        success: true,
+                        subCategory
+                    });
+            } else {
+                res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                    .json({
+                        success: false,
+                        err
+                    });
+            }
+        });
+};
+
+exports.showSubCategories = (req, res) => {
+    SubCategory.find({})
+        .populate("repas")
+        .then((subCategories) => {
+            res.status(codeStatus.OK)
+                .json({
+                    success: true,
+                    subCategories
+                });
+        }).catch((err) => {
+            res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    err
+                });
+        });
+    // .exec((err, subCategories) => {
+    //     if (!err) {
+    //         res.status(codeStatus.OK)
+    //             .json({
+    //                 success: true,
+    //                 subCategories
+    //             });
+    //     } else {
+    //         res.status(codeStatus.INTERNAL_SERVER_ERROR)
+    //             .json({
+    //                 success: false,
+    //                 err
+    //             });
+    //     }
+    // });
+};
