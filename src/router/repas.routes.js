@@ -24,6 +24,8 @@ router.get("/categories", categoryController.index);
  */
 
 router.post("/subcategory", authMiddleware, categoryController.newSubCategory);
+router.get("/subcategories", categoryController.showSubCategories);
+router.get("/subcategory/:idSubCategory", categoryController.showSubCategory);
 
 // --- End ---
 
