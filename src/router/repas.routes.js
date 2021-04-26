@@ -11,11 +11,8 @@ router.post("/:idRestau/creation", authMiddleware, repasController.createRepas);
 router.put("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRepas);
 router.put("/unfavorite/:idUser/:idRepas", authMiddleware, userController.removeFromFavoriteRepas);
 
-router.get("/cat", categoryController.index);
-router.get("/", repasController.getAllRepas);
-router.get("/:idRepas", repasController.showRepas);
-
 // Categories
+router.get("/categories", categoryController.index);
 router.put("/category/update", authMiddleware, categoryController.updateCategory);
 router.post("/category", authMiddleware, categoryController.createCategory);
 router.get("/category/:idCategory", categoryController.showCategory);
@@ -29,5 +26,8 @@ router.get("/subcategories", categoryController.showSubCategories);
 router.get("/subcategory/:idSubCategory", categoryController.showSubCategory);
 
 // --- End ---
+
+router.get("/:idRepas", repasController.showRepas);
+router.get("/", repasController.getAllRepas);
 
 module.exports = router;
