@@ -11,13 +11,14 @@ router.post("/:idRestau/creation", authMiddleware, repasController.createRepas);
 router.put("/favorite/:idUser/:idRepas", authMiddleware, userController.addFavoriteRepas);
 router.put("/unfavorite/:idUser/:idRepas", authMiddleware, userController.removeFromFavoriteRepas);
 
+router.get("/cat", categoryController.index);
 router.get("/", repasController.getAllRepas);
 router.get("/:idRepas", repasController.showRepas);
 
 // Categories
+router.put("/category/update", authMiddleware, categoryController.updateCategory);
 router.post("/category", authMiddleware, categoryController.createCategory);
-router.put("/category", authMiddleware, categoryController.updateCategory);
-router.get("/categories", categoryController.index);
+router.get("/category/:idCategory", categoryController.showCategory);
 
 /**
  * @model Subcategory 

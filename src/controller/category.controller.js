@@ -4,14 +4,34 @@ const subCategoryValidator = require("../validators/subCategoy.validators");
 const codeStatus = require("../constants/status-code");
 
 exports.index = (req, res) => {
-    Category.find({})
+    const filter = {};
+    Category.find(filter)
         .populate("repas")
-        .exec((err, categories) => {
+        .then(categories => {
+            res.status(codeStatus.OK)
+                .json({
+                    success: true,
+                    categories
+                });
+        })
+        .catch(err => {
+            res.status(codeStatus.INTERNAL_SERVER_ERROR)
+                .json({
+                    success: false,
+                    err
+                });
+        });
+};
+
+exports.showCategory = (req, res) => {
+    Category.findById(req.params.idCategory)
+        .populate("repas")
+        .exec((err, category) => {
             if (!err) {
                 res.status(codeStatus.OK)
                     .json({
                         success: true,
-                        categories
+                        category
                     });
             } else {
                 res.status(codeStatus.INTERNAL_SERVER_ERROR)
@@ -24,7 +44,7 @@ exports.index = (req, res) => {
 };
 
 exports.createCategory = (req, res) => {
-    const {error, value} = categoryValidator.createUpdateCategory.validate(req.body);
+    const {error, value} = categoryValidator.createCategory.validate(req.body);
     if (error) {
         res.status(500).json({
             success: false,
@@ -172,19 +192,4 @@ exports.showSubCategories = (req, res) => {
                     err
                 });
         });
-    // .exec((err, subCategories) => {
-    //     if (!err) {
-    //         res.status(codeStatus.OK)
-    //             .json({
-    //                 success: true,
-    //                 subCategories
-    //             });
-    //     } else {
-    //         res.status(codeStatus.INTERNAL_SERVER_ERROR)
-    //             .json({
-    //                 success: false,
-    //                 err
-    //             });
-    //     }
-    // });
 };
