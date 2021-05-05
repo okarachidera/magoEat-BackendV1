@@ -56,26 +56,26 @@ At this point the project should run at
 > - Authorization: No
 > - body: 
 ```javascript
-{
-    username: String[Required]
-    password: String[Required]
-}
+    {
+        username: String[Required]
+        password: String[Required]
+    }
 ```
 - *[POST]* **Signup**: To create a user account
 > - path: `api/auth/signup`
 > - Authorization: No
 > - body: 
 ```javascript
-{
-    username: String[Required]
-    password: String[Required]
-    confirmPassword: String[Required]
-    phone: Number[Required]
-    email: String[Required] // email address
-    avatarUrl: String[Optional]
-    verified: Boolean[Default]
-    role: String[Default]
-}
+    {
+        username: String[Required]
+        password: String[Required]
+        confirmPassword: String[Required]
+        phone: Number[Required]
+        email: String[Required] // email address
+        avatarUrl: String[Optional]
+        verified: Boolean[Default]
+        role: String[Default]
+    }
 ```
 - *[PUT]* **Update**: Updates users infor 
 - *[GET]* **Get list of users**:
