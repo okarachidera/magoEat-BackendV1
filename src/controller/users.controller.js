@@ -109,24 +109,32 @@ exports.login = (req, res) => {
             .populate("restaurants")
             .populate("orders")
             .exec((err, user) => {
-                if (err) {
+                if (err && !user) {
                     res.status(statusCode.INTERNAL_SERVER_ERROR).json({
                         success: false,
                         message: "Un probleme est survenu sur votre mot de passe, veuillez réessayer plutard",
                         error
                     });
                 } else {
-                    res.status(statusCode.OK).json({
-                        user,
-                        success: true,
-                        token: jwt.sign({
-                            userId: user._id
-                        },
-                        "RANDOM_TOKEN_SECRET", {
-                            expiresIn: "48h"
-                        }
-                        )
-                    });
+                    if (user) {
+                        res.status(statusCode.OK).json({
+                            user,
+                            success: true,
+                            token: jwt.sign({
+                                userId: user._id
+                            },
+                            "RANDOM_TOKEN_SECRET", {
+                                expiresIn: "48h"
+                            }
+                            )
+                        });
+                    } else {
+                        res.status(statusCode.UNAUTHORIZED).json({
+                            success: false,
+                            message: "Mot de passe ou numero de telephone incorrect",
+                            error
+                        });
+                    }
                 }
             });
     } else {
@@ -532,18 +540,27 @@ exports.getUserByUsername = (req, res) => {
     User.findOne({
         username: req.params.username
     }, (err, user) => {
-        if (!err) {
-            if (user) {
-                res.status(statusCode.OK).json({
-                    user
-                });
-            } else {
-                res.status(401).json({
-                    message: "Uilisateur introuvable"
-                });
-            }
+        if (err) {
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Une erreur inattendue s'est produite"
+            });
         } else {
-            res.send(err);
+            if (!err) {
+                if (user) {
+                    res.status(statusCode.OK).json({
+                        success: true,
+                        user
+                    });
+                } else {
+                    res.status(statusCode.NOT_FOUND).json({
+                        success: false,
+                        message: "Uilisateur introuvable"
+                    });
+                }
+            } else {
+                res.send(err);
+            }
         }
     });
 };
