@@ -540,18 +540,27 @@ exports.getUserByUsername = (req, res) => {
     User.findOne({
         username: req.params.username
     }, (err, user) => {
-        if (!err) {
-            if (user) {
-                res.status(statusCode.OK).json({
-                    user
-                });
-            } else {
-                res.status(401).json({
-                    message: "Uilisateur introuvable"
-                });
-            }
+        if (err) {
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Une erreur inattendue s'est produite"
+            });
         } else {
-            res.send(err);
+            if (!err) {
+                if (user) {
+                    res.status(statusCode.OK).json({
+                        success: true,
+                        user
+                    });
+                } else {
+                    res.status(statusCode.NOT_FOUND).json({
+                        success: false,
+                        message: "Uilisateur introuvable"
+                    });
+                }
+            } else {
+                res.send(err);
+            }
         }
     });
 };
