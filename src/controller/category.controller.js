@@ -25,7 +25,13 @@ exports.index = (req, res) => {
 
 exports.showCategory = (req, res) => {
     Category.findById(req.params.idCategory)
-        .populate("repas")
+        .populate({
+            path: "repas",
+            populate: {
+                path: "restau",
+                select: "label"
+            }
+        })
         .exec((err, category) => {
             if (!err) {
                 res.status(codeStatus.OK)
