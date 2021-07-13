@@ -7,12 +7,19 @@ const {
 } = require("../models/");
 const restauValidator = require("../validators/restau.validators");
 const statusCode = require("../constants/status-code");
+const { DEFAULT_LIMIT, DEFAULT_PAGE } = require("../constants/paginations");
 
 // GET logics
 
 exports.getAllRestau = (req, res) => {
   const query = {};
+  const page = parseInt(req.query.page) || DEFAULT_PAGE;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+  const skip = (page - 1) * limit;
+
   Restau.find(query)
+    .limit(limit)
+    .skip(skip)
     .populate("owner")
     .populate("repas")
     .exec((err, restaus) => {
