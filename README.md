@@ -24,6 +24,8 @@ To get a copy of this project you need:
 
 ## Instructions
 
+### [DOCUMENTATION HERE](https://documenter.getpostman.com/view/10912339/Tzm8FFkU)
+
 4. Clone this repo
     ``` bash
     $ git clone https://github.com/pacyL2K19/magoEat-BackendV1.git
@@ -101,6 +103,9 @@ At this point the project should run at
 - Create an item: 
 - Delete an item 
 - Put Coupon 
+
+## Full API documentation 
+[Here](https://documenter.getpostman.com/view/10912339/Tzm8FFkU)
 
 # Project structure
 
