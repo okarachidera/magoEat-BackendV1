@@ -11,6 +11,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validators/users.validators");
 const statusCode = require("../constants/status-code");
+const { DEFAULT_PAGE, DEFAULT_LIMIT_USER } = require("../constants/paginations");
 const client = require("twilio")(accountSid, auth_token);
 
 exports.signup = (req, res) => {
@@ -471,10 +472,15 @@ exports.sendMsgToAdmins = (req, res) => {
 // GET logic
 
 exports.getOwners = (req, res) => {
+  const page = parseInt(req.query.page) || DEFAULT_PAGE;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT_USER;
+  const skip = (page - 1) * limit;
   User.find({
     role: "OWNER",
     verified: true
   })
+    .limit()
+    .skip(skip)
     .populate("restaurants")
     .exec((err, owners) => {
       if (!err) {

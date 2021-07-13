@@ -2,6 +2,7 @@
 const { Repas, Restau, Category, SubCategory } = require("../models/");
 const repasValidator = require("../validators/repas.validators");
 const codeStatus = require("../constants/status-code");
+const { DEFAULT_LIMIT_REPAS, DEFAULT_PAGE } = require("../constants/paginations");
 
 exports.createRepas = (req, res) => {
   // First validation 
@@ -115,7 +116,12 @@ exports.showRepas = (req, res) => {
 
 exports.getAllRepas = (req, res) => {
   const filter = {};
+  const page = parseInt(req.query.page) || DEFAULT_PAGE;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT_REPAS;
+  const skip = (page - 1) * limit;
   Repas.find(filter)
+    .limit(limit)
+    .skip(skip)
     .populate("restau")
     .populate("category")
     .populate("subCategory")

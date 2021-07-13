@@ -2,11 +2,17 @@
 const { Order, Repas, User } = require("../models/");
 const orderValidator = require("../validators/order.validators");
 const codeStatus = require("../constants/status-code");
+const { DEFAULT_LIMIT_ORDERS, DEFAULT_PAGE } = require("../constants/paginations");
 
 // For get routes
 
 exports.getOrdersHistory = (req, res) => {
+  const page = parseInt(req.query.page) || DEFAULT_PAGE;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+  const skip = (page - 1) * limit;
   Order.find({ user: req.params.idUser })
+    .skip(skip)
+    .limit(limit)
     .populate("plat")
     .then(orders => {
       if (!orders) {
@@ -46,7 +52,12 @@ exports.getOrdersHistory = (req, res) => {
 
 exports.getAllOrders = (req, res) => {
   const filter = {};
+  const page = parseInt(req.query.page) || DEFAULT_PAGE;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT_ORDERS;
+  const skip = (page - 1) * limit;
   Order.find(filter)
+    .skip(skip)
+    .limit(limit)
     .populate("user")
     .populate("plat")
     .then(orders => {
