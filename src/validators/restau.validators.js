@@ -1,54 +1,54 @@
 const Joi = require("@hapi/joi");
 
 const textField = Joi.string()
-    .max(120)
-    .min(3);
+  .max(120)
+  .min(3);
 
 const rate = Joi.number()
-    .min(1)
-    .max(5)
-    .optional();
+  .min(1)
+  .max(5)
+  .optional();
 
 const url = Joi.string()
-    .optional();
+  .optional();
 
 const validId = Joi.string()
-    .alphanum();
+  .alphanum();
 
 exports.createRestau = Joi.object()
-    .keys({
-        label: textField.required(),
-        owner: validId.required(),
-        opensAt: Joi.string()
-            .regex(/^([0-9]{2}):([0-9]{2})$/),
-        closeAt: Joi.string()
-            .regex(/^([0-9]{2}):([0-9]{2})$/),
-        imgUrl: url.optional(),
-        imgBrushed: url.optional(),
-        adress: textField.optional(),
-        description: Joi.string()
-            .min(3)
-            .max(255)
-            .required()
-    });
+  .keys({
+    label: textField.required(),
+    owner: validId.required(),
+    opensAt: Joi.string()
+      .regex(/^([0-9]{2}):([0-9]{2})$/),
+    closeAt: Joi.string()
+      .regex(/^([0-9]{2}):([0-9]{2})$/),
+    imgUrl: url.optional(),
+    imgBrushed: url.optional(),
+    adress: textField.optional(),
+    description: Joi.string()
+      .min(3)
+      .max(255)
+      .required()
+  });
 
 exports.holdRestau = Joi.object()
-    .keys({
-        isActive: Joi.boolean
-    });
+  .keys({
+    isActive: Joi.boolean
+  });
 
 exports.updateRestauInfo = Joi.object()
-    .keys({
-        label: textField.optional(),
-        ownerId: validId.optional(),
-        opensAt: textField.optional(),
-        closeAt: textField.optional(),
-        imgUrl: url.optional(),
-        adress: textField.optional(),
-        description: Joi.string().min(3).max(255).optional()
-    });
+  .keys({
+    label: textField.optional(),
+    ownerId: validId.optional(),
+    opensAt: textField.optional(),
+    closeAt: textField.optional(),
+    imgUrl: url.optional(),
+    adress: textField.optional(),
+    description: Joi.string().min(3).max(255).optional()
+  });
 
 exports.rateRestaurant = Joi.object({
-    averageRage: rate,
-    feedback: textField.optional()
+  averageRage: rate,
+  feedback: textField.optional()
 });
