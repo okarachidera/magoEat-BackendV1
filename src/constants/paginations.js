@@ -1,2 +1,5 @@
-exports.DEFAULT_LIMIT = 2;
+exports.DEFAULT_LIMIT = 5;
 exports.DEFAULT_PAGE = 1;
+exports.DEFAULT_LIMIT_REPAS = 20;
+exports.DEFAULT_LIMIT_USER = 20;
+exports.DEFAULT_LIMIT_ORDERS = 10;
