@@ -8,7 +8,7 @@ const { DEFAULT_LIMIT_ORDERS, DEFAULT_PAGE } = require("../constants/paginations
 
 exports.getOrdersHistory = (req, res) => {
   const page = parseInt(req.query.page) || DEFAULT_PAGE;
-  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT;
+  const limit = parseInt(req.query.limit) || DEFAULT_LIMIT_ORDERS;
   const skip = (page - 1) * limit;
   Order.find({ user: req.params.idUser })
     .skip(skip)
